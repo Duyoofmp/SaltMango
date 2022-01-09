@@ -21,8 +21,8 @@ app.post('/UpdateCategory', async (req, res) => CategoryFunctions.Update(req, re
 app.post('/DeleteCategory', async (req, res) => CategoryFunctions.Delete(req, res))
 
 
-const runtimeOpts = {
-    minInstances: 1,
-    memory: "128MB"
-  }
-  exports.Category = functions.runWith(runtimeOpts).region("asia-south1").https.onRequest(app);
+// const runtimeOpts = {
+//     minInstances: 1,
+//     memory: "128MB"
+//   }.runWith(runtimeOpts)
+  exports.Category = functions.region("asia-south1").https.onRequest(app);

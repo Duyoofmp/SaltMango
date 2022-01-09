@@ -6,7 +6,7 @@ admin.initializeApp({
     credential: admin.credential.cert(ServiceAccount)
   });
 
-
+//=========================Apis==============================
 
   const CategoryApis=require('./apis/Category')
   exports.Category=CategoryApis.Category
@@ -17,4 +17,19 @@ admin.initializeApp({
   const UsersApis=require('./apis/Users')
   exports.Users= UsersApis.Users
 
-  
+
+ //=========================Triggers==============================
+
+ const CategoryTriggers=require('./triggers/Category')
+ exports.OnCategoryCreate= CategoryTriggers.OnCategoryCreate
+ exports.OnCategoryUpdate= CategoryTriggers.OnCategoryUpdate
+
+ const QuestionsTriggers=require('./triggers/Questions')
+ exports.OnQuestionsCreate= QuestionsTriggers.OnQuestionsCreate
+ exports.OnQuestionsUpdate= QuestionsTriggers.OnQuestionsUpdate
+
+
+ const UsersTriggers=require('./triggers/Users')
+ exports.OnUsersCreate= UsersTriggers.OnUsersCreate
+ exports.OnUsersUpdate= UsersTriggers.OnUsersUpdate
+

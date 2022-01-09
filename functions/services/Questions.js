@@ -2,25 +2,32 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const dataHandling=require("../functions");
 
-function Create(req,res){
+async function Create(req,res){
     req.body.index=Date.now()
-       dataHandling.Create("QuestionsAndAnswers",req.body)
+     await  dataHandling.Create("QuestionsAndAnswers",req.body)
      return res.json(true)
   }
-  function  Update(req,res){
+ async function  Update(req,res){
     req.body.index=Date.now()
-    dataHandling.Update("QuestionsAndAnswers",req.body,req.body.DocId)
+   await dataHandling.Update("QuestionsAndAnswers",req.body,req.body.DocId)
   return res.json(true)
   }
-  function Delete(req,res){ 
-    dataHandling.Delete("QuestionsAndAnswers",req.body.DocId)
+ async function Delete(req,res){ 
+   await dataHandling.Delete("QuestionsAndAnswers",req.body.DocId)
     return res.json(true)
   }
-  
+
   async function Read(req,res){
-    const data=await dataHandling.Read("QuestionsAndAnswers",req.body.DocId,req.body.index,req.body.Keyword);
-    return res.json(data)
+    if(req.body.CategoryId===undefined){
+      const data=await dataHandling.Read("QuestionsAndAnswers",req.body.DocId,req.body.index,req.body.Keyword);
+      return res.json(data)
+    }else{
+      const data=await dataHandling.Read("QuestionsAndAnswers",req.body.DocId,req.body.index,req.body.Keyword,req.body.limit,["CategoryId","==",req.body.CategoryId]);
+      return res.json(data)
+    }
   }
+
+ 
   
   
   // async function  CreateTeam(obj){

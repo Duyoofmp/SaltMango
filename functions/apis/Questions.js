@@ -21,8 +21,8 @@ app.post('/UpdateQuestions', async (req, res) => QuestionsFunctions.Update(req, 
 app.post('/DeleteQuestions', async (req, res) => QuestionsFunctions.Delete(req, res))
 
 
-const runtimeOpts = {
-    minInstances: 1,
-    memory: "128MB"
-  }
-  exports.Questions = functions.runWith(runtimeOpts).region("asia-south1").https.onRequest(app);
+// const runtimeOpts = {
+//     minInstances: 1,
+//     memory: "128MB"
+//   }
+  exports.Questions = functions.region("asia-south1").https.onRequest(app);
