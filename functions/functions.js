@@ -62,7 +62,6 @@ async function Read(collectionName, docName, index, Keyword, limit = 10, where) 
             console.log(index)
                 const snapshot = await db.collection(collectionName).doc(index).get();
                 query = query.startAfter(snapshot)
-           
         }
     } else {
         query = db.collection(collectionName).doc(docName)

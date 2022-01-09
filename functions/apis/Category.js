@@ -14,6 +14,11 @@ const CategoryFunctions=require('../services/Category')
 
 app.post('/CreateCategory', async (req, res) => CategoryFunctions.Create(req, res))
 
+app.post('/ReadCategory', async (req, res) => CategoryFunctions.Read(req, res))
+
+app.post('/UpdateCategory', async (req, res) => CategoryFunctions.Update(req, res))
+
+app.post('/DeleteCategory', async (req, res) => CategoryFunctions.Delete(req, res))
 
 
 const runtimeOpts = {
