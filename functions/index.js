@@ -17,6 +17,9 @@ admin.initializeApp({
   const UsersApis=require('./apis/Users')
   exports.Users= UsersApis.Users
 
+  const OffersApis = require('./apis/Offers')
+  exports.Offers= OffersApis.Offers
+
 
  //=========================Triggers==============================
 

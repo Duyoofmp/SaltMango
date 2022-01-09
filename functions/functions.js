@@ -89,6 +89,21 @@ async function Read(collectionName, docName, index, Keyword, limit = 10, where) 
     });
 }
 
+async function Check(collectionName,docName,Answer){
+    let query
+    return new Promise(async(resolve, reject)=> {
+        query = db.collection(collectionName).doc(docName)
+        if(query.Answer==Answer){
+            resolve(true);
+        }
+        else{
+            resolve(false);
+        }
+    })
+   
+
+}
+
 
 
 
@@ -97,4 +112,5 @@ module.exports = {
     Update,
     Delete,
     Read,
+    Check
 };

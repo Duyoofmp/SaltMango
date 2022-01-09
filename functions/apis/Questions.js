@@ -20,6 +20,8 @@ app.post('/UpdateQuestions', async (req, res) => QuestionsFunctions.Update(req, 
 
 app.post('/DeleteQuestions', async (req, res) => QuestionsFunctions.Delete(req, res))
 
+app.post('/CheckAnswer',async(req,res)=> QuestionsFunctions.Check(req,res))
+
 
 // const runtimeOpts = {
 //     minInstances: 1,
