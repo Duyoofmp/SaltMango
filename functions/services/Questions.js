@@ -1,14 +1,20 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const dataHandling=require("../functions");
-const { database } = require('firebase-functions/v1/firestore');
+const db = admin.firestore();
+//const { database } = require('firebase-functions/v1/firestore');
+
 
 async function Create(req,res){
     req.body.index=Date.now()
-    query = await admin.firestore().collection("QuestionsAndAnswers").get()
-    const size = query.size
-    req.body.number=size+1
-     await  dataHandling.Create("QuestionsAndAnswers",req.body)
+    const temp=[]
+    query =await db.collection("QuestionsAndAnswers").get()
+    let size = query.size
+    Questions.forEach(element => {
+      element.QuestionNumber=size+1
+       temp.push(dataHandling.Create("QuestionsAndAnswers",element))
+    });
+    await Promise.all(temp)
      return res.json(true)
   }
  async function  Update(req,res){
