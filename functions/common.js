@@ -65,42 +65,16 @@ async function login(collectionName, field, data, field2, data2) {
 
 async function loginForAdmins(req, res) {
   const user = req.body.Username;
-  let temp;
-  let flag = 0;
   let ret = false;
-  let id;
   const pass = req.body.Password;
   const admins = await db.collection("Admin").doc("Admin_Info").get();
   if (admins.data().Username === user && admins.data().Password === pass) {
     const gen = await admin.auth().createCustomToken(admins.data().uid)
-    ret = { token: gen, role: "PageAdmin" }
-  } else {
-    const staff = await db.collection("Staffs").where("Username", "==", user).where("Password", "==", pass).limit(1).get();
-    if (staff.size !== 0) {
-      staff.forEach(snap => {
-        id = snap.id
-      })
-      const teams = await db.collection("Teams").where("StaffIds", "array-contains", id).get()
-      teams.forEach(doc => {
-        console.log(doc.id)
-        if (doc.id === "7zvTowPd0ciwLKUhRYwG") {
-          temp = id
-          flag = 1
-        } else if (doc.data().ManagerId === id) {
-          temp = id
-          flag = 2
-        } else if (doc.data().LeaderId === id) {
-          temp = id
-          flag = 3
-        }
-      })
-      if (flag === 1) ret = { token: await token(temp), role: "LeadStaff" }
-      if (flag === 2) ret = { token: await token(temp), role: "TeamManager" }
-      if (flag === 3) ret = { token: await token(temp), role: "TeamLeader" }
-    }
-  }
+    ret = { token: gen} 
+  } 
   return ret
 }
+
 async function token(id) {
   return await admin.auth().createCustomToken(id)
 }
@@ -159,6 +133,8 @@ function decodeIDTokenForLogin(req, res, next) {
   }
 }
 
+const Point=10;
+
 module.exports = {
   decodeIDToken,
   makeid,
@@ -167,5 +143,6 @@ module.exports = {
   decodeIDTokenHeader,
   createKeywords,
   loginForAdmins,
-  decodeIDTokenForLogin
+  decodeIDTokenForLogin,
+  Point
 }

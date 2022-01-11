@@ -4,31 +4,29 @@ const dataHandling=require("../functions");
 const db=admin.firestore()
 
 async function Create(req,res){
+  const temp=[];
     req.body.index=Date.now()
-      await dataHandling.Create(req.body.collectionName,req.body)
-      return res.json(true)
+      Countries.forEach(element => {
+        temp.push(dataHandling.Create(req.body.collectionName,...element))
+      });   
+      await Promise.all(temp)
+      return true
   }
   async function  Update(req,res){
     req.body.index=Date.now()
-    await dataHandling.Update("Offers",req.body,req.body.DocId)
+    await dataHandling.Update("Countries",req.body,req.body.DocId)
   return res.json(true)
   }
   async function Delete(req,res){ 
-    await dataHandling.Delete("Offers",req.body.DocId)
+    await dataHandling.Delete("Countries",req.body.DocId)
     return res.json(true)
   }
   
   async function Read(req,res){
-    const data=await dataHandling.Read("Offers",req.body.DocId,req.body.index,req.body.Keyword);
+    const data=await dataHandling.Read("Countries",req.body.DocId,req.body.index,req.body.Keyword);
     return res.json(data)
   }
 
-  async function CreateCoupon(req,res){
-    const OfferId=req.body.OfferId
-      await db.collection("Offers").doc(OfferId).collection("Coupons").add(req.body)
-      return res.json(true)
-  }
-  
  
   
   // async function  CreateTeam(obj){
@@ -40,8 +38,7 @@ async function Create(req,res){
       Create,
       Update,
       Delete,
-      Read,
-      CreateCoupon
+      Read
   }
   
 

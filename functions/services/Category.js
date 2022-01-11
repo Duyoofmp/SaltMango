@@ -4,13 +4,23 @@ const dataHandling=require("../functions")
 
 async function Create(req,res){
   req.body.index=Date.now()
+  const check=await dataHandling.WhereGet("Category","CategoryName",req.body.CategoryName,req.body.DocId)
+  if(check){
   await dataHandling.Create("Category",req.body)
   return res.json(true)
+}else{
+  return res.json("Category name already exists!")
+}
 }
 async function  Update(req,res){
 req.body.index=Date.now()
+const check=await dataHandling.WhereGet("Category","CategoryName",req.body.CategoryName,req.body.DocId)
+if(check){
 await dataHandling.Update("Category",req.body,req.body.DocId)
 return res.json(true)
+}else{
+  return res.json("Category name already exists")
+}
 }
 async function Delete(req,res){ 
   await dataHandling.Delete("Category",req.body.DocId)

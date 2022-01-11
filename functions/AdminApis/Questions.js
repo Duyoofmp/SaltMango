@@ -6,8 +6,8 @@ const cors = require('cors');
 const app = express();
 app.use(cors({ origin: true }));
 
-//const common = require("../common");
-//app.use(common.decodeIDToken)
+const common = require("../common");
+app.use(common.decodeIDToken)
 
 
 const QuestionsFunctions=require('../services/Questions')
@@ -20,7 +20,7 @@ app.post('/UpdateQuestions', async (req, res) => QuestionsFunctions.Update(req, 
 
 app.post('/DeleteQuestions', async (req, res) => QuestionsFunctions.Delete(req, res))
 
-app.post('/CheckAnswer',async(req,res)=> QuestionsFunctions.Check(req,res))
+//app.post('/CheckAnswer',async(req,res)=> QuestionsFunctions.Check(req,res))
 
 
 // const runtimeOpts = {
