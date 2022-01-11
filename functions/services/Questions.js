@@ -8,7 +8,7 @@ async function Create(req,res){
     query = await admin.firestore().collection("QuestionsAndAnswers").get()
     const size = query.size
     req.body.number=size+1
-     await  dataHandling.Create("QuestionsAndAnswers",req.body)
+     await  dataHandling.Create("QuestionsAndAnswers",req.body.questions)
      return res.json(true)
   }
  async function  Update(req,res){
