@@ -8,17 +8,22 @@ admin.initializeApp({
 
 //=========================Apis==============================
 
-  const CategoryApis=require('./apis/Category')
+  const CategoryApis=require('./AdminApis/Category')
   exports.Category=CategoryApis.Category
   
-  const QuestionsApis=require('./apis/Questions')
+  const QuestionsApis=require('./AdminApis/Questions')
   exports.Questions=QuestionsApis.Questions
   
-  const UsersApis=require('./apis/Users')
+  const UsersApis=require('./AdminApis/Users')
   exports.Users= UsersApis.Users
+  exports.Users=UsersApis.LoginForAdmin
 
-  const OffersApis = require('./apis/Offers')
+  const OffersApis = require('./AdminApis/Offers')
   exports.Offers= OffersApis.Offers
+
+  
+  const CountryApis = require('./AdminApis/Country')
+  exports.Countries= CountryApis.Countries
 
 
  //=========================Triggers==============================
@@ -35,4 +40,5 @@ admin.initializeApp({
  const UsersTriggers=require('./triggers/Users')
  exports.OnUsersCreate= UsersTriggers.OnUsersCreate
  exports.OnUsersUpdate= UsersTriggers.OnUsersUpdate
+
 

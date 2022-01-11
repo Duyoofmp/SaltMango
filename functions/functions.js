@@ -104,7 +104,31 @@ async function Check(collectionName,docName,Answer){
 
 }
 
-
+async function WhereGet(collectionName, Field, data, DocId) {
+    return new Promise(async (resolve, reject) => {
+        return db
+            .collection(collectionName)
+            .where(Field, "==", data)
+            .limit(1)
+            .get()
+            .then((snap) => {
+                if (snap.size === 0) {
+                    resolve(true);
+                } else {
+                    if (DocId !== undefined) {
+                        if (snap.docs[0].id === DocId) {
+                            resolve(true);
+                        }
+                    }
+                    resolve(false);
+                }
+            })
+            .catch((err) => { 
+                functions.logger.error(err);
+                reject(false);
+            });
+    });
+}
 
 
 module.exports = {
@@ -112,5 +136,6 @@ module.exports = {
     Update,
     Delete,
     Read,
-    Check
+    Check,
+    WhereGet
 };
