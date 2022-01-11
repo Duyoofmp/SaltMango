@@ -6,8 +6,8 @@ const cors = require('cors');
 const app = express();
 app.use(cors({ origin: true }));
 
-const common = require("../common");
-app.use(common.decodeIDToken)
+// const common = require("../common");
+// app.use(common.decodeIDToken)
 
 
 const QuestionsFunctions=require('../AdminServices/Questions')

@@ -32,7 +32,7 @@ async function Create(req,res){
   }
 
   async function Read(req,res){
-    if(req.body.CategoryId===undefined){
+    if(req.body.CategoryName===undefined){
       const data=await dataHandling.Read("QuestionsAndAnswers",req.body.DocId,req.body.index,req.body.Keyword);
       return res.json(data)
     }else{
