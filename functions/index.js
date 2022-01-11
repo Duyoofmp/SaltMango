@@ -25,6 +25,9 @@ admin.initializeApp({
   const CountryApis = require('./AdminApis/Country')
   exports.Countries= CountryApis.Countries
 
+  const UserQuestionApis= require('./UserApis/Questions')
+  exports.UserQuestions= UserQuestionApis.UserQuestions
+
 
  //=========================Triggers==============================
 

@@ -10,7 +10,7 @@ const common = require("../common");
  app.use(common.decodeIDToken)
 
 
-const UsersFunctions=require('../services/Users')
+const UsersFunctions=require('../AdminServices/Users')
 
 app.post('/CreateUsers', async (req, res) => UsersFunctions.Create(req, res))
 

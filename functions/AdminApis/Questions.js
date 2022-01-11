@@ -10,7 +10,7 @@ const common = require("../common");
 app.use(common.decodeIDToken)
 
 
-const QuestionsFunctions=require('../services/Questions')
+const QuestionsFunctions=require('../AdminServices/Questions')
 
 app.post('/CreateQuestions', async (req, res) => QuestionsFunctions.Create(req, res))
 

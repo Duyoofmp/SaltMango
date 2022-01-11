@@ -10,7 +10,7 @@ const common = require("../common");
 app.use(common.decodeIDToken)
 
 
-const CategoryFunctions=require('../services/Category')
+const CategoryFunctions=require('../AdminServices/Category')
 
 app.post('/CreateCategory', async (req, res) => CategoryFunctions.Create(req, res))
 
