@@ -16,13 +16,13 @@ async function decodeIDToken(req, res, next) {
     console.log(decodedToken.uid);
 
 
-    req.body.userid = decodedToken.uid;
+    req.body.UserId = decodedToken.uid;
     // req.body.token = decodedToken.uid;
     delete req.body.token;
     return next();
   } catch (err) {
     functions.logger.error(err);
-    req.body.userid = '';
+    req.body.UserId = '';
     return res.json({ 'message': 'token not verified', 'error': err });
   }
 }
@@ -95,7 +95,7 @@ async function decodeIDTokenHeader(req, res, next) {
     try {
       const decodedToken = await admin.auth().verifyIdToken(idToken);
       console.log(decodedToken.uid);
-      req.body.StaffId = decodedToken.uid;
+      req.body.UserId = decodedToken.uid;
       delete req.body.Token;
       return next();
     } catch (err) {

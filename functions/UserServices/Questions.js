@@ -5,49 +5,26 @@ const { Point } = require('../common');
 const db = admin.firestore();
 
 async function Read(req,res){
-    let arr =[]
+    let checkAnswer=false
     if(req.body.Answer===undefined){
-    const data=await dataHandling.Read("QuestionsAndAnswers",req,body.QuestionId,req.body.index,undefined,1);
-    return res.json(data);
+    const data=await dataHandling.Read("QuestionsAndAnswers",req.body.DocId,req.body.index,req.body.Keyword,1);
+    (data[0].Options).push(data[0].Answer)
+    delete data[0]["Answer"]
+    return res.json(data[0]);
     }else{
-        const data=await dataHandling.Read("QuestionsAndAnswers",req,body.DocId,req.body.index,undefined,1);
-        const dat=await dataHandling.Read("QuestionsAndAnswers",req,body.QuestionId,req.body.index,undefined,1);
+        const data=await dataHandling.Read("QuestionsAndAnswers",req.body.DocId,req.body.index,req.body.Keyword,1);
+        const dat=await dataHandling.Read("QuestionsAndAnswers",req.body.QuestionId);
         User= db.collection("Users").doc(req.body.UserId);
-        if(dat.Answer===req.body.Answer){
-            user=User.get();
-            let score= user.score+Point
-            User.update({
-                Score: score
-            })
-            query = await db.collection("QuestionsAndAnswers").doc(QuestionId).get()
-            arr=query.options
-            arr.push(query.Answer)
-           await db.collection("QuestionsAndAnswers").doc(QuestionId).update({
-               options : arr,
-               Answer : FieldValue.delete()
-           })
-           const tmp = []
-           tmp.push({...dat.data(),Answer : true,NextQuestion: data.data()})
-           return res.json(tmp)
-            }else{
-                query = await db.collection("QuestionsAndAnswers").doc(QuestionId).get()
-            arr=query.options
-            arr.push(query.Answer)
-           await db.collection("QuestionsAndAnswers").doc(QuestionId).update({
-               options : arr,
-               Answer : FieldValue.delete()
-           })
-           const tmp = []
-           tmp.push({...dat.data(),Answer : false,NextQuestion: data.data()})
-           return res.json(tmp)
-           
-        }
-
-
+            user=await User.get();
+            let score= (user.data().Score) +Point;
+           await  User.update({Score: score});
+            (data[0].Options).push(data[0].Answer)
+            delete data[0]["Answer"]
+           if(dat.Answer===req.body.Answer){
+              checkAnswer=true
+           }
+           return res.json({...data[0],CheckAnswer : checkAnswer})
     }
-
-    
-
 }
 
 module.exports={
