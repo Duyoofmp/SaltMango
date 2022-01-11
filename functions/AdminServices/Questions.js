@@ -11,7 +11,7 @@ async function Create(req,res){
   
       query =await db.collection("QuestionsAndAnswers").get()
       let size = query.size
-      Questions.forEach(element => {
+      req.body.Questions.forEach(element => {
         element.QuestionNumber=size+1
          temp.push(dataHandling.Create("QuestionsAndAnswers",element))
       });
