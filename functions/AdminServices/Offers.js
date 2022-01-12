@@ -19,7 +19,7 @@ async function Create(req,res){
   }
   
   async function Read(req,res){
-    const data=await dataHandling.Read("Offers",req.body.DocId,req.body.index,req.body.Keyword);
+    const data=await dataHandling.Read("Offers",req.body.DocId,req.body.index,req.body.Keyword,req.body.limit,["CountryId","==",req.body.CountryId]);
     return res.json(data)
   }
 
