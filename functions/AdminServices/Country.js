@@ -5,13 +5,17 @@ const db=admin.firestore()
 
 async function Create(req,res){
   const temp=[];
-    req.body.index=Date.now()
+    
       req.body.Countries.forEach(element => {
-        temp.push(dataHandling.Create(req.body.collectionName,...element))
+        console.log(element)
+        element.index=Date.now();
+        temp.push(dataHandling.Create("Countries",element))
       });   
-      await Promise.all(temp)
-      return true
+      await Promise.all(temp);
+      return res.json(true)
   }
+
+
   async function  Update(req,res){
     req.body.index=Date.now()
     await dataHandling.Update("Countries",req.body,req.body.DocId)
@@ -23,8 +27,13 @@ async function Create(req,res){
   }
   
   async function Read(req,res){
-    const data=await dataHandling.Read("Countries",req.body.DocId,req.body.index,req.body.Keyword);
-    return res.json(data)
+    try {
+      const data=await dataHandling.Read("Countries",req.body.DocId,req.body.index,req.body.Keyword);
+      return res.json(data)
+    } catch (error) {
+      functions.logger.error(error)
+    }
+   
   }
 
  

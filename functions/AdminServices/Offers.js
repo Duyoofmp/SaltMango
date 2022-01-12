@@ -5,7 +5,7 @@ const db=admin.firestore()
 
 async function Create(req,res){
     req.body.index=Date.now()
-      await dataHandling.Create(req.body.collectionName,req.body)
+      await dataHandling.Create("Offers",req.body)
       return res.json(true)
   }
   async function  Update(req,res){

@@ -28,8 +28,13 @@ async function Delete(req,res){
 }
 
 async function Read(req,res){
-  const data=await dataHandling.Read("Category",req.body.DocId,req.body.index,req.body.Keyword,req.body.limit,["CountryId","==",req.body.CountryId]);
-  return res.json(data)
+  try {
+    const data=await dataHandling.Read("Category",req.body.DocId,req.body.index,req.body.Keyword,req.body.limit,["CountryId","==",req.body.CountryId]);
+    return res.json(data)
+  } catch (error) {
+    functions.logger.error(error)
+  }
+ 
 }
 
 
