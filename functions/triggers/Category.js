@@ -11,7 +11,7 @@ exports.OnCategoryCreate = functions.firestore
         const docid = context.params.docid;
         const data = change.data()
         const arr = []; 
-        common.createKeywords(data.Name, arr)
+        common.createKeywords(data.CategoryName, arr)
         return await db.collection("Category").doc(docid).update({ DocId: docid, Keywords: arr })
     })
 
@@ -22,7 +22,7 @@ exports.OnCategoryCreate = functions.firestore
         const docid = context.params.docid;
         const data = change.after.data()
         const arr = [];
-        common.createKeywords(data.Name, arr)
+        common.createKeywords(data.CategoryName, arr)
         return await db.collection("Category").doc(docid).update({ Keywords: arr })
 
     })

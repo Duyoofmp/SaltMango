@@ -6,17 +6,22 @@ const db = admin.firestore();
 
 
 async function Create(req,res){
-    req.body.index=Date.now()
+  try {
+    
     const temp=[]
-  
       query =await db.collection("QuestionsAndAnswers").get()
       let size = query.size
       req.body.Questions.forEach(element => {
+        element.index=Date.now()
         element.QuestionNumber=size+1
          temp.push(dataHandling.Create("QuestionsAndAnswers",element))
       });
       await Promise.all(temp)
        return res.json(true)
+  } catch (error) {
+    console.log(error)
+  }
+    
    
   }
  async function  Update(req,res){
@@ -32,15 +37,21 @@ async function Create(req,res){
   }
 
   async function Read(req,res){
-    if(req.body.CategoryName===undefined){
-      const data=await dataHandling.Read("QuestionsAndAnswers",req.body.DocId,req.body.index,req.body.Keyword);
-      return res.json(data)
-    }else{
-      const data=await dataHandling.Read("QuestionsAndAnswers",req.body.DocId,req.body.index,req.body.Keyword,req.body.limit,["CategoryName","==",req.body.CategoryName]);
-      // (data.Options).push(data.Answer);
-      // delete data.Answer
-      return res.json(data)
+    try {
+      if(req.body.CategoryName===undefined){
+        const data=await dataHandling.Read("QuestionsAndAnswers",req.body.DocId,req.body.index,req.body.Keyword);
+        return res.json(data)
+      }else{
+        const data=await dataHandling.Read("QuestionsAndAnswers",req.body.DocId,req.body.index,req.body.Keyword,req.body.limit,["CategoryName","==",req.body.CategoryName]);
+        // (data.Options).push(data.Answer);
+        // delete data.Answer
+        return res.json(data)
+      }
+    } catch (error) {
+      functions.logger.error(error)
+      console.log(error)
     }
+   
   }
 
   async function Check(req,res){

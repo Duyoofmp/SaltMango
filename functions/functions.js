@@ -7,6 +7,7 @@ async function Create(collectionName, data, docName) {
     return new Promise(async (resolve, reject) => {
         try {
             if (docName !== undefined) {
+            
                 await db.collection(collectionName).doc(docName).set(data);
                 resolve(true);
             } else {
