@@ -10,9 +10,9 @@ app.use(cors({ origin: true }));
 //  app.use(common.decodeIDToken)
 
 
-const CountryFunctions=require('../service/Country')
+const CountryFunctions = require('../service/Country')
 
-app.post('/CreateCountry', async (req, res) =>CountryFunctions.Create(req, res))
+app.post('/CreateCountry', async (req, res) => CountryFunctions.Create(req, res))
 
 app.post('/ReadCountry', async (req, res) => CountryFunctions.Read(req, res))
 

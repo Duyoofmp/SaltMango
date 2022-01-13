@@ -7,10 +7,10 @@ async function Create(req, res) {
   const temp = [];
   req.body.index = Date.now()
   req.body.Countries.forEach(element => {
-    temp.push(dataHandling.Create(req.body.collectionName, ...element))
+    temp.push(dataHandling.Create("Countries", element))
   });
   await Promise.all(temp)
-  return true
+  return res.json(true)
 }
 async function Update(req, res) {
   req.body.index = Date.now()

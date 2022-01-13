@@ -10,7 +10,7 @@ app.use(cors({ origin: true }));
 // app.use(common.decodeIDToken)
 
 
-const CategoryFunctions=require('../service/Category')
+const CategoryFunctions = require('../service/Category')
 
 app.post('/CreateCategory', async (req, res) => CategoryFunctions.Create(req, res))
 
@@ -25,4 +25,4 @@ app.post('/DeleteCategory', async (req, res) => CategoryFunctions.Delete(req, re
 //     minInstances: 1,
 //     memory: "128MB"
 //   }.runWith(runtimeOpts)
-  exports.Category = functions.region("asia-south1").https.onRequest(app);
+exports.Category = functions.region("asia-south1").https.onRequest(app);

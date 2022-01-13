@@ -21,6 +21,9 @@ exports.Users = UsersApis.LoginForAdmin
 const OffersApis = require('./api/Offers')
 exports.Offers = OffersApis.Offers
 
+const CouponsApis = require('./api/Coupons')
+exports.Coupons = CouponsApis.Coupons
+
 
 const CountryApis = require('./api/Country')
 exports.Countries = CountryApis.Countries
