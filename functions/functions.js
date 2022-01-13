@@ -48,20 +48,20 @@ async function Read(collectionName, docName, index, Keyword, limit = 10, where) 
 
     let query;
     if (docName === undefined) {
-        query = db.collection(collectionName)
+        query = db.collection(collectionName);
         if (Keyword !== "" && Keyword !== undefined) {
             query = query.where("Keywords", "array-contains", Keyword.toLowerCase());
         }
         if (where !== undefined) {
             query = query.where(where[0], where[1], where[2])
         }
-       
-            query = query.orderBy("index","desc");
-        
-        if (index !== undefined && index!==null && index!==0 && index!=="") {
+
+        query = query.orderBy("index", "desc");
+
+        if (index !== undefined && index !== null && index !== 0 && index !== "") {
             console.log(index)
-                const snapshot = await db.collection(collectionName).doc(index).get();
-                query = query.startAfter(snapshot)
+            const snapshot = await db.collection(collectionName).doc(index).get();
+            query = query.startAfter(snapshot)
         }
     } else {
         query = db.collection(collectionName).doc(docName)
@@ -89,18 +89,25 @@ async function Read(collectionName, docName, index, Keyword, limit = 10, where) 
     });
 }
 
-async function Check(collectionName,docName,Answer){
+async function Check(collectionName, docName, Answer) {
     let query
-    return new Promise(async(resolve, reject)=> {
-        query = db.collection(collectionName).doc(docName)
-        if(query.Answer==Answer){
-            resolve(true);
-        }
-        else{
-            resolve(false);
+    return new Promise(async (resolve, reject) => {
+
+        try {
+            query = db.collection(collectionName).doc(docName)
+            if (query.Answer == Answer) {
+                resolve(true);
+            }
+            else {
+                resolve(false);
+            }
+        } catch (error) {
+            functions.logger.error(error);
+            functions.logger.log(error);
+
         }
     })
-   
+
 
 }
 
@@ -123,7 +130,7 @@ async function WhereGet(collectionName, Field, data, DocId) {
                     resolve(false);
                 }
             })
-            .catch((err) => { 
+            .catch((err) => {
                 functions.logger.error(err);
                 reject(false);
             });

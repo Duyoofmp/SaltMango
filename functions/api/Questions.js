@@ -10,7 +10,7 @@ app.use(cors({ origin: true }));
 // app.use(common.decodeIDToken)
 
 
-const QuestionsFunctions=require('../AdminServices/Questions')
+const QuestionsFunctions=require('../service/Questions')
 
 app.post('/CreateQuestions', async (req, res) => QuestionsFunctions.Create(req, res))
 

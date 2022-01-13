@@ -10,7 +10,7 @@ app.use(cors({ origin: true }));
 // app.use(common.decodeIDToken)
 
 
-const CategoryFunctions=require('../AdminServices/Category')
+const CategoryFunctions=require('../service/Category')
 
 app.post('/CreateCategory', async (req, res) => CategoryFunctions.Create(req, res))
 
