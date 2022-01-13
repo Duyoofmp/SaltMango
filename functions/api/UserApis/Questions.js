@@ -6,7 +6,7 @@ const cors = require('cors');
 const app = express();
 app.use(cors({ origin: true }));
 
-const QuestionsFunctions=require('../UserServices/Questions')
+const QuestionsFunctions=require('../../service/UserServices/Questions')
 const common = require("../../common");
 app.use(common.decodeIDTokenHeader)
 

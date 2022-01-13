@@ -25,7 +25,7 @@ exports.Offers = OffersApis.Offers
 const CountryApis = require('./api/Country')
 exports.Countries = CountryApis.Countries
 
-const UserQuestionApis = require('./UserApis/Questions')
+const UserQuestionApis = require('./api/UserApis/Questions')
 exports.UserQuestions = UserQuestionApis.UserQuestions
 
 

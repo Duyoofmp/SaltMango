@@ -28,7 +28,7 @@ async function Delete(req, res) {
 }
 
 async function Read(req, res) {
-  const data = await dataHandling.Read("Category", req.body.DocId, req.body.index, req.body.Keyword, req.body.limit, ["CountryId", "==", req.body.CountryId]);
+  const data = await dataHandling.Read("Category", req.body.DocId, req.body.index, req.body.Keyword, req.body.limit, ["Available", "==", req.body.Available]);
   return res.json(data)
 }
 
