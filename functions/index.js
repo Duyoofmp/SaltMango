@@ -34,6 +34,9 @@ exports.UserQuestions = UserQuestionApis.UserQuestions
 const ProfileApis = require('./api/UserApis/Profile')
 exports.Profile = ProfileApis.Profile
 
+const HomeApis = require('./api/UserApis/Home')
+exports.Home = HomeApis.Home
+
 
 //=========================Triggers==============================
 
