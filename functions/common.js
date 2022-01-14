@@ -14,17 +14,17 @@ async function decodeIDToken(req, res, next) {
   try {
     const decodedToken = await admin.auth().verifyIdToken(idToken);
     console.log(decodedToken.uid);
-const adminUid=(await db.collection("Admin").doc("Admin_Info").get()).data().uid
-    if(decodedToken.uid===adminUid){
+    const adminUid = (await db.collection("Admin").doc("Admin_Info").get()).data().uid
+    if (decodedToken.uid === adminUid) {
       req.body.UserId = decodedToken.uid;
- // req.body.token = decodedToken.uid;
- delete req.body.token;
- return next();
-    }else{
-    return res.json({ 'message': 'token not verified'});
+      // req.body.token = decodedToken.uid;
+      delete req.body.token;
+      return next();
+    } else {
+      return res.json({ 'message': 'token not verified' });
 
     }
-   
+
   } catch (err) {
     functions.logger.error(err);
     req.body.UserId = '';
@@ -75,8 +75,8 @@ async function loginForAdmins(req, res) {
   const admins = await db.collection("Admin").doc("Admin_Info").get();
   if (admins.data().Username === user && admins.data().Password === pass) {
     const gen = await admin.auth().createCustomToken(admins.data().uid)
-    ret = { token: gen} 
-  } 
+    ret = { token: gen }
+  }
   return ret
 }
 
@@ -113,7 +113,7 @@ async function decodeIDTokenHeader(req, res, next) {
 }
 
 const createKeywords = (name, resultArr) => {
-  if(name===undefined){name=""}
+  if (name === undefined) { name = "" }
   let curName = '';
   let temp = name;
   let len = name.split(' ').length;
@@ -138,20 +138,33 @@ function decodeIDTokenForLogin(req, res, next) {
   }
 }
 
-const Point=10;
+const Point = 10;
+const ReferralPoint = 20;
+const ReferredPoint = 30;
 
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
 
-      // Generate random number
-      let j = Math.floor(Math.random() * (i + 1));
+    // Generate random number
+    let j = Math.floor(Math.random() * (i + 1));
 
-      let temp = array[i];
-      array[i] = array[j];
-      array[j] = temp;
+    let temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
   }
 
   return array;
+}
+
+function Keygenerator(num) {
+  let generator = '';
+  let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyskiouhjnmbhj'
+
+  for (let i = 0; i < num; i++) {
+    generator += characters.charAt(Math.floor(Math.random() * characters.length))
+  }
+  let array = generator;
+  return (array)
 }
 
 module.exports = {
@@ -164,5 +177,8 @@ module.exports = {
   loginForAdmins,
   decodeIDTokenForLogin,
   Point,
-  shuffleArray
+  ReferralPoint,
+  ReferredPoint,
+  shuffleArray,
+  Keygenerator
 }

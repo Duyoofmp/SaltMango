@@ -9,7 +9,7 @@ app.use(cors({ origin: true }));
 const ProfileFunctions = require('../../service/UserServices/Profile')
 const UserFunctions = require('../../service/Users')
 const common = require("../../common");
-app.use(common.decodeIDTokenHeader)       
+//app.use(common.decodeIDTokenHeader)       
 
 app.post('/CreateProfile', async (req, res) => {
     return UserFunctions.Create(req, res)

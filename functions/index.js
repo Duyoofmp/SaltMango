@@ -37,6 +37,9 @@ exports.Profile = ProfileApis.Profile
 const HomeApis = require('./api/UserApis/Home')
 exports.Home = HomeApis.Home
 
+const CategoryListApis = require('./api/UserApis/CategoryList')
+exports.CategoryList = CategoryListApis.CategoryList
+
 
 //=========================Triggers==============================
 
