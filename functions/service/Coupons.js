@@ -42,7 +42,6 @@ module.exports = {
   Update,
   Delete,
   Read,
-  CreateCoupon
 }
 
 

@@ -24,11 +24,11 @@ async function Delete(req, res) {
 }
 
 async function Read(req, res) {
-  if (req.body.Available === "") {
+  if (req.body.CountryId === "") {
     const data = await dataHandling.Read("Offers", req.body.DocId, req.body.index, req.body.Keyword, req.body.limit);
     return res.json(data)
   } else {
-    const data = await dataHandling.Read("Offers", req.body.DocId, req.body.index, req.body.Keyword, req.body.limit, ["Available", "==", req.body.Available]);
+    const data = await dataHandling.Read("Offers", req.body.DocId, req.body.index, req.body.Keyword, req.body.limit, ["CountryId", "==", req.body.CountryId]);
     return res.json(data)
   }
 }
