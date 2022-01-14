@@ -6,7 +6,7 @@ const db = admin.firestore()
 async function Create(req, res) {
   const temp = [];
   req.body.Countries.forEach((element, index) => {
-    element = Date.now() + index;
+    element.index = Date.now() + index;
     temp.push(dataHandling.Create("Countries", element))
   });
   await Promise.all(temp)
