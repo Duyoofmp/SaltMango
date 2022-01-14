@@ -31,6 +31,9 @@ exports.Countries = CountryApis.Countries
 const UserQuestionApis = require('./api/UserApis/Questions')
 exports.UserQuestions = UserQuestionApis.UserQuestions
 
+const ProfileApis = require('./api/UserApis/Profile')
+exports.Profile = ProfileApis.Profile
+
 
 //=========================Triggers==============================
 
@@ -46,5 +49,9 @@ exports.OnQuestionsUpdate = QuestionsTriggers.OnQuestionsUpdate
 const UsersTriggers = require('./triggers/Users')
 exports.OnUsersCreate = UsersTriggers.OnUsersCreate
 exports.OnUsersUpdate = UsersTriggers.OnUsersUpdate
+
+const CountryTriggers = require('./triggers/Country')
+exports.OnCountryCreate = CountryTriggers.OnCountryCreate
+exports.OnCountryUpdate = CountryTriggers.OnCountryUpdate
 
 

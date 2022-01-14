@@ -6,24 +6,24 @@ const common = require('../common')
 
 
 exports.OnCountryCreate = functions.firestore
-    .document("Country/{docid}")
+    .document("Countries/{docid}")
     .onCreate(async (change, context) => {
         const docid = context.params.docid;
         const data = change.data()
         const arr = [];
         common.createKeywords(data.CountryName, arr)
-        return await db.collection("Country").doc(docid).update({ DocId: docid, Keywords: arr })
+        return await db.collection("Countries").doc(docid).update({ DocId: docid, Keywords: arr })
     })
 
 
 exports.OnCountryUpdate = functions.firestore
-    .document("Country/{docid}")
+    .document("Countries/{docid}")
     .onUpdate(async (change, context) => {
         const docid = context.params.docid;
         const data = change.after.data()
         const arr = [];
         common.createKeywords(data.CountryName, arr)
-        return await db.collection("Country").doc(docid).update({ Keywords: arr })
+        return await db.collection("Countries").doc(docid).update({ Keywords: arr })
 
     })
 
