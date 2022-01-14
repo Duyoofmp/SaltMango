@@ -4,10 +4,6 @@ const db = admin.firestore();
 const common=require('../common')
 
 
-
-
-
-
 exports.OnUsersCreate = functions.firestore
     .document("Users/{docid}")
     .onCreate(async (change, context) => {
