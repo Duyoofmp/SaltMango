@@ -1,7 +1,7 @@
- const functions = require('firebase-functions');
+const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const db = admin.firestore();
-const common=require('../common')
+const common = require('../common')
 
 
 exports.OnUsersCreate = functions.firestore
@@ -9,13 +9,16 @@ exports.OnUsersCreate = functions.firestore
     .onCreate(async (change, context) => {
         const docid = context.params.docid;
         const data = change.data()
-        const arr = []; 
+        const arr = [];
         common.createKeywords(data.Name, arr)
-        return await db.collection("Users").doc(docid).update({ DocId: docid, Keywords: arr })
+        let code = common.Keygenerator(4)
+        let ref = docid.substring(0, 3);
+        let refcode = code + ref;
+        return await db.collection("Users").doc(docid).update({ DocId: docid, Keywords: arr, ReferralCode: refcode })
     })
 
 
-    exports.OnUsersUpdate = functions.firestore
+exports.OnUsersUpdate = functions.firestore
     .document("Users/{docid}")
     .onUpdate(async (change, context) => {
         const docid = context.params.docid;

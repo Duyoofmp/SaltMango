@@ -7,7 +7,7 @@ const app = express();
 app.use(cors({ origin: true }));
 
 const common = require("../common");
-  app.use(common.decodeIDToken)
+ app.use(common.decodeIDToken)
 
 
 const UsersFunctions=require('../service/Users')
