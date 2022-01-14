@@ -7,14 +7,17 @@ const db = admin.firestore();
 
 async function Create(req,res){
   try {
-    
+   
     const temp=[]
-      query =await db.collection("QuestionsAndAnswers").get()
-      let size = query.size
+   const   query =await db.collection("Category").where("CategoryName","==",req.body.CategoryName).limit(1).get();
+    let  no=query.docs[0].data().NoOfQuestions;
+   const id=query.docs[0].data().DocId;
       req.body.Questions.forEach(element => {
-        element.index=Date.now()
-        element.QuestionNumber=size+1
+        no=no+1
+        element.index=Date.now();
+        element.QuestionNumber=no
          temp.push(dataHandling.Create("QuestionsAndAnswers",element))
+         temp.push(dataHandling.Update("Category",{NoOfQuestions:no},id))
       });
       await Promise.all(temp)
        return res.json(true)

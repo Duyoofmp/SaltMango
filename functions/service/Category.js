@@ -6,6 +6,7 @@ async function Create(req, res) {
   req.body.index = Date.now()
   const check = await dataHandling.WhereGet("Category", "CategoryName", req.body.CategoryName, req.body.DocId)
   if (check) {
+    req.body.NoOfQuestions=0;
     await dataHandling.Create("Category", req.body)
     return res.json(true)
   } else {

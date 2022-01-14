@@ -7,8 +7,8 @@ const app = express();
 app.use(cors({ origin: true }));
 
 const QuestionsFunctions=require('../../service/UserServices/Questions')
-const common = require("../../common");
-app.use(common.decodeIDTokenHeader)
+// const common = require("../../common");
+// app.use(common.decodeIDTokenHeader)
 
 app.post('/ReadUserQuestions', async (req, res) => QuestionsFunctions.Read(req, res))
 
