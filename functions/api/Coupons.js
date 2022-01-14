@@ -10,15 +10,15 @@ const common = require("../common");
 app.use(common.decodeIDToken)
 
 
-const CouponsFunctions = require('../service/Coupons')
+const CouponsFunctions = require('../service/Offers')
 
-app.post('/CreateCoupons', async (req, res) => CouponsFunctions.Create(req, res))
+app.post('/CreateCoupon', async (req, res) => CouponsFunctions.Create(req, res))
 
-app.post('/ReadCoupons', async (req, res) => CouponsFunctions.Read(req, res))
+app.post('/ReadCoupon', async (req, res) => CouponsFunctions.Read(req, res))
 
-app.post('/UpdateCoupons', async (req, res) => CouponsFunctions.Update(req, res))
+app.post('/UpdateCoupon', async (req, res) => CouponsFunctions.Update(req, res))
 
-app.post('/DeleteCoupons', async (req, res) => CouponsFunctions.Delete(req, res))
+app.post('/DeleteCoupon', async (req, res) => CouponsFunctions.Delete(req, res))
 
 
 

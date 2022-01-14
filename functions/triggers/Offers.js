@@ -5,25 +5,25 @@ const common = require('../common')
 
 
 
-exports.OnCountryCreate = functions.firestore
-    .document("Country/{docid}")
+exports.OnOfferCreate = functions.firestore
+    .document("Offers/{docid}")
     .onCreate(async (change, context) => {
         const docid = context.params.docid;
         const data = change.data()
         const arr = [];
-        common.createKeywords(data.CountryName, arr)
-        return await db.collection("Country").doc(docid).update({ DocId: docid, Keywords: arr })
+        common.createKeywords(data.OfferName, arr)
+        return await db.collection("Offers").doc(docid).update({ DocId: docid, Keywords: arr })
     })
 
 
-exports.OnCountryUpdate = functions.firestore
+exports.OnOfferUpdate = functions.firestore
     .document("Country/{docid}")
     .onUpdate(async (change, context) => {
         const docid = context.params.docid;
         const data = change.after.data()
         const arr = [];
-        common.createKeywords(data.CountryName, arr)
-        return await db.collection("Country").doc(docid).update({ Keywords: arr })
+        common.createKeywords(data.OfferName, arr)
+        return await db.collection("Offers").doc(docid).update({ Keywords: arr })
 
     })
 
