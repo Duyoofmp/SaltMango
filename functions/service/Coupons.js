@@ -5,13 +5,13 @@ const db = admin.firestore()
 
 async function Create(req, res) {
   req.body.index = Date.now()
-  await dataHandling.Create("Offers", req.body)
+  await dataHandling.Create("Coupons", req.body)
   return res.json(true)
 }
 async function Update(req, res) {
   try {
     req.body.index = Date.now()
-    await dataHandling.Update("Offers", req.body, req.body.DocId)
+    await dataHandling.Update("Coupons", req.body, req.body.DocId)
     return res.json(true)
   }
   catch (error) {
@@ -19,20 +19,16 @@ async function Update(req, res) {
   }
 }
 async function Delete(req, res) {
-  await dataHandling.Delete("Offers", req.body.DocId)
+  await dataHandling.Delete("Coupons", req.body.DocId)
   return res.json(true)
 }
 
 async function Read(req, res) {
-  const data = await dataHandling.Read("Offers", req.body.DocId, req.body.index, req.body.Keyword);
+  const data = await dataHandling.Read("Coupons", req.body.DocId, req.body.index, req.body.Keyword);
   return res.json(data)
 }
 
-async function CreateCoupon(req, res) {
-  const OfferId = req.body.OfferId
-  await db.collection("Offers").doc(OfferId).collection("Coupons").add(req.body)
-  return res.json(true)
-}
+
 
 
 
