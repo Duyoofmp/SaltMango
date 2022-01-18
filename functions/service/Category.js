@@ -42,12 +42,6 @@ async function Read(req, res) {
 
 
 
-
-// async function  CreateTeam(obj){
-//     await dataHandling.Create("Category",obj)
-//   return true;
-// }
-
 module.exports = {
   Create,
   Update,

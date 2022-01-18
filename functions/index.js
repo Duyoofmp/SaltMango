@@ -1,6 +1,5 @@
-const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const ServiceAccount = require('./config/ServiceAccount.json')
+const ServiceAccount = require('./config/serviceAccount.json')
 
 admin.initializeApp({
   credential: admin.credential.cert(ServiceAccount)
@@ -41,7 +40,7 @@ const CategoryListApis = require('./api/UserApis/CategoryList')
 exports.CategoryList = CategoryListApis.CategoryList
 
 
-//=========================Triggers==============================
+// // // //=========================Triggers==============================
 
 const CategoryTriggers = require('./triggers/Category')
 exports.OnCategoryCreate = CategoryTriggers.OnCategoryCreate

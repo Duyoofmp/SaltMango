@@ -41,12 +41,11 @@ async function Delete(req, res) {
 
 async function Read(req, res) {
   try {
-    if (req.body.CategoryName === undefined) {
+    if (req.body.CategoryId === undefined) {
       const data = await dataHandling.Read("QuestionsAndAnswers", req.body.DocId, req.body.index, req.body.Keyword);
       return res.json(data)
     } else {
-      const data = await dataHandling.Read("QuestionsAndAnswers", req.body.DocId, req.body.index, req.body.Keyword, req.body.limit, ["CategoryName", "==", req.body.CategoryName]);
-      // (data.Options).push(data.Answer);
+      const data = await dataHandling.Read("QuestionsAndAnswers", req.body.DocId, req.body.index, req.body.Keyword, 10, ["CategoryId", "==", req.body.CategoryId]);      // (data.Options).push(data.Answer);
       // delete data.Answer
       return res.json(data)
     }
@@ -63,12 +62,6 @@ async function Check(req, res) {
 }
 
 
-
-
-// async function  CreateTeam(obj){
-//     await dataHandling.Create("Category",obj)
-//   return true;
-// }
 
 module.exports = {
   Create,

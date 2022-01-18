@@ -23,16 +23,12 @@ async function Delete(req, res) {
 }
 
 async function Read(req, res) {
-  const data = await dataHandling.Read("Countries", req.body.DocId, req.body.index, req.body.Keyword);
+  const data = await dataHandling.Read("Countries", req.body.DocId, req.body.index, req.body.Keyword, 1000);
   return res.json(data)
 }
 
 
 
-// async function  CreateTeam(obj){
-//     await dataHandling.Create("Category",obj)
-//   return true;
-// }
 
 module.exports = {
   Create,
