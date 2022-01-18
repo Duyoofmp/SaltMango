@@ -15,10 +15,12 @@ async function Create(req, res) {
     req.body.Questions.forEach(element => {
       no = no + 1
       element.index = Date.now();
+      element.CategoryId = req.body.CategoryId;
       element.QuestionNumber = no
       temp.push(dataHandling.Create("QuestionsAndAnswers", element))
-      temp.push(dataHandling.Update("Category", { NoOfQuestions: no }, id))
     });
+
+    temp.push(dataHandling.Update("Category", { NoOfQuestions: no }, id))
     await Promise.all(temp)
     return res.json(true)
   } catch (error) {
