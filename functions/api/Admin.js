@@ -18,3 +18,11 @@ app.post('/ReadSettings', async (req, res) => AdminFunctions.ReadSettings(req, r
 
 
 exports.Admin = functions.region("asia-south1").https.onRequest(app);
+
+
+
+const app3 = express();
+app3.use(cors({ origin: true }));
+app.use(common.decodeIDTokenForLogin)
+app3.post('/login', async (req, res) => res.json(await common.loginForAdmins(req, res)))
+exports.LoginForAdmin = functions.region("asia-south1").https.onRequest(app3);
