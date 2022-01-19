@@ -67,11 +67,13 @@ function getRndInteger(max, arr, limit = 10, min = 1) {
 async function ReadRandomQuestions(req, res) {
   const CategoryData = await dataHandling.Read("Category", req.body.DocId);
   const RandomNumbers = [];
-  getRndInteger(CategoryData.NoOfQuestions, RandomNumbers)
-  if (req.body.CategoryId === undefined) {
-  } else {
-    data = await dataHandling.Read("QuestionsAndAnswers", req.body.DocId, req.body.index, req.body.Keyword, 10, ["CategoryId", "==", req.body.CategoryId]);      // (data.Options).push(data.Answer);
+  getRndInteger(CategoryData.NoOfQuestions, RandomNumbers);
+  const promise = [];
+  for (let index = 0; index < RandomNumbers.length; index++) {
+    const element = RandomNumbers[index];
+    promise.push(dataHandling.Read("QuestionsAndAnswers", undefined, undefined, undefined, 1, ["CategoryId", "==", req.body.DocId, "QuestionNumber", "==", element]));
   }
+  const data = (await Promise.all(promise)).flat();
   return res.json(data);
 }
 
@@ -80,5 +82,6 @@ module.exports = {
   Update,
   Delete,
   Read,
-  Check
+  Check,
+  ReadRandomQuestions
 }

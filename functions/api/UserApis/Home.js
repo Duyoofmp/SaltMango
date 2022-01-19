@@ -6,15 +6,18 @@ const cors = require('cors');
 const app = express();
 app.use(cors({ origin: true }));
 
-const HomeFunctions = require('../../service/UserServices/Home')
+// const HomeFunctions = require('../../service/UserServices/Home')
 const common = require("../../common");
 app.use(common.decodeIDTokenHeader)
 
-app.post('/ReadDetails', async (req, res) => HomeFunctions.Read(req, res));
+// app.post('/ReadDetails', async (req, res) => HomeFunctions.Read(req, res));
 
-const CategoryFunctionsRead = require('../../service/Category').Read;
-app.post('/ReadCategories', async (req, res) => CategoryFunctionsRead(req, res));
+ const CategoryFunctionsRead = require('../../service/Category').Read;
+ const ReadRandomQuestions = require('../../service/Questions').ReadRandomQuestions;
 
+ app.post('/ReadCategories', async (req, res) => CategoryFunctionsRead(req, res));
+
+ app.post('/ReadUserQuestions', async (req, res) => ReadRandomQuestions(req, res))
 
 
 

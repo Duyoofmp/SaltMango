@@ -7,37 +7,33 @@ admin.initializeApp({
 
 //=========================Apis==============================
 
-const CategoryApis = require('./api/Category');
-exports.Category = CategoryApis.Category;
+const Category = require('./api/Category');
+exports.Category = Category.Category;
 
-const AdminApis = require('./api/Admin')
-exports.Admin = AdminApis.Admin
+const Admin = require('./api/Admin')
+exports.Admin = Admin.Admin
+exports.LoginForAdmin = Admin.LoginForAdmin
 
-const QuestionsApis = require('./api/Questions')
-exports.Questions = QuestionsApis.Questions
+const Questions = require('./api/Questions')
+exports.Questions = Questions.Questions
 
-const UsersApis = require('./api/Users')
-exports.Users = UsersApis.Users
-exports.Users = UsersApis.LoginForAdmin
+const Users = require('./api/Users')
+exports.Users = Users.Users
 
-const OffersApis = require('./api/Offers')
-exports.Offers = OffersApis.Offers
+const Offers = require('./api/Offers')
+exports.Offers = Offers.Offers
 
-const CouponsApis = require('./api/Coupons')
-exports.Coupons = CouponsApis.Coupons
+const Coupons = require('./api/Coupons')
+exports.Coupons = Coupons.Coupons
 
+const Country = require('./api/Country')
+exports.Countries = Country.Countries
 
-const CountryApis = require('./api/Country')
-exports.Countries = CountryApis.Countries
+const Profile = require('./api/UserApis/Profile')
+exports.Profile = Profile.Profile
 
-const UserQuestionApis = require('./api/UserApis/Questions')
-exports.UserQuestions = UserQuestionApis.UserQuestions
-
-const ProfileApis = require('./api/UserApis/Profile')
-exports.Profile = ProfileApis.Profile
-
-const HomeApis = require('./api/UserApis/Home')
-exports.Home = HomeApis.Home
+const Home = require('./api/UserApis/Home')
+exports.Home = Home.Home
 
 
 
