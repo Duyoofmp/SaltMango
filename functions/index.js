@@ -7,8 +7,11 @@ admin.initializeApp({
 
 //=========================Apis==============================
 
-const CategoryApis = require('./api/Category')
-exports.Category = CategoryApis.Category
+const CategoryApis = require('./api/Category');
+exports.Category = CategoryApis.Category;
+
+const AdminApis = require('./api/Admin')
+exports.Admin = AdminApis.Admin
 
 const QuestionsApis = require('./api/Questions')
 exports.Questions = QuestionsApis.Questions
@@ -36,8 +39,6 @@ exports.Profile = ProfileApis.Profile
 const HomeApis = require('./api/UserApis/Home')
 exports.Home = HomeApis.Home
 
-const CategoryListApis = require('./api/UserApis/CategoryList')
-exports.CategoryList = CategoryListApis.CategoryList
 
 
 // // // //=========================Triggers==============================
