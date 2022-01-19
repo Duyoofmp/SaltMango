@@ -7,8 +7,8 @@ async function Create(collectionName, data, docName) {
     return new Promise(async (resolve, reject) => {
         try {
             if (docName !== undefined) {
-            
-                await db.collection(collectionName).doc(docName).set(data);
+
+                await db.collection(collectionName).doc(docName).set(data, { "merge": true });
                 resolve(true);
             } else {
                 const done = await db.collection(collectionName).add(data);
@@ -54,7 +54,9 @@ async function Read(collectionName, docName, index, Keyword, limit = 10, where) 
             query = query.where("Keywords", "array-contains", Keyword.toLowerCase());
         }
         if (where !== undefined) {
-            query = query.where(where[0], where[1], where[2])
+            for (let index = 0; index < where.length; index = index + 3) {
+                query = query.where(where[index], where[index + 1], where[index + 2])
+            }
         }
 
         query = query.orderBy("index", "desc");
