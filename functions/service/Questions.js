@@ -9,9 +9,9 @@ async function Create(req, res) {
   try {
 
     const temp = []
-    const query = await db.collection("Category").where("CategoryName", "==", req.body.CategoryName).limit(1).get();
-    let no = query.docs[0].data().NoOfQuestions;
-    const id = query.docs[0].data().DocId;
+    const query = await db.collection("Category").doc(CategoryId).get();
+    let no = query.data().NoOfQuestions;
+    const id = query.data().DocId;
     req.body.Questions.forEach(element => {
       no = no + 1
       element.index = Date.now();
@@ -42,20 +42,13 @@ async function Delete(req, res) {
 }
 
 async function Read(req, res) {
-  try {
-    if (req.body.CategoryId === undefined) {
-      const data = await dataHandling.Read("QuestionsAndAnswers", req.body.DocId, req.body.index, req.body.Keyword);
-      return res.json(data)
-    } else {
-      const data = await dataHandling.Read("QuestionsAndAnswers", req.body.DocId, req.body.index, req.body.Keyword, 10, ["CategoryId", "==", req.body.CategoryId]);      // (data.Options).push(data.Answer);
-      // delete data.Answer
-      return res.json(data)
-    }
-  } catch (error) {
-    functions.logger.error(error)
-    console.log(error)
+  let data;
+  if (req.body.CategoryId === undefined) {
+    data = await dataHandling.Read("QuestionsAndAnswers", req.body.DocId, req.body.index, req.body.Keyword);
+  } else {
+    data = await dataHandling.Read("QuestionsAndAnswers", req.body.DocId, req.body.index, req.body.Keyword, 10, ["CategoryId", "==", req.body.CategoryId]);      // (data.Options).push(data.Answer);
   }
-
+  return res.json(data);
 }
 
 async function Check(req, res) {

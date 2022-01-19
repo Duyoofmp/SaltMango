@@ -7,7 +7,7 @@ async function Create(req, res) {
   const temp = [];
   req.body.Countries.forEach((element, index) => {
     element.index = Date.now() + index;
-    temp.push(dataHandling.Create("Countries", element))
+    temp.push(dataHandling.Create("Countries", req.body))
   });
   await Promise.all(temp)
   return res.json(true)

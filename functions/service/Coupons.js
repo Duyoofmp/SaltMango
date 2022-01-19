@@ -4,11 +4,11 @@ const dataHandling = require("../functions");
 const db = admin.firestore()
 
 async function Create(req, res) {
-    const index = Date.now();
+    const indexDate = Date.now();
     const promise = [];
     for (let index = 0; index < req.body.Coupons.length; index++) {
         const element = req.body.Coupons[index];
-        element.index = index;
+        element.index = indexDate;
         promise.push(dataHandling.Create(`Offers/${req.body.OfferId}/Coupons`, element));
     }
     await Promise.all(promise);
