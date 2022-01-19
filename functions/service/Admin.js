@@ -1,5 +1,4 @@
 const functions = require('firebase-functions');
-const admin = require('firebase-admin');
 const dataHandling = require("../functions");
 
 
@@ -11,10 +10,8 @@ async function UpdateSettings(req, res) {
 
 
 async function ReadSettings(req, res) {
-
-    const data = await dataHandling.Read("Category", req.body.DocId, req.body.index, req.body.Keyword, req.body.limit, ["Available", "==", req.body.Available]);
+    const data = await dataHandling.Read("Admin", "Settings");
     return res.json(data);
-
 }
 
 
