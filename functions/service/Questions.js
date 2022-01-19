@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const dataHandling = require("../functions");
+// const { Category } = require('..');
 const db = admin.firestore();
 //const { database } = require('firebase-functions/v1/firestore');
 
@@ -9,7 +10,7 @@ async function Create(req, res) {
   try {
 
     const temp = []
-    const query = await db.collection("Category").doc(CategoryId).get();
+    const query = await db.collection("Category").doc(req.body.CategoryId).get();
     let no = query.data().NoOfQuestions;
     const id = query.data().DocId;
     req.body.Questions.forEach(element => {
@@ -56,7 +57,23 @@ async function Check(req, res) {
   return res.json(msg)
 }
 
+function getRndInteger(max, arr, limit = 10, min = 1) {
+  for (let index = 0; index < limit; index++) {
+    arr.push(Math.floor(Math.random() * (max - min)) + min);
+  }
+}
 
+
+async function ReadRandomQuestions(req, res) {
+  const CategoryData = await dataHandling.Read("Category", req.body.DocId);
+  const RandomNumbers = [];
+  getRndInteger(CategoryData.NoOfQuestions, RandomNumbers)
+  if (req.body.CategoryId === undefined) {
+  } else {
+    data = await dataHandling.Read("QuestionsAndAnswers", req.body.DocId, req.body.index, req.body.Keyword, 10, ["CategoryId", "==", req.body.CategoryId]);      // (data.Options).push(data.Answer);
+  }
+  return res.json(data);
+}
 
 module.exports = {
   Create,
