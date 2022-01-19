@@ -6,19 +6,20 @@ const cors = require('cors');
 const app = express();
 app.use(cors({ origin: true }));
 
-// const HomeFunctions = require('../../service/UserServices/Home')
+const HomeFunctions = require('../../service/UserServices/Home')
 const common = require("../../common");
-app.use(common.decodeIDTokenHeader)
+// app.use(common.decodeIDTokenHeader)
 
 // app.post('/ReadDetails', async (req, res) => HomeFunctions.Read(req, res));
 
- const CategoryFunctionsRead = require('../../service/Category').Read;
- const ReadRandomQuestions = require('../../service/Questions').ReadRandomQuestions;
+const CategoryFunctionsRead = require('../../service/Category').Read;
+const ReadRandomQuestions = require('../../service/Questions').ReadRandomQuestions;
 
- app.post('/ReadCategories', async (req, res) => CategoryFunctionsRead(req, res));
+app.post('/ReadCategories', async (req, res) => CategoryFunctionsRead(req, res));
 
- app.post('/ReadUserQuestions', async (req, res) => ReadRandomQuestions(req, res))
+app.post('/ReadQuestions', async (req, res) => ReadRandomQuestions(req, res))
 
+app.post('/CheckAnswer', async (req, res) => HomeFunctions.GetPoints(req, res))
 
 
 exports.Home = functions.region("asia-south1").https.onRequest(app);

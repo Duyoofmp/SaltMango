@@ -54,8 +54,8 @@ async function Read(collectionName, docName, index, Keyword, limit = 10, where) 
             query = query.where("Keywords", "array-contains", Keyword.toLowerCase());
         }
         if (where !== undefined) {
-            for (let index = 0; index < where.length; index = index + 3) {
-                query = query.where(where[index], where[index + 1], where[index + 2])
+            for (let where_index = 0; where_index < where.length; where_index = where_index + 3) {
+                query = query.where(where[where_index], where[where_index + 1], where[where_index + 2])
             }
         }
 
@@ -74,13 +74,20 @@ async function Read(collectionName, docName, index, Keyword, limit = 10, where) 
         try {
             if (docName !== undefined) {
                 const dat = await query.get();
-                resolve({ ...dat.data(), DocId: dat.id });
+                if (dat.exists) {
+                    resolve({ ...dat.data(), DocId: dat.id });
+                }
+                else {
+                    resolve(null);
+                }
             } else {
                 const temp = [];
                 const data = await query.limit(limit).get();
                 data.forEach((docs) => {
                     if (docs.exists) {
-                        temp.push({ ...docs.data(), DocId: docs.id });
+                        const r = docs.data();
+                        delete r.Keywords;
+                        temp.push({ ...r, DocId: docs.id });
                     }
                 });
                 resolve(temp);

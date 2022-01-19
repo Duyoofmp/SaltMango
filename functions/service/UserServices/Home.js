@@ -8,6 +8,22 @@ async function Read(req, res) {
     query = data.data()
     return res.json({ Name: query.Name, SaltCoin: query.SaltCoin, Diamond: query.Diamond })
 }
-module.exports = {
-    Read
+
+
+async function GetPoints(req, res) {
+
+    const data = await dataHandling.Read("QuestionsAndAnswers", req.body.DocId || "");
+    if (data === null || data.Answer !== req.body.Answer) {
+        return res.json(false);
+    }
+    await dataHandling.Update("Users", { "Diamond": admin.firestore.FieldValue.increment(1) }, req.body.UserId);
+    return res.json(true);
+
 }
+
+module.exports = {
+    Read,
+    GetPoints
+}
+
+

@@ -63,8 +63,26 @@ function getRndInteger(max, arr, limit = 10, min = 1) {
   }
 }
 
+function shuffle(array) {
+  let currentIndex = array.length, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+
+  return array;
+}
 
 async function ReadRandomQuestions(req, res) {
+  console.log(req.headers.referer)
   const CategoryData = await dataHandling.Read("Category", req.body.DocId);
   const RandomNumbers = [];
   getRndInteger(CategoryData.NoOfQuestions, RandomNumbers);
@@ -73,7 +91,14 @@ async function ReadRandomQuestions(req, res) {
     const element = RandomNumbers[index];
     promise.push(dataHandling.Read("QuestionsAndAnswers", undefined, undefined, undefined, 1, ["CategoryId", "==", req.body.DocId, "QuestionNumber", "==", element]));
   }
-  const data = (await Promise.all(promise)).flat();
+  const tempdata = (await Promise.all(promise));//.flat();
+  const data = [];
+  for (let index = 0; index < tempdata.length; index++) {
+    const element = tempdata[index][0];
+    delete element.Answer;
+    shuffle(element.Options);
+    data.push(element);
+  }
   return res.json(data);
 }
 
