@@ -8,7 +8,7 @@ async function Create(collectionName, data, docName) {
         try {
             if (docName !== undefined) {
 
-                await db.collection(collectionName).doc(docName).set(data, { "merge": true });
+                await db.collection(collectionName).doc(docName).set(data);
                 resolve(true);
             } else {
                 const done = await db.collection(collectionName).add(data);
@@ -24,7 +24,7 @@ async function Create(collectionName, data, docName) {
 async function Update(collectionName, data, docName) {
     return new Promise(async (resolve, reject) => {
         try {
-            await db.collection(collectionName).doc(docName).update(data);
+            await db.collection(collectionName).doc(docName).set(data, { "merge": true });
             resolve(true);
         } catch (error) {
             functions.logger.error(error);
