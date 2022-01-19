@@ -19,6 +19,13 @@ async function Delete(req, res) {
 
 async function Read(req, res) {
   const data = await dataHandling.Read("Users", req.body.DocId, req.body.index, req.body.Keyword);
+  if (data.SaltCoin === undefined) {
+    data.SaltCoin = 0;
+  }
+  if (data.Diamond === undefined) {
+    data.Diamond = 0;
+  }
+
   return res.json(data)
 }
 

@@ -14,7 +14,7 @@ exports.OnUsersCreate = functions.firestore
         let code = common.Keygenerator(4)
         let ref = docid.substring(0, 3);
         let refcode = code + ref;
-        return await db.collection("Users").doc(docid).update({ DocId: docid, Keywords: arr, ReferralCode: refcode })
+        return db.collection("Users").doc(docid).update({ DocId: docid, Keywords: arr, MyCode: refcode, SaltCoin: 0, Diamond: 0 })
     })
 
 
@@ -25,6 +25,6 @@ exports.OnUsersUpdate = functions.firestore
         const data = change.after.data()
         const arr = [];
         common.createKeywords(data.Name, arr)
-        return await db.collection("Users").doc(docid).update({ Keywords: arr })
+        return db.collection("Users").doc(docid).update({ Keywords: arr })
 
     })
