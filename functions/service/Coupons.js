@@ -30,7 +30,7 @@ async function Delete(req, res) {
 }
 
 async function Read(req, res) {
-    await dataHandling.Read(`Offers/${req.body.OfferId}/Coupons`, req.body.DocId, req.body.index, req.body.Keyword, 30);
+    const data = await dataHandling.Read(`Offers/${req.body.OfferId}/Coupons`, req.body.DocId, req.body.index, req.body.Keyword, 30);
     return res.json(data)
 }
 

@@ -59,4 +59,8 @@ const CountryTriggers = require('./triggers/Country')
 exports.OnCountryCreate = CountryTriggers.OnCountryCreate
 exports.OnCountryUpdate = CountryTriggers.OnCountryUpdate
 
+const CouponTriggers = require('./triggers/Coupon')
+exports.OnCouponCreate = CouponTriggers.OnCouponCreate
+exports.OnCouponUpdate = CouponTriggers.OnCouponUpdate
+
 
