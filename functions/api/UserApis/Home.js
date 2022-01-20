@@ -21,6 +21,11 @@ app.post('/ReadQuestions', async (req, res) => ReadRandomQuestions(req, res))
 
 app.post('/CheckAnswer', async (req, res) => HomeFunctions.GetPoints(req, res))
 
+app.post('/GetSlotData', async (req, res) => {
+    const DateData = HomeFunctions.GetSlotDate(req.body.SlotType);
+    return res.json(await HomeFunctions.GetSlotData(req.body.UserId, req.body.SlotType, DateData));
+})
+
 app.post('/EnterASlot', async (req, res) => HomeFunctions.EnterASlot(req, res))
 
 

@@ -25,6 +25,46 @@ async function GetPoints(req, res) {
 async function EnterASlot(req, res) {
     const SlotType = req.body.SlotType;
     const UserId = req.body.UserId;
+    const DateData = GetSlotDate(SlotType);
+    const SlotData = await GetSlotData(UserId, SlotType, DateData, req.body.Ad);
+    if (SlotData.checkSlot) {
+        return res.json("Cannont Access this api");
+    }
+    const EntryData = {
+        "UserId": UserId,
+        "Ad": req.body.Ad,
+    }
+    await dataHandling.Create(`${SlotType}/${DateData}/Entry`, EntryData);
+
+    const SettingsData = await dataHandling.Read(`Admin`, "Settings");
+    await dataHandling.Update("Users", { "Diamond": admin.firestore.FieldValue.increment(-1 * SettingsData[`${SlotType}SlotCost`]) }, req.body.UserId);
+    return res.json(true);
+}
+
+async function GetSlotData(UserId, SlotType, DateData, Ad = false) {
+
+    const FreeSlotData = await dataHandling.Read(`${SlotType}/${DateData}/Entry`, undefined, undefined, undefined, 10, ["UserId", "==", UserId, "Ad", "==", false])
+    const AdSlotData = await dataHandling.Read(`${SlotType}/${DateData}/Entry`, undefined, undefined, undefined, 10, ["UserId", "==", UserId, "Ad", "==", true])
+    let checkSlot = true;
+
+
+    if (FreeSlotData.length < 5 && !Ad) {
+        checkSlot = false;
+    }
+    if (Ad && AdSlotData < 5) {
+        checkSlot = false;
+    }
+    return {
+        FreeSlotData,
+        "FreeSlotLength": FreeSlotData.length,
+        AdSlotData,
+        "AdSlotLength": AdSlotData.length,
+        checkSlot
+    }
+
+}
+
+function GetSlotDate(SlotType) {
     let DateData;
 
     switch (SlotType) {
@@ -37,43 +77,18 @@ async function EnterASlot(req, res) {
         case "Monthly":
             DateData = moment().tz('Asia/Kolkata').endOf("month").format("YYYY-MM-DD");
             break;
-
         default:
-            DateData = moment().tz('Asia/Kolkata').endOf("day").format("YYYY-MM-DD");
             break;
     }
-    const SlotData = await GetSlotData(UserId, SlotType, DateData);
-    if (SlotData.checkSlot) {
-
-
-
-    }
-
+    return DateData
 }
-
-async function GetSlotData(UserId, SlotType, DateData) {
-
-    const FreeSlotData = await dataHandling.Read(SlotType, undefined, undefined, undefined, 10, ["UserId", "==", UserId, "Ad", "==", false])
-    const AdSlotData = await dataHandling.Read(SlotType, undefined, undefined, undefined, 15, ["UserId", "==", UserId, "Ad", "==", true])
-    let checkSlot = true;
-
-    if (FreeSlotData.length < 5 && AdSlotData < 5) {
-        checkSlot = false;
-    }
-    return {
-        FreeSlotData,
-        AdSlotData,
-        checkSlot
-    }
-
-}
-
-
 
 module.exports = {
     Read,
     GetPoints,
     EnterASlot,
+    GetSlotData,
+    GetSlotDate
 }
 
 
