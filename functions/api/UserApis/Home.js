@@ -17,16 +17,30 @@ const ReadRandomQuestions = require('../../service/Questions').ReadRandomQuestio
 
 app.post('/ReadCategories', async (req, res) => CategoryFunctionsRead(req, res));
 
-app.post('/ReadQuestions', async (req, res) => ReadRandomQuestions(req, res))
+app.post('/ReadQuestions', async (req, res) => ReadRandomQuestions(req, res));
 
-app.post('/CheckAnswer', async (req, res) => HomeFunctions.GetPoints(req, res))
+app.post('/CheckAnswer', async (req, res) => HomeFunctions.GetPoints(req, res));
 
 app.post('/GetSlotData', async (req, res) => {
     const DateData = HomeFunctions.GetSlotDate(req.body.SlotType);
-    return res.json(await HomeFunctions.GetSlotData(req.body.UserId, req.body.SlotType, DateData));
-})
+    const SlotData = await HomeFunctions.GetSlotData(req.body.UserId, req.body.SlotType, DateData);
+    return res.json(SlotData);
+});
 
-app.post('/EnterASlot', async (req, res) => HomeFunctions.EnterASlot(req, res))
+app.post('/EnterASlot', async (req, res) => HomeFunctions.EnterASlot(req, res));
+
+app.post('/SpinDialData', async (req, res) => {
+    const { SaltSpinData, DiamondSpinData } = await HomeFunctions.ViewSpinData();
+    const SaltDialData = SaltSpinData.map(id => id.Number);
+    const DiamondDialData = DiamondSpinData.map(id => id.Number);
+    const ResponseObj = { SaltDialData, DiamondDialData };
+    return res.json(ResponseObj);
+});
+
+app.post('/EnterASpin', async (req, res) => HomeFunctions.EnterASpin(req, res));
+
+
+
 
 
 exports.Home = functions.region("asia-south1").https.onRequest(app);
@@ -34,33 +48,35 @@ exports.Home = functions.region("asia-south1").https.onRequest(app);
 // token in every api 
 
 // https://asia-south1-salt-mango.cloudfunctions.net/Profile/UpdateProfile
-// Name
-// ReferralCode
-// (Neccessary fields)
+// Request
+//      Name
+//      ReferralCode
+//      (Neccessary fields)
 
 // /Profile/CheckReferral
-// ReferralCode
+// Request
+//      ReferralCode
 
 // /Profile/ReadProfile
 // response
-// MyCode
-// SaltCoin
-// Diamond
-// Name
-// ReferralCode
-// (Neccessary fields)
+//      MyCode
+//      SaltCoin
+//      Diamond
+//      Name
+//      ReferralCode
+//      (Neccessary fields)
 
 // Home/ReadCategories
-
-// "Available":"India","International",
-// "Keyword":""
-// "DocId":""[send for pagination]
+// Request
+//      "Available":"India","International",
+//      "Keyword":""
+//      "DocId":""[send for pagination]
 
 
 // Home/ReadQuestions
-// request 
+// Request 
 //     DocId(from Home/ReadCategories)
-// response
+// Response
 // [
 //     {
 //         "DocId": "q4jCxapmqSv7WJsGMP2I",
@@ -75,8 +91,29 @@ exports.Home = functions.region("asia-south1").https.onRequest(app);
 // ]
 
 // Home/CheckAnswer
-// request
-// "DocId"
-// "Answer"
+// Request
+//      "DocId"
+//      "Answer"
+// Response true/false
 
-// response true/false
+// Home/GetSlotData
+// Request
+//      SlotType
+//      UserId
+// Response
+// {
+//     FreeSlotLength: number;
+//     AdSlotLength: number;
+//     SlotCost: number;
+// }
+
+// Home/EnterASlot
+// Response true/false
+
+
+// Home/SpinDialData
+// Response
+//      {
+//          SaltDialData: number[];
+//          DiamondDialData: number[];
+//      }

@@ -33,18 +33,17 @@ async function EnterASlot(req, res) {
     const EntryData = {
         "UserId": UserId,
         "Ad": req.body.Ad,
+        "index": Date.now()
     }
     await dataHandling.Create(`${SlotType}/${DateData}/Entry`, EntryData);
-
-    const SettingsData = await dataHandling.Read(`Admin`, "Settings");
-    await dataHandling.Update("Users", { "Diamond": admin.firestore.FieldValue.increment(-1 * SettingsData[`${SlotType}SlotCost`]) }, req.body.UserId);
+    await dataHandling.Update("Users", { "Diamond": admin.firestore.FieldValue.increment(-1 * SlotData.SlotCost) }, req.body.UserId);
     return res.json(true);
 }
 
 async function GetSlotData(UserId, SlotType, DateData, Ad = false) {
 
-    const FreeSlotData = await dataHandling.Read(`${SlotType}/${DateData}/Entry`, undefined, undefined, undefined, 10, ["UserId", "==", UserId, "Ad", "==", false])
-    const AdSlotData = await dataHandling.Read(`${SlotType}/${DateData}/Entry`, undefined, undefined, undefined, 10, ["UserId", "==", UserId, "Ad", "==", true])
+    const FreeSlotData = [...(await dataHandling.Read(`${SlotType}/${DateData}/Entry`, undefined, undefined, undefined, 10, ["UserId", "==", UserId, "Ad", "==", false]))]
+    const AdSlotData = [...(await dataHandling.Read(`${SlotType}/${DateData}/Entry`, undefined, undefined, undefined, 10, ["UserId", "==", UserId, "Ad", "==", true]))]
     let checkSlot = true;
 
 
@@ -59,7 +58,8 @@ async function GetSlotData(UserId, SlotType, DateData, Ad = false) {
         "FreeSlotLength": FreeSlotData.length,
         AdSlotData,
         "AdSlotLength": AdSlotData.length,
-        checkSlot
+        checkSlot,
+        "SlotCost": await GetSlotCost(SlotType),
     }
 
 }
@@ -77,10 +77,80 @@ function GetSlotDate(SlotType) {
         case "Monthly":
             DateData = moment().tz('Asia/Kolkata').endOf("month").format("YYYY-MM-DD");
             break;
+        case "Daily":
+            DateData = moment().tz('Asia/Kolkata').endOf("day").format("YYYY-MM-DD");
+            break;
         default:
             break;
     }
     return DateData
+}
+
+async function GetSlotCost(SlotType) {
+    const SettingsData = await dataHandling.Read(`Admin`, "Settings");
+    let SlotCost = 15;
+    SlotCost = SettingsData[`${SlotType}SlotCost`];
+    return SlotCost;
+}
+
+async function ViewSpinData() {
+    const SaltSpinData = [
+        {
+            "Number": 5, "Probability": 1
+        },
+        {
+            "Number": 4, "Probability": 1
+        },
+        {
+            "Number": 3, "Probability": 2
+        },
+        {
+            "Number": 2, "Probability": 3
+        },
+        {
+            "Number": 1, "Probability": 3
+        },
+    ];
+    const DiamondSpinData = [
+        {
+            "Number": 50, "Probability": 5
+        },
+        {
+            "Number": 40, "Probability": 10
+        },
+        {
+            "Number": 30, "Probability": 15
+        },
+        {
+            "Number": 20, "Probability": 30
+        },
+        {
+            "Number": 10, "Probability": 30
+        },
+    ];
+    return { SaltSpinData, DiamondSpinData };
+}
+
+
+async function EnterASpin(req, res) {
+    const SlotType = "Spin";
+    const UserId = req.body.UserId;
+    const DateData = GetSlotDate(SlotType);
+    const SlotData = await ViewSpinData();
+    if (SlotData.checkSlot) {
+        return res.json("Cannont Access this api");
+    }
+    //Check
+    const Check =await dataHandling.Read(`${SlotType}/${DateData}/Entry`,"","","",100,["UserId","==",UserId,"AwardType","==","Salt"]);
+
+    const EntryData = {
+        "UserId": UserId,
+        "Ad": req.body.Ad,
+        "index": Date.now()
+    }
+    await dataHandling.Create(`${SlotType}/${DateData}/Entry`, EntryData);
+    await dataHandling.Update("Users", { "Diamond": admin.firestore.FieldValue.increment(-1 * SlotData.SlotCost) }, req.body.UserId);
+    return res.json(true);
 }
 
 module.exports = {
@@ -88,7 +158,9 @@ module.exports = {
     GetPoints,
     EnterASlot,
     GetSlotData,
-    GetSlotDate
+    GetSlotDate,
+    ViewSpinData,
+    EnterASpin,
 }
 
 
