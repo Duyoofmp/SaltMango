@@ -1,6 +1,5 @@
-const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const ServiceAccount = require('./config/ServiceAccount.json')
+const ServiceAccount = require('./config/serviceAccount.json')
 
 admin.initializeApp({
   credential: admin.credential.cert(ServiceAccount)
@@ -8,40 +7,37 @@ admin.initializeApp({
 
 //=========================Apis==============================
 
-const CategoryApis = require('./api/Category')
-exports.Category = CategoryApis.Category
+const Category = require('./api/Category');
+exports.Category = Category.Category;
 
-const QuestionsApis = require('./api/Questions')
-exports.Questions = QuestionsApis.Questions
+const Admin = require('./api/Admin')
+exports.Admin = Admin.Admin
+exports.LoginForAdmin = Admin.LoginForAdmin
 
-const UsersApis = require('./api/Users')
-exports.Users = UsersApis.Users
-exports.Users = UsersApis.LoginForAdmin
+const Questions = require('./api/Questions')
+exports.Questions = Questions.Questions
 
-const OffersApis = require('./api/Offers')
-exports.Offers = OffersApis.Offers
+const Users = require('./api/Users')
+exports.Users = Users.Users
 
-const CouponsApis = require('./api/Coupons')
-exports.Coupons = CouponsApis.Coupons
+const Offers = require('./api/Offers')
+exports.Offers = Offers.Offers
 
+const Coupons = require('./api/Coupons')
+exports.Coupons = Coupons.Coupons
 
-const CountryApis = require('./api/Country')
-exports.Countries = CountryApis.Countries
+const Country = require('./api/Country')
+exports.Countries = Country.Countries
 
-const UserQuestionApis = require('./api/UserApis/Questions')
-exports.UserQuestions = UserQuestionApis.UserQuestions
+const Profile = require('./api/UserApis/Profile')
+exports.Profile = Profile.Profile
 
-const ProfileApis = require('./api/UserApis/Profile')
-exports.Profile = ProfileApis.Profile
-
-const HomeApis = require('./api/UserApis/Home')
-exports.Home = HomeApis.Home
-
-const CategoryListApis = require('./api/UserApis/CategoryList')
-exports.CategoryList = CategoryListApis.CategoryList
+const Home = require('./api/UserApis/Home')
+exports.Home = Home.Home
 
 
-//=========================Triggers==============================
+
+// // // //=========================Triggers==============================
 
 const CategoryTriggers = require('./triggers/Category')
 exports.OnCategoryCreate = CategoryTriggers.OnCategoryCreate
@@ -60,4 +56,11 @@ const CountryTriggers = require('./triggers/Country')
 exports.OnCountryCreate = CountryTriggers.OnCountryCreate
 exports.OnCountryUpdate = CountryTriggers.OnCountryUpdate
 
+const CouponTriggers = require('./triggers/Coupon')
+exports.OnCouponCreate = CouponTriggers.OnCouponCreate
+exports.OnCouponUpdate = CouponTriggers.OnCouponUpdate
 
+
+//https://console.firebase.google.com/v1/r/project/salt-mango/firestore/indexes?create_composite=Cktwcm9qZWN0cy9zYWx0LW1hbmdvL2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9DYXRlZ29yeS9pbmRleGVzL18QARoMCghLZXl3b3JkcxgBGgoKBkFjdGl2ZRABGg0KCUF2YWlsYWJsZRABGgkKBWluZGV4EAIaDAoIX19uYW1lX18QAg
+//https://console.firebase.google.com/v1/r/project/salt-mango/firestore/indexes?create_composite=Cktwcm9qZWN0cy9zYWx0LW1hbmdvL2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9DYXRlZ29yeS9pbmRleGVzL18QARoKCgZBY3RpdmUQARoNCglBdmFpbGFibGUQARoJCgVpbmRleBACGgwKCF9fbmFtZV9fEAI
+//https://console.firebase.google.com/v1/r/project/salt-mango/firestore/indexes?create_composite=ClZwcm9qZWN0cy9zYWx0LW1hbmdvL2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9RdWVzdGlvbnNBbmRBbnN3ZXJzL2luZGV4ZXMvXxABGg4KCkNhdGVnb3J5SWQQARoSCg5RdWVzdGlvbk51bWJlchABGgkKBWluZGV4EAIaDAoIX19uYW1lX18QAg

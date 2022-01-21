@@ -6,8 +6,10 @@ async function decodeIDToken(req, res, next) {
   functions.logger.log(req.body)
 
   if (req.body.blahblah === 'blahblah') {
+    functions.logger.log("coldstart");
     return res.json('coldstart')
   }
+  functions.logger.log(req.path);
 
   const idToken = req.body.token;
 
@@ -86,8 +88,11 @@ async function token(id) {
 
 async function decodeIDTokenHeader(req, res, next) {
   if (req.body.blahblah === 'blahblah') {
+    functions.logger.log("coldstart");
     return res.json('coldstart')
   }
+  functions.logger.log(req.path);
+
   functions.logger.log(req.get('Authorization'));
   functions.logger.log(req.body);
   let encoded = req.get('Authorization');
@@ -134,8 +139,11 @@ const createKeywords = (name, resultArr) => {
 
 function decodeIDTokenForLogin(req, res, next) {
   if (req.body.blahblah === 'blahblah') {
+    functions.logger.log("coldstart");
     return res.json('coldstart')
   }
+  functions.logger.log(req.path);
+  return next();
 }
 
 const Point = 10;

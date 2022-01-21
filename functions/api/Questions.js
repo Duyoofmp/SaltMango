@@ -6,11 +6,11 @@ const cors = require('cors');
 const app = express();
 app.use(cors({ origin: true }));
 
-// const common = require("../common");
-// app.use(common.decodeIDToken)
+const common = require("../common");
+app.use(common.decodeIDToken)
 
 
-const QuestionsFunctions=require('../service/Questions')
+const QuestionsFunctions = require('../service/Questions')
 
 app.post('/CreateQuestions', async (req, res) => QuestionsFunctions.Create(req, res))
 
@@ -27,4 +27,4 @@ app.post('/DeleteQuestions', async (req, res) => QuestionsFunctions.Delete(req, 
 //     minInstances: 1,
 //     memory: "128MB"
 //   }
-  exports.Questions = functions.region("asia-south1").https.onRequest(app);
+exports.Questions = functions.region("asia-south1").https.onRequest(app);

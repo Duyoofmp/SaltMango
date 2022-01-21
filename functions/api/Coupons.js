@@ -10,7 +10,7 @@ const common = require("../common");
 app.use(common.decodeIDToken)
 
 
-const CouponsFunctions = require('../service/Offers')
+const CouponsFunctions = require('../service/Coupons')
 
 app.post('/CreateCoupon', async (req, res) => CouponsFunctions.Create(req, res))
 

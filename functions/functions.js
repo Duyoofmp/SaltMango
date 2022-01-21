@@ -7,7 +7,7 @@ async function Create(collectionName, data, docName) {
     return new Promise(async (resolve, reject) => {
         try {
             if (docName !== undefined) {
-            
+
                 await db.collection(collectionName).doc(docName).set(data);
                 resolve(true);
             } else {
@@ -24,7 +24,7 @@ async function Create(collectionName, data, docName) {
 async function Update(collectionName, data, docName) {
     return new Promise(async (resolve, reject) => {
         try {
-            await db.collection(collectionName).doc(docName).update(data);
+            await db.collection(collectionName).doc(docName).set(data, { "merge": true });
             resolve(true);
         } catch (error) {
             functions.logger.error(error);
@@ -45,45 +45,59 @@ async function Delete(collectionName, docName) {
     });
 }
 
-async function Read(collectionName, docName, index, Keyword, limit = 10, where) {
+async function Read(collectionName, docName, index, Keyword, limit = 10, where, orderBy = [true, "index", "desc"]) {
 
     let query;
-    if (docName === undefined) {
+    if (docName === undefined || docName === "") {
         query = db.collection(collectionName);
         if (Keyword !== "" && Keyword !== undefined) {
             query = query.where("Keywords", "array-contains", Keyword.toLowerCase());
         }
         if (where !== undefined) {
-            query = query.where(where[0], where[1], where[2])
+            for (let where_index = 0; where_index < where.length; where_index = where_index + 3) {
+                query = query.where(where[where_index], where[where_index + 1], where[where_index + 2])
+            }
         }
-
-        query = query.orderBy("index", "desc");
+        if (orderBy[0] === true) {
+            for (let orderByIndex = 1; orderByIndex < orderBy.length; orderByIndex = orderByIndex + 2) {
+                const element = orderBy[orderByIndex];
+                query = query.orderBy(element[orderByIndex], element[orderByIndex + 1]);
+            }
+        }
 
         if (index !== undefined && index !== null && index !== 0 && index !== "") {
-            console.log(index)
             const snapshot = await db.collection(collectionName).doc(index).get();
-            query = query.startAfter(snapshot)
+            query = query.startAfter(snapshot);
         }
-    } else {
+    }
+    else {
         query = db.collection(collectionName).doc(docName)
-
     }
     return new Promise(async (resolve, reject) => {
         try {
-            if (docName !== undefined) {
-                const dat = await query.get();
-                resolve({ ...dat.data(), DocId: dat.id });
-            } else {
+            if (docName === undefined || docName === "") {
                 const temp = [];
                 const data = await query.limit(limit).get();
-                data.forEach((docs) => {
-                    if (docs.exists) {
-                        temp.push({ ...docs.data(), DocId: docs.id });
+                data.forEach((doc) => {
+                    if (doc.exists) {
+                        const r = doc.data();
+                        delete r.Keywords;
+                        temp.push({ ...r, DocId: doc.id });
                     }
                 });
                 resolve(temp);
             }
-        } catch (error) {
+            else {
+                const dat = await query.get();
+                if (dat.exists) {
+                    resolve({ ...dat.data(), DocId: dat.id });
+                }
+                else {
+                    resolve(null);
+                }
+            }
+        }
+        catch (error) {
             functions.logger.error(error);
             reject(false);
         }
