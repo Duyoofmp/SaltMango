@@ -3,6 +3,7 @@ const admin = require("firebase-admin");
 const db = admin.firestore();
 const common = require("../common");
 const moment = require("moment");
+const { database } = require("firebase-admin");
 
 exports.scheduledFunctionForDailyDraw = functions.pubsub
   .schedule("5 0 * * *")
@@ -10,6 +11,7 @@ exports.scheduledFunctionForDailyDraw = functions.pubsub
   .onRun(async (context) => {
     const today = moment();
     const arr = [];
+    const dat=[];
     let query;
     let loop = 4;
     const Date = today.subtract(1, "d").format("YYYY-MM-DD");
@@ -26,6 +28,7 @@ exports.scheduledFunctionForDailyDraw = functions.pubsub
         snapshot.forEach((doc) => {
           if (!arr.includes(doc.id)) {
             arr.push(doc.id);
+            dat.push(doc.data().UserId)
           } else {
             loop = loop + 1;
           }
@@ -39,12 +42,15 @@ exports.scheduledFunctionForDailyDraw = functions.pubsub
         snapshots.forEach((doc) => {
           if (!arr.includes(doc.id)) {
             arr.push(doc.id);
+            dat.push(doc.data().UserId)
+
           } else {
             loop = loop + 1;
           }
         });
       }
     }
+return await db.collection("DailyDraw").doc(Date).update({Winners:dat})
   });
 
 exports.OnEntryCreate = functions.firestore
