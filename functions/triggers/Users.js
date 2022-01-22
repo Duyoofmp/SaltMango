@@ -14,7 +14,7 @@ exports.OnUsersCreate = functions.firestore
         let code = common.Keygenerator(4)
         let ref = docid.substring(0, 3);
         let refcode = code + ref;
-        return db.collection("Users").doc(docid).update({ DocId: docid, Keywords: arr, MyCode: refcode, SaltCoin: 0, Diamond: 0 })
+        return db.collection("Users").doc(docid).update({ DocId: docid, Keywords: arr, MyCode: refcode, SaltCoins: 0, Diamonds: 0 })
     })
 
 

@@ -3,6 +3,9 @@ const admin = require("firebase-admin");
 const db = admin.firestore();
 const common = require("../common");
 const moment = require("moment");
+const dataHandling = require("../functions");
+
+
 const { database } = require("firebase-admin");
 
 exports.scheduledFunctionForDailyDraw = functions.pubsub
@@ -10,15 +13,30 @@ exports.scheduledFunctionForDailyDraw = functions.pubsub
   .timeZone("Asia/Kolkata") // Users can choose timezone - default is America/Los_Angeles
   .onRun(async (context) => {
     const today = moment();
-    const arr = [];
-    const dat=[];
-    let query;
-    let loop = 4;
     const Date = today.subtract(1, "d").format("YYYY-MM-DD");
-    console.log(Date);
     console.log("This will be run every day at 12:05 AM Eastern!");
-    query = db.collection("DailyDraw").doc(Date).collection("Entry");
-    for (let index = 0; index < loop; index++) {
+
+
+    const arr = [];
+   
+    let query;
+    let limit=0;
+    const limits=[];
+   const settings= await dataHandling.Read("Admin","Settings");
+   const DailySet=settings.DailyDraw;
+   DailySet.forEach(element=>{
+       limit=limit+element.WinnerLimit;
+     
+   })
+   query = db.collection("DailyDraw").doc(Date).collection("Entry");
+  //  const limitCheck=(await query.get()).size;
+  //  if(limitCheck<=limit){
+
+  //  }
+   for (let loop = 0; loop < DailySet.length; loop++) {
+    const dat=[];
+     let end=DailySet[loop].WinnerLimit
+    for (let index = 0; index < end; index++) {
       key = query.doc().id;
       const snapshot = await query
         .where(admin.firestore.FieldPath.documentId(), ">=", key)
@@ -26,11 +44,11 @@ exports.scheduledFunctionForDailyDraw = functions.pubsub
         .get();
       if (snapshot.size > 0) {
         snapshot.forEach((doc) => {
-          if (!arr.includes(doc.id)) {
-            arr.push(doc.id);
+          if (!arr.includes(doc.data().UserId)) {
+            arr.push(doc.data().UserId);
             dat.push(doc.data().UserId)
           } else {
-            loop = loop + 1;
+            end = end + 1;
           }
         });
       } else {
@@ -40,17 +58,19 @@ exports.scheduledFunctionForDailyDraw = functions.pubsub
           .get();
 
         snapshots.forEach((doc) => {
-          if (!arr.includes(doc.id)) {
-            arr.push(doc.id);
+          if (!arr.includes(doc.data().UserId)) {
+            arr.push(doc.data().UserId);
             dat.push(doc.data().UserId)
 
           } else {
-            loop = loop + 1;
+            end = end + 1;
           }
         });
       }
     }
-return await db.collection("DailyDraw").doc(Date).update({Winners:dat})
+     DailySet[loop].Winners=dat
+   }  
+return await db.collection("DailyDraw").doc(Date).update({WinnersData:DailySet})
   });
 
 exports.OnEntryCreate = functions.firestore
