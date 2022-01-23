@@ -63,6 +63,13 @@ exports.OnCountryUpdate = CountryTriggers.OnCountryUpdate
 const CouponTriggers = require('./triggers/Coupon')
 exports.OnCouponCreate = CouponTriggers.OnCouponCreate
 exports.OnCouponUpdate = CouponTriggers.OnCouponUpdate
+exports.OnCouponDelete = CouponTriggers.OnCouponDelete
+
+const OfferTriggers = require('./triggers/Offers')
+exports.OnOfferCreate = OfferTriggers.OnOfferCreate
+exports.OnOfferUpdate = OfferTriggers.OnOfferUpdate
+
+
 
 const DailyDrawTriggers = require('./triggers/DailyDraw')
 exports.OnDailyCreate = DailyDrawTriggers.OnDailyCreate

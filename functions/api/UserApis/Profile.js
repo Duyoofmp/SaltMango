@@ -11,7 +11,7 @@ app.use(cors({ origin: true }));
 const ProfileFunctions = require('../../service/UserServices/Profile')
 const UserFunctions = require('../../service/Users')
 const common = require("../../common");
-//app.use(common.decodeIDTokenHeader)
+app.use(common.decodeIDTokenHeader)
 
 app.post('/UpdateProfile', async (req, res) => {
     req.body.DocId = req.body.UserId;
@@ -28,63 +28,63 @@ app.post('/ReadProfile', async (req, res) => {
 })
 
 
-app.post("/CheckDraw", async (req, res) => {
-  const today = moment();
-  const Date = today.subtract(1, "d").format("YYYY-MM-DD");
-  console.log("This will be run every day at 12:05 AM Eastern!");
-  const arr = [];
-  let query;
-  let limit = 0;
-  const settings = await dataHandling.Read("Admin", "Settings");
-  const DailySet = settings.DailyDraw;
-  DailySet.forEach((element) => {
-    limit = limit + element.WinnerLimit;
-  });
-  query = db.collection("DailyDraw").doc(Date).collection("Entry");
-  const dat = [];
-  for (let loop = 0; loop < limit; loop++) {
-    key = query.doc().id;
-    const snapshot = await query
-      .where(admin.firestore.FieldPath.documentId(), ">=", key)
-      .limit(1)
-      .get();
-    if (snapshot.size > 0) {
-      snapshot.forEach((doc) => {
-        if (!arr.includes(doc.data().UserId)) {
-          arr.push(doc.data().UserId);
-          dat.push(doc.data().UserId);
-        } else {
-          limit = limit + 1;
-        }
-      });
-    } else {
-      const snapshots = await query
-        .where(admin.firestore.FieldPath.documentId(), "<", key)
-        .limit(1)
-        .get();
+// app.post("/CheckDraw", async (req, res) => {
+//   const today = moment();
+//   const Date = today.subtract(1, "d").format("YYYY-MM-DD");
+//   console.log("This will be run every day at 12:05 AM Eastern!");
+//   const arr = [];
+//   let query;
+//   let limit = 0;
+//   const settings = await dataHandling.Read("Admin", "Settings");
+//   const DailySet = settings.DailyDraw;
+//   DailySet.forEach((element) => {
+//     limit = limit + element.WinnerLimit;
+//   });
+//   query = db.collection("DailyDraw").doc(Date).collection("Entry");
+//   const dat = [];
+//   for (let loop = 0; loop < limit; loop++) {
+//     key = query.doc().id;
+//     const snapshot = await query
+//       .where(admin.firestore.FieldPath.documentId(), ">=", key)
+//       .limit(1)
+//       .get();
+//     if (snapshot.size > 0) {
+//       snapshot.forEach((doc) => {
+//         if (!arr.includes(doc.data().UserId)) {
+//           arr.push(doc.data().UserId);
+//           dat.push(doc.data().UserId);
+//         } else {
+//           limit = limit + 1;
+//         }
+//       });
+//     } else {
+//       const snapshots = await query
+//         .where(admin.firestore.FieldPath.documentId(), "<", key)
+//         .limit(1)
+//         .get();
 
-      snapshots.forEach((doc) => {
-        if (!arr.includes(doc.data().UserId)) {
-          arr.push(doc.data().UserId);
-          dat.push(doc.data().UserId);
-        } else {
-          limit = limit + 1;
-        }
-      });
-    }
-  }
-  console.log(dat.length);
-  f = 0;
-  DailySet.forEach((snap) => {
-    l = f + snap.WinnerLimit;
-    snap.Winners = dat.slice(f, l);
-    f = l;
-  });
-  return await db
-    .collection("DailyDraw")
-    .doc(Date)
-    .update({ WinnersData: DailySet });
-});
+//       snapshots.forEach((doc) => {
+//         if (!arr.includes(doc.data().UserId)) {
+//           arr.push(doc.data().UserId);
+//           dat.push(doc.data().UserId);
+//         } else {
+//           limit = limit + 1;
+//         }
+//       });
+//     }
+//   }
+//   console.log(dat.length);
+//   f = 0;
+//   DailySet.forEach((snap) => {
+//     l = f + snap.WinnerLimit;
+//     snap.Winners = dat.slice(f, l);
+//     f = l;
+//   });
+//   return await db
+//     .collection("DailyDraw")
+//     .doc(Date)
+//     .update({ WinnersData: DailySet });
+// });
 
 
 
