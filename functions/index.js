@@ -36,6 +36,10 @@ const Home = require('./api/UserApis/Home')
 exports.Home = Home.Home
 
 
+const Offer = require('./api/UserApis/Offer')
+exports.Offer = Offer.Offer
+
+
 
 // // // //=========================Triggers==============================
 
