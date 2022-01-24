@@ -32,9 +32,8 @@ async function ReadOffers(req, res) {
   async function BuyOffer(req, res) {
 
     try {
-      const Userdata = await dataHandling.Read("Users", req.body.UserId);
-      console.log(Userdata.SaltCoins)
       await db.runTransaction(async (t) => {
+        const Userdata = await t.get(db.collection("Users").doc(req.body.UserId));
         const Coupen = await t.get(db.collection("Offers").doc(req.body.OfferId).collection("Coupens").limit(1));
     t.set(db.collection("Users").doc(req.body.UserId).collection("Rewards").doc(Coupen.docs[0].id),{ ...Coupen.docs[0].data()})
      t.delete(db.collection("Offers").doc(req.body.OfferId).collection("Coupens").doc(Coupen.docs[0].id))
