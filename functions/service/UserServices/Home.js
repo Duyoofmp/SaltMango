@@ -50,7 +50,7 @@ async function GetSlotData(UserId, SlotType, DateData, Ad = false) {
     if (FreeSlotData.length < 5 && !Ad) {
         checkSlot = false;
     }
-    if (Ad && AdSlotData < 5) {
+    if (Ad && AdSlotData.length < 5) {
         checkSlot = false;
     }
     return {
@@ -93,42 +93,45 @@ async function GetSlotCost(SlotType) {
     return SlotCost;
 }
 
-async function ViewSpinData() {
+async function ViewSpinData(Type = false) {
+    const SpinData = [
+        {
+            "Number": 50, "Type": "Diamond", "Probability": 5,
+        },
+        {
+            "Number": 40, "Type": "Diamond", "Probability": 10,
+        },
+        {
+            "Number": 30, "Type": "Diamond", "Probability": 15,
+        },
+        {
+            "Number": 20, "Type": "Diamond", "Probability": 30,
+        },
+        {
+            "Number": 10, "Type": "Diamond", "Probability": 30,
+        },
+    ];
     const SaltSpinData = [
         {
-            "Number": 5, "Probability": 1
+            "Number": 5, "Type": "Salt", "Probability": 1,
         },
         {
-            "Number": 4, "Probability": 1
+            "Number": 4, "Type": "Salt", "Probability": 1,
         },
         {
-            "Number": 3, "Probability": 2
+            "Number": 3, "Type": "Salt", "Probability": 2,
         },
         {
-            "Number": 2, "Probability": 3
+            "Number": 2, "Type": "Salt", "Probability": 3,
         },
         {
-            "Number": 1, "Probability": 3
+            "Number": 1, "Type": "Salt", "Probability": 3,
         },
-    ];
-    const DiamondSpinData = [
-        {
-            "Number": 50, "Probability": 5
-        },
-        {
-            "Number": 40, "Probability": 10
-        },
-        {
-            "Number": 30, "Probability": 15
-        },
-        {
-            "Number": 20, "Probability": 30
-        },
-        {
-            "Number": 10, "Probability": 30
-        },
-    ];
-    return { SaltSpinData, DiamondSpinData };
+    ]
+    if (Type) {
+        SpinData.push(...SaltSpinData);
+    }
+    return SpinData;
 }
 
 
@@ -136,22 +139,49 @@ async function EnterASpin(req, res) {
     const SlotType = "Spin";
     const UserId = req.body.UserId;
     const DateData = GetSlotDate(SlotType);
-    const SlotData = await ViewSpinData();
+    let SlotData = [];// await ViewSpinData();
     if (SlotData.checkSlot) {
         return res.json("Cannont Access this api");
     }
     //Check
-    const Check =await dataHandling.Read(`${SlotType}/${DateData}/Entry`,"","","",100,["UserId","==",UserId,"AwardType","==","Salt"]);
+    const CheckUserLimit = await dataHandling.Read(`User/${UserId}/${SlotType}`, `${DateData}`);
+    const CheckAdminLimit = await dataHandling.Read(`${SlotType}`, `${DateData}`);
+    const SpinLimit = await dataHandling.Read(`Admin`, `Settings`);
+
+    if (CheckUserLimit.RewardSalt >= SpinLimit.UserLimit && CheckAdminLimit.RewardSalt >= SpinLimit.AdminLimit) {
+        SlotData = await ViewSpinData(false);
+    }
+    else {
+        SlotData = await ViewSpinData(true);
+    }
 
     const EntryData = {
         "UserId": UserId,
         "Ad": req.body.Ad,
         "index": Date.now()
     }
-    await dataHandling.Create(`${SlotType}/${DateData}/Entry`, EntryData);
+    await dataHandling.Create(`User/${UserId}/${SlotType}/${DateData}/Entry`, EntryData);
     await dataHandling.Update("Users", { "Diamond": admin.firestore.FieldValue.increment(-1 * SlotData.SlotCost) }, req.body.UserId);
     return res.json(true);
 }
+
+
+const createDistribution = (array, weights, size) => {
+    const distribution = [];
+    const sum = weights.reduce((a, b) => a + b);
+  	for (let i = 0; i < array.length; ++i) {
+      	const count = (weights[i] / sum) * size;
+      	for (let j = 0; j < count; ++j) {
+          	distribution.push(i);
+        }
+    }
+  	return distribution;
+};
+
+const randomIndex = distribution => {
+  	const index = Math.floor(distribution.length * Math.random());  // random index
+    return distribution[index];  
+};
 
 module.exports = {
     Read,

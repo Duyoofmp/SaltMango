@@ -31,11 +31,7 @@ app.post('/GetSlotData', async (req, res) => {
 app.post('/EnterASlot', async (req, res) => HomeFunctions.EnterASlot(req, res));
 
 app.post('/SpinDialData', async (req, res) => {
-    const { SaltSpinData, DiamondSpinData } = await HomeFunctions.ViewSpinData();
-    const SaltDialData = SaltSpinData.map(id => id.Number);
-    const DiamondDialData = DiamondSpinData.map(id => id.Number);
-    const ResponseObj = { SaltDialData, DiamondDialData };
-    return res.json(ResponseObj);
+    return res.json(await HomeFunctions.ViewSpinData());
 });
 
 app.post('/EnterASpin', async (req, res) => HomeFunctions.EnterASpin(req, res));
