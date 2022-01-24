@@ -9,13 +9,13 @@ app.use(cors({ origin: true }));
 
 const Offer = require('../../service/UserServices/Offer')
 const common = require("../../common");
-//app.use(common.decodeIDTokenHeader)
+app.use(common.decodeIDTokenHeader)
 
 
 
-app.post('/ReadCountry', async (req, res) => Offer.ReadCountry(req,res))
-app.post('/ReadOffers', async (req, res) => Offer.ReadOffers(req,res))
-app.post('/BuyOffer', async (req, res) => Offer.BuyOffer(req,res))
+app.post('/ReadCountry', async (req, res) => Offer.ReadCountry(req, res))
+app.post('/ReadOffers', async (req, res) => Offer.ReadOffers(req, res))
+app.post('/BuyOffer', async (req, res) => Offer.BuyOffer(req, res))
 
 
 exports.Offer = functions.region("asia-south1").https.onRequest(app);
