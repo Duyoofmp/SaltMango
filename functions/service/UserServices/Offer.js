@@ -39,9 +39,9 @@ async function ReadOffers(req, res) {
      t.delete(db.collection("Offers").doc(req.body.OfferId).collection("Coupens").doc(Coupen.docs[0].id))
       t.update(db.collection("Users").doc(req.body.UserId), {SaltCoins:(Userdata.SaltCoins-req.body.OfferSaltCoins)});
       });
-     return console.log('Transaction success!');
+     return res.json(true);
     } catch (e) {
-      console.log('Transaction failure:', e);
+     return res.json(false);
     }
     
   }
