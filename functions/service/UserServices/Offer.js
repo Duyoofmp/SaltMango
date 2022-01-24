@@ -30,20 +30,36 @@ async function ReadOffers(req, res) {
 
 
   async function BuyOffer(req, res) {
-     try {
+
+    try {
       const Userdata = await dataHandling.Read("Users", req.body.UserId);
       console.log(Userdata.SaltCoins)
-      const Coupen =await db.collection("Offers").doc(req.body.OfferId).collection("Coupens").limit(1).get();
-      console.log(Coupen.docs[0].id)
-  await db.collection("Users").doc(req.body.UserId).collection("Rewards").doc(Coupen.docs[0].id).set({...Coupen.docs[0].data()},{"merge":true})
-  await dataHandling.Delete(`Offers/${req.body.OfferId}/Coupens`,Coupen.docs[0].id)
-  return res.json(await dataHandling.Update("Users",{SaltCoins:(Userdata.SaltCoins-req.body.OfferSaltCoins)},req.body.UserId));
-     } catch (error) {
-       console.log(error)
-       return res.json(false)
-     }
+      await db.runTransaction(async (t) => {
+        const Coupen = await t.get(db.collection("Offers").doc(req.body.OfferId).collection("Coupens").limit(1));
+    t.set(db.collection("Users").doc(req.body.UserId).collection("Rewards").doc(Coupen.docs[0].id),{ ...Coupen.docs[0].data()})
+     t.delete(db.collection("Offers").doc(req.body.OfferId).collection("Coupens").doc(Coupen.docs[0].id))
+      t.update(db.collection("Users").doc(req.body.UserId), {SaltCoins:(Userdata.SaltCoins-req.body.OfferSaltCoins)});
+      });
+     return console.log('Transaction success!');
+    } catch (e) {
+      console.log('Transaction failure:', e);
+    }
+    
   }
 
+
+//   try {
+//     const Userdata = await dataHandling.Read("Users", req.body.UserId);
+//     console.log(Userdata.SaltCoins)
+//     const Coupen =await db.collection("Offers").doc(req.body.OfferId).collection("Coupens").limit(1).get();
+//     console.log(Coupen.docs[0].id)
+// await db.collection("Users").doc(req.body.UserId).collection("Rewards").doc(Coupen.docs[0].id).set({...Coupen.docs[0].data()},{"merge":true})
+// await dataHandling.Delete(`Offers/${req.body.OfferId}/Coupens`,Coupen.docs[0].id)
+// return res.json(await dataHandling.Update("Users",{SaltCoins:(Userdata.SaltCoins-req.body.OfferSaltCoins)},req.body.UserId));
+//    } catch (error) {
+//      console.log(error)
+//      return res.json(false)
+//    }
  
 
 
