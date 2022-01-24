@@ -14,7 +14,7 @@ async function ReadCountry(req, res) {
 async function ReadOffers(req, res) {
     let claim;
     const arr=[];
-      const data = await dataHandling.Read("Offers", req.body.DocId, req.body.index, req.body.Keyword, req.body.limit, ["CountryId","==", req.body.CountryId,"Active","==",true,"CoupensCount",">",0],['desc']);
+      const data = await dataHandling.Read("Offers", req.body.DocId, req.body.index, req.body.Keyword, req.body.limit, ["CountryId","==", req.body.CountryId,"Active","==",true,"CouponsCount",">",0],['desc']);
       const Userdata = await dataHandling.Read("Users", req.body.UserId);
       
     data.forEach((Offer) => {
@@ -34,9 +34,9 @@ async function ReadOffers(req, res) {
     try {
       await db.runTransaction(async (t) => {
         const Userdata = await t.get(db.collection("Users").doc(req.body.UserId));
-        const Coupen = await t.get(db.collection("Offers").doc(req.body.OfferId).collection("Coupens").limit(1));
-    t.set(db.collection("Users").doc(req.body.UserId).collection("Rewards").doc(Coupen.docs[0].id),{ ...Coupen.docs[0].data()})
-     t.delete(db.collection("Offers").doc(req.body.OfferId).collection("Coupens").doc(Coupen.docs[0].id))
+        const Coupon = await t.get(db.collection("Offers").doc(req.body.OfferId).collection("Coupons").limit(1));
+    t.set(db.collection("Users").doc(req.body.UserId).collection("Rewards").doc(Coupon.docs[0].id),{ ...Coupon.docs[0].data()})
+     t.delete(db.collection("Offers").doc(req.body.OfferId).collection("Coupons").doc(Coupon.docs[0].id))
       t.update(db.collection("Users").doc(req.body.UserId), {SaltCoins:(Userdata.SaltCoins-req.body.OfferSaltCoins)});
       });
      return res.json(true);
