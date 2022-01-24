@@ -36,6 +36,10 @@ const Home = require('./api/UserApis/Home')
 exports.Home = Home.Home
 
 
+const Offer = require('./api/UserApis/Offer')
+exports.Offer = Offer.Offer
+
+
 
 // // // //=========================Triggers==============================
 
@@ -59,6 +63,18 @@ exports.OnCountryUpdate = CountryTriggers.OnCountryUpdate
 const CouponTriggers = require('./triggers/Coupon')
 exports.OnCouponCreate = CouponTriggers.OnCouponCreate
 exports.OnCouponUpdate = CouponTriggers.OnCouponUpdate
+exports.OnCouponDelete = CouponTriggers.OnCouponDelete
+
+const OfferTriggers = require('./triggers/Offers')
+exports.OnOfferCreate = OfferTriggers.OnOfferCreate
+exports.OnOfferUpdate = OfferTriggers.OnOfferUpdate
+
+
+
+const DailyDrawTriggers = require('./triggers/DailyDraw')
+exports.OnDailyCreate = DailyDrawTriggers.OnDailyCreate
+exports.OnEntryCreate = DailyDrawTriggers.OnEntryCreate
+exports.scheduledFunctionForDailyDraw = DailyDrawTriggers.scheduledFunctionForDailyDraw
 
 
 //https://console.firebase.google.com/v1/r/project/salt-mango/firestore/indexes?create_composite=Cktwcm9qZWN0cy9zYWx0LW1hbmdvL2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9DYXRlZ29yeS9pbmRleGVzL18QARoMCghLZXl3b3JkcxgBGgoKBkFjdGl2ZRABGg0KCUF2YWlsYWJsZRABGgkKBWluZGV4EAIaDAoIX19uYW1lX18QAg
