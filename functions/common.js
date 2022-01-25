@@ -2,6 +2,8 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const db = admin.firestore();
 
+const dataHandling = require("../functions");
+
 async function decodeIDToken(req, res, next) {
   functions.logger.log(req.body)
 
@@ -175,6 +177,69 @@ function Keygenerator(num) {
   return (array)
 }
 
+
+
+
+async function drawWinnerPicker(draw,Date){
+  const arr = [];
+    let query;
+    let limit = 0;
+    const settings = await dataHandling.Read("Admin", "Settings");
+    const DrawSet = settings.draw+"Draw";
+    DrawSet.forEach((element) => {
+      limit = limit + element.WinnerLimit;
+    });
+    query = db.collection(draw).doc(Date).collection("Entry");
+    const dat = [];
+    for (let loop = 0; loop < limit; loop++) {
+      key = query.doc().id;
+      const snapshot = await query
+        .where(admin.firestore.FieldPath.documentId(), ">=", key)
+        .limit(1)
+        .get();
+      if (snapshot.size > 0) {
+        snapshot.forEach((doc) => {
+          if (!arr.includes(doc.data().UserId)) {
+            arr.push(doc.data().UserId);
+            dat.push(doc.data().UserId);
+          } else {
+            limit = limit + 1;
+          }
+        });
+      } else {
+        const snapshots = await query
+          .where(admin.firestore.FieldPath.documentId(), "<", key)
+          .limit(1)
+          .get();
+
+        snapshots.forEach((doc) => {
+          if (!arr.includes(doc.data().UserId)) {
+            arr.push(doc.data().UserId);
+            dat.push(doc.data().UserId);
+          } else {
+            limit = limit + 1;
+          }
+        });
+      }
+    }
+    let f = 0;
+    DrawSet.forEach((snap) => {
+      let l = f + snap.WinnerLimit;
+      snap.Winners = dat.slice(f, l);
+      f = l;
+    });
+    return await db
+      .collection(draw)
+      .doc(Date)
+      .update({ WinnersData: DrawSet });
+}
+
+
+
+
+
+
+
 module.exports = {
   decodeIDToken,
   makeid,
@@ -186,6 +251,7 @@ module.exports = {
   decodeIDTokenForLogin,
   Point,
   ReferralPoint,
+  drawWinnerPicker,
   ReferredPoint,
   shuffleArray,
   Keygenerator
