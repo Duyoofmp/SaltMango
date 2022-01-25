@@ -7,8 +7,8 @@ const dataHandling = require("../../functions");
 
 
 async function ReadCountry(req, res) {
-    const data = await dataHandling.Read("Countries", req.body.DocId, req.body.index, req.body.Keyword, 1000,undefined,['desc']);
-    return res.json(data)
+  const data = await dataHandling.Read("Countries", req.body.DocId, req.body.index, req.body.Keyword, 1000, undefined, ['desc']);
+  return res.json(data)
 }
 
 async function ReadOffers(req, res) {
@@ -44,7 +44,10 @@ async function ReadOffers(req, res) {
      return res.json(false);
     }
     
+
   }
+}
+
 
 
 //   try {
@@ -64,7 +67,7 @@ async function ReadOffers(req, res) {
 
 
 module.exports = {
-     ReadCountry,
-     ReadOffers,
-     BuyOffer
+  ReadCountry,
+  ReadOffers,
+  BuyOffer
 }
