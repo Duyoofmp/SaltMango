@@ -55,9 +55,9 @@ exports.scheduledFunctionForDailyDraw = functions.pubsub
         });
       }
     }
-   let f = 0;
+    let f = 0;
     DailySet.forEach((snap) => {
-    let  l = f + snap.WinnerLimit;
+      let l = f + snap.WinnerLimit;
       snap.Winners = dat.slice(f, l);
       f = l;
     });
@@ -77,7 +77,7 @@ exports.OnEntryCreate = functions.firestore
       .update({ DocId: docid });
   });
 
-  
+
 exports.OnDailyCreate = functions.firestore
   .document("DailyDraw/{DrawId}")
   .onCreate(async (change, context) => {

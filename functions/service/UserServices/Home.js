@@ -113,19 +113,19 @@ async function ViewSpinData(Type = false) {
     ];
     const SaltSpinData = [
         {
-            "Number": 5, "Type": "Salt", "Probability": 1,
+            "Number": 5, "Type": "SaltCoin", "Probability": 1,
         },
         {
-            "Number": 4, "Type": "Salt", "Probability": 1,
+            "Number": 4, "Type": "SaltCoin", "Probability": 1,
         },
         {
-            "Number": 3, "Type": "Salt", "Probability": 2,
+            "Number": 3, "Type": "SaltCoin", "Probability": 2,
         },
         {
-            "Number": 2, "Type": "Salt", "Probability": 3,
+            "Number": 2, "Type": "SaltCoin", "Probability": 3,
         },
         {
-            "Number": 1, "Type": "Salt", "Probability": 3,
+            "Number": 1, "Type": "SaltCoin", "Probability": 3,
         },
     ]
     if (Type) {
@@ -140,13 +140,19 @@ async function EnterASpin(req, res) {
     const UserId = req.body.UserId;
     const DateData = GetSlotDate(SlotType);
     let SlotData = [];// await ViewSpinData();
-    if (SlotData.checkSlot) {
-        return res.json("Cannont Access this api");
-    }
     //Check
-    const CheckUserLimit = await dataHandling.Read(`User/${UserId}/${SlotType}`, `${DateData}`);
-    const CheckAdminLimit = await dataHandling.Read(`${SlotType}`, `${DateData}`);
-    const SpinLimit = await dataHandling.Read(`Admin`, `Settings`);
+
+    const promise = [];
+    promise.push(dataHandling.Read(`User/${UserId}/${SlotType}`, `${DateData}`));
+    promise.push(dataHandling.Read(`${SlotType}`, `${DateData}`));
+    promise.push(dataHandling.Read(`Admin`, `Settings`));
+
+    promise.push(dataHandling.Update("Users", { "Diamond": admin.firestore.FieldValue.increment(-1 * 30) }, req.body.UserId));
+
+    const promiseResult = await Promise.all(promise);
+    const CheckUserLimit = promiseResult[0];
+    const CheckAdminLimit = promiseResult[1];
+    const SpinLimit = promiseResult[2];
 
     if (CheckUserLimit.RewardSalt >= SpinLimit.UserLimit && CheckAdminLimit.RewardSalt >= SpinLimit.AdminLimit) {
         SlotData = await ViewSpinData(false);
@@ -155,32 +161,33 @@ async function EnterASpin(req, res) {
         SlotData = await ViewSpinData(true);
     }
 
-    const EntryData = {
-        "UserId": UserId,
-        "Ad": req.body.Ad,
-        "index": Date.now()
-    }
-    await dataHandling.Create(`User/${UserId}/${SlotType}/${DateData}/Entry`, EntryData);
-    await dataHandling.Update("Users", { "Diamond": admin.firestore.FieldValue.increment(-1 * SlotData.SlotCost) }, req.body.UserId);
-    return res.json(true);
+
+    const distribution = createDistribution(SlotData, SlotData.map(id => id.Probability));
+    const RandomIndex = randomIndex(distribution);
+    const RandomSpinData = SlotData[RandomIndex];
+    RandomSpinData.index = Date.now();
+
+    await dataHandling.Update("Users", { [RandomSpinData.Type]: admin.firestore.FieldValue.increment(RandomSpinData.Number) }, UserId);
+    await dataHandling.Create(`User/${UserId}/${SlotType}/${DateData}/Entry`, RandomSpinData);
+    return res.json(RandomSpinData);
 }
 
 
-const createDistribution = (array, weights, size) => {
+const createDistribution = (array, weights, size = 1000) => {
     const distribution = [];
     const sum = weights.reduce((a, b) => a + b);
-  	for (let i = 0; i < array.length; ++i) {
-      	const count = (weights[i] / sum) * size;
-      	for (let j = 0; j < count; ++j) {
-          	distribution.push(i);
+    for (let i = 0; i < array.length; ++i) {
+        const count = (weights[i] / sum) * size;
+        for (let j = 0; j < count; ++j) {
+            distribution.push(i);
         }
     }
-  	return distribution;
+    return distribution;
 };
 
 const randomIndex = distribution => {
-  	const index = Math.floor(distribution.length * Math.random());  // random index
-    return distribution[index];  
+    const index = Math.floor(distribution.length * Math.random());  // random index
+    return distribution[index];
 };
 
 module.exports = {

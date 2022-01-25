@@ -1,7 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const db = admin.firestore();
-const common=require('../common')
+const common = require('../common')
 
 
 
@@ -10,13 +10,13 @@ exports.OnCategoryCreate = functions.firestore
     .onCreate(async (change, context) => {
         const docid = context.params.docid;
         const data = change.data()
-        const arr = []; 
+        const arr = [];
         common.createKeywords(data.CategoryName, arr)
         return await db.collection("Category").doc(docid).update({ DocId: docid, Keywords: arr })
     })
 
 
-    exports.OnCategoryUpdate = functions.firestore
+exports.OnCategoryUpdate = functions.firestore
     .document("Category/{docid}")
     .onUpdate(async (change, context) => {
         const docid = context.params.docid;
