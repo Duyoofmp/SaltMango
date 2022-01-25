@@ -12,41 +12,41 @@ async function ReadCountry(req, res) {
 }
 
 async function ReadOffers(req, res) {
-    let claim;
-    const arr=[];
-      const data = await dataHandling.Read("Offers", req.body.DocId, req.body.index, req.body.Keyword, req.body.limit, ["CountryId","==", req.body.CountryId,"Active","==",true,"CouponsCount",">",0],['desc']);
-      const Userdata = await dataHandling.Read("Users", req.body.UserId);
-      
-    data.forEach((Offer) => {
-        claim=false;
-      if (Offer.SaltCoins <= Userdata.SaltCoins) {
-        claim = true;
-      }
-      arr.push({...Offer,ClaimStatus:claim})
-    });
+  let claim;
+  const arr = [];
+  const data = await dataHandling.Read("Offers", req.body.DocId, req.body.index, req.body.Keyword, req.body.limit, ["CountryId", "==", req.body.CountryId, "Active", "==", true, "CouponsCount", ">", 0], ['desc']);
+  const Userdata = await dataHandling.Read("Users", req.body.UserId);
 
-      return res.json(arr) 
-  }
-
-
-  async function BuyOffer(req, res) {
-
-    try {
-      await db.runTransaction(async (t) => {
-        const Userdata = await t.get(db.collection("Users").doc(req.body.UserId));
-        const Coupon = await t.get(db.collection("Offers").doc(req.body.OfferId).collection("Coupons").limit(1));
-    t.set(db.collection("Users").doc(req.body.UserId).collection("Rewards").doc(Coupon.docs[0].id),{ ...Coupon.docs[0].data()})
-     t.delete(db.collection("Offers").doc(req.body.OfferId).collection("Coupons").doc(Coupon.docs[0].id))
-      t.update(db.collection("Users").doc(req.body.UserId), {SaltCoins:(Userdata.SaltCoins-req.body.OfferSaltCoins)});
-      });
-     return res.json(true);
-    } catch (e) {
-     return res.json(false);
+  data.forEach((Offer) => {
+    claim = false;
+    if (Offer.SaltCoins <= Userdata.SaltCoins) {
+      claim = true;
     }
-    
+    arr.push({ ...Offer, ClaimStatus: claim })
+  });
 
-  }
+  return res.json(arr)
 }
+
+
+async function BuyOffer(req, res) {
+
+  try {
+    await db.runTransaction(async (t) => {
+      const Userdata = await t.get(db.collection("Users").doc(req.body.UserId));
+      const Coupon = await t.get(db.collection("Offers").doc(req.body.OfferId).collection("Coupons").limit(1));
+      t.set(db.collection("Users").doc(req.body.UserId).collection("Rewards").doc(Coupon.docs[0].id), { ...Coupon.docs[0].data() })
+      t.delete(db.collection("Offers").doc(req.body.OfferId).collection("Coupons").doc(Coupon.docs[0].id))
+      t.update(db.collection("Users").doc(req.body.UserId), { SaltCoins: (Userdata.SaltCoins - req.body.OfferSaltCoins) });
+    });
+    return res.json(true);
+  } catch (e) {
+    return res.json(false);
+  }
+
+
+}
+
 
 
 
@@ -62,7 +62,7 @@ async function ReadOffers(req, res) {
 //      console.log(error)
 //      return res.json(false)
 //    }
- 
+
 
 
 
