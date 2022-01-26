@@ -28,63 +28,22 @@ app.post('/ReadProfile', async (req, res) => {
 })
 
 
-// app.post("/CheckDraw", async (req, res) => {
-//   const today = moment();
-//   const Date = today.subtract(1, "d").format("YYYY-MM-DD");
-//   console.log("This will be run every day at 12:05 AM Eastern!");
-//   const arr = [];
-//   let query;
-//   let limit = 0;
-//   const settings = await dataHandling.Read("Admin", "Settings");
-//   const DailySet = settings.DailyDraw;
-//   DailySet.forEach((element) => {
-//     limit = limit + element.WinnerLimit;
-//   });
-//   query = db.collection("DailyDraw").doc(Date).collection("Entry");
-//   const dat = [];
-//   for (let loop = 0; loop < limit; loop++) {
-//     key = query.doc().id;
-//     const snapshot = await query
-//       .where(admin.firestore.FieldPath.documentId(), ">=", key)
-//       .limit(1)
-//       .get();
-//     if (snapshot.size > 0) {
-//       snapshot.forEach((doc) => {
-//         if (!arr.includes(doc.data().UserId)) {
-//           arr.push(doc.data().UserId);
-//           dat.push(doc.data().UserId);
-//         } else {
-//           limit = limit + 1;
-//         }
-//       });
-//     } else {
-//       const snapshots = await query
-//         .where(admin.firestore.FieldPath.documentId(), "<", key)
-//         .limit(1)
-//         .get();
-
-//       snapshots.forEach((doc) => {
-//         if (!arr.includes(doc.data().UserId)) {
-//           arr.push(doc.data().UserId);
-//           dat.push(doc.data().UserId);
-//         } else {
-//           limit = limit + 1;
-//         }
-//       });
-//     }
-//   }
-//   console.log(dat.length);
-//   f = 0;
-//   DailySet.forEach((snap) => {
-//     l = f + snap.WinnerLimit;
-//     snap.Winners = dat.slice(f, l);
-//     f = l;
-//   });
-//   return await db
-//     .collection("DailyDraw")
-//     .doc(Date)
-//     .update({ WinnersData: DailySet });
-// });
+app.post("/CheckDraw", async (req, res) => {
+    const promise=[];
+    const today = moment().tz('Asia/Kolkata');
+    const Day = today.subtract(1, "d").format("YYYY-MM-DD");
+    const weekEnd=today.endOf('week').format("YYYY-MM-DD")
+    const monthEnd=today.endOf('month').format("YYYY-MM-DD")
+    if(weekEnd===Day){
+promise.push(common.drawWinnerPicker("Weekly",Day))
+    }
+    if(monthEnd===Day){
+     promise.push(common.drawWinnerPicker("Monthly",Day))
+    }
+    promise.push(common.drawWinnerPicker("Daily",Day))
+    console.log("This will be run every day at 12:05 AM Eastern!");
+  return  await Promise.all(promise)
+});
 
 
 
