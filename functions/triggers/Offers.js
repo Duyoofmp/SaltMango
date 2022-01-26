@@ -12,7 +12,7 @@ exports.OnOfferCreate = functions.firestore
         const data = change.data()
         const arr = [];
         common.createKeywords(data.OfferName, arr)
-        return await db.collection("Offers").doc(docid).update({ DocId: docid, Keywords: arr, CouponsCount: 0 })
+        return db.collection("Offers").doc(docid).update({ DocId: docid, Keywords: arr, CouponsCount: 0 })
     })
 
 
@@ -23,7 +23,7 @@ exports.OnOfferUpdate = functions.firestore
         const data = change.after.data()
         const arr = [];
         common.createKeywords(data.OfferName, arr)
-        return await db.collection("Offers").doc(docid).update({ Keywords: arr })
+        return db.collection("Offers").doc(docid).update({ Keywords: arr })
 
     })
 
