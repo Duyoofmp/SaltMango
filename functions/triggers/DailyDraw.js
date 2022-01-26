@@ -8,26 +8,25 @@ const dataHandling = require("../functions");
 const { database } = require("firebase-admin");
 
 const runtimeOpts = {
-  timeoutSeconds:540
-  }
-exports.scheduledFunctionForDraws = functions.runtimeOpts(runtimeOpts).pubsub
+  timeoutSeconds: 540
+}
+exports.scheduledFunctionForDraws = functions.runWith(runtimeOpts).pubsub
   .schedule("5 0 * * *")
   .timeZone("Asia/Kolkata") // Users can choose timezone - default is America/Los_Angeles
   .onRun(async (context) => {
-    const promise=[];
-    const today = moment().tz('Asia/Kolkata');
-    const Day = today.subtract(1, "d").format("YYYY-MM-DD");
-    const weekEnd=today.endOf('week').format("YYYY-MM-DD")
-    const monthEnd=today.endOf('month').format("YYYY-MM-DD")
-    if(weekEnd===Day){
-promise.push(drawWinnerPicker("Weekly",Day))
+    const promise = [];
+    const yesterday = moment().tz('Asia/Kolkata').subtract(1, "d");
+    const Day = yesterday.format("YYYY-MM-DD");
+    const weekEnd = yesterday.endOf('week').format("YYYY-MM-DD");
+    const monthEnd = yesterday.endOf('month').format("YYYY-MM-DD");
+    if (weekEnd === Day) {
+      promise.push(drawWinnerPicker("Weekly", Day));
     }
-    if(monthEnd===Day){
-     promise.push(drawWinnerPicker("Monthly",Day))
+    if (monthEnd === Day) {
+      promise.push(drawWinnerPicker("Monthly", Day));
     }
-    promise.push(drawWinnerPicker("Daily",Day))
-    console.log("This will be run every day at 12:05 AM Eastern!");
-  return  await Promise.all(promise)
+    promise.push(drawWinnerPicker("Daily", Day));
+    return Promise.all(promise)
   });
 
 exports.OnEntryCreate = functions.firestore
@@ -51,57 +50,57 @@ exports.OnDrawCreate = functions.firestore
   });
 
 
-  
-async function drawWinnerPicker(draw,Date){
+
+async function drawWinnerPicker(draw, Date) {
   const arr = [];
-    let query;
-    let limit = 0;
-    const settings = await dataHandling.Read("Admin", "Settings");
-    const DrawSet = settings.draw+"Draw";
-    DrawSet.forEach((element) => {
-      limit = limit + element.WinnerLimit;
-    });
-    query = db.collection(draw).doc(Date).collection("Entry");
-    const dat = [];
-    for (let loop = 0; loop < limit; loop++) {
-      key = query.doc().id;
-      const snapshot = await query
-        .where(admin.firestore.FieldPath.documentId(), ">=", key)
+  let query;
+  let limit = 0;
+  const settings = await dataHandling.Read("Admin", "Settings");
+  const DrawSet = settings[draw + "Draw"];
+  DrawSet.forEach((element) => {
+    limit = limit + element.WinnerLimit;
+  });
+  query = db.collection(draw).doc(Date).collection("Entry");
+  const dat = [];
+  for (let loop = 0; loop < limit; loop++) {
+    key = query.doc().id;
+    const snapshot = await query
+      .where(admin.firestore.FieldPath.documentId(), ">=", key)
+      .limit(1)
+      .get();
+    if (snapshot.size > 0) {
+      snapshot.forEach((doc) => {
+        if (!arr.includes(doc.data().UserId)) {
+          arr.push(doc.data().UserId);
+          dat.push(doc.data().UserId);
+        } else {
+          limit = limit + 1;
+        }
+      });
+    } else {
+      const snapshots = await query
+        .where(admin.firestore.FieldPath.documentId(), "<", key)
         .limit(1)
         .get();
-      if (snapshot.size > 0) {
-        snapshot.forEach((doc) => {
-          if (!arr.includes(doc.data().UserId)) {
-            arr.push(doc.data().UserId);
-            dat.push(doc.data().UserId);
-          } else {
-            limit = limit + 1;
-          }
-        });
-      } else {
-        const snapshots = await query
-          .where(admin.firestore.FieldPath.documentId(), "<", key)
-          .limit(1)
-          .get();
 
-        snapshots.forEach((doc) => {
-          if (!arr.includes(doc.data().UserId)) {
-            arr.push(doc.data().UserId);
-            dat.push(doc.data().UserId);
-          } else {
-            limit = limit + 1;
-          }
-        });
-      }
+      snapshots.forEach((doc) => {
+        if (!arr.includes(doc.data().UserId)) {
+          arr.push(doc.data().UserId);
+          dat.push(doc.data().UserId);
+        } else {
+          limit = limit + 1;
+        }
+      });
     }
-    let f = 0;
-    DrawSet.forEach((snap) => {
-      let l = f + snap.WinnerLimit;
-      snap.Winners = dat.slice(f, l);
-      f = l;
-    });
-    return await db
-      .collection(draw)
-      .doc(Date)
-      .update({ WinnersData: DrawSet });
+  }
+  let f = 0;
+  DrawSet.forEach((snap) => {
+    let l = f + snap.WinnerLimit;
+    snap.Winners = dat.slice(f, l);
+    f = l;
+  });
+  return await db
+    .collection(draw)
+    .doc(Date)
+    .update({ WinnersData: DrawSet });
 }

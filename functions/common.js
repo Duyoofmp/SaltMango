@@ -2,7 +2,7 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const db = admin.firestore();
 
-const dataHandling = require("../functions");
+const dataHandling = require("./functions");
 
 async function decodeIDToken(req, res, next) {
   functions.logger.log(req.body)
