@@ -28,22 +28,22 @@ app.post('/ReadProfile', async (req, res) => {
 })
 
 
-app.post("/CheckDraw", async (req, res) => {
-    const promise=[];
-    const today = moment().tz('Asia/Kolkata');
-    const Day = today.subtract(1, "d").format("YYYY-MM-DD");
-    const weekEnd=today.endOf('week').format("YYYY-MM-DD")
-    const monthEnd=today.endOf('month').format("YYYY-MM-DD")
-    if(weekEnd===Day){
-promise.push(common.drawWinnerPicker("Weekly",Day))
-    }
-    if(monthEnd===Day){
-     promise.push(common.drawWinnerPicker("Monthly",Day))
-    }
-    promise.push(common.drawWinnerPicker("Daily",Day))
-    console.log("This will be run every day at 12:05 AM Eastern!");
-  return  await Promise.all(promise)
-});
+// app.post("/CheckDraw", async (req, res) => {
+//     const prom=[];
+//     const prom1=[];
+//   const  date="2022-01-27";
+// const dat=["7iR3id3RIKDcy5NN552C","9e74d2KB9lzXsB4max6O"]
+// const draw="Daily"
+//     dat.forEach(usrIds=>{
+//        prom.push(dataHandling.Read("Users",usrIds))
+//      })
+//    const usrDatas=  await Promise.all(prom);
+// usrDatas.forEach(docs=>{
+//   prom1.push(dataHandling.Create("Winners",{...docs,index:Date.now(),WonIn:draw,UserId:docs.DocId,WinDate:date}))
+// })
+// await Promise.all(prom1);
+// res.json(true)
+// });
 
 
 

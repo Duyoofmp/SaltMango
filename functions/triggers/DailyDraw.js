@@ -5,8 +5,6 @@ const common = require("../common");
 const moment = require("moment");
 const dataHandling = require("../functions");
 
-const { database } = require("firebase-admin");
-
 const runtimeOpts = {
   timeoutSeconds: 540
 }
@@ -51,7 +49,7 @@ exports.OnDrawCreate = functions.firestore
 
 
 
-async function drawWinnerPicker(draw, Date) {
+async function drawWinnerPicker(draw, date) {
   const arr = [];
   let query;
   let limit = 0;
@@ -60,7 +58,7 @@ async function drawWinnerPicker(draw, Date) {
   DrawSet.forEach((element) => {
     limit = limit + element.WinnerLimit;
   });
-  query = db.collection(draw).doc(Date).collection("Entry");
+  query = db.collection(draw).doc(date).collection("Entry");
   const dat = [];
   for (let loop = 0; loop < limit; loop++) {
     key = query.doc().id;
@@ -93,14 +91,24 @@ async function drawWinnerPicker(draw, Date) {
       });
     }
   }
+
   let f = 0;
   DrawSet.forEach((snap) => {
     let l = f + snap.WinnerLimit;
     snap.Winners = dat.slice(f, l);
     f = l;
-  });
-  return await db
+  }); await db
     .collection(draw)
-    .doc(Date)
+    .doc(date)
     .update({ WinnersData: DrawSet });
+    const prom=[];
+    const prom1=[];
+     dat.forEach(usrIds=>{
+       prom.push(dataHandling.Read("Users",usrIds))
+     })
+   const usrDatas=  await Promise.all(prom);
+usrDatas.forEach(docs=>{
+  prom1.push(dataHandling.Create("Winners",{...docs,index:Date.now(),WonIn:draw,UserId:docs.DocId,WinDate:date}))
+})
+return await Promise.all(prom1);
 }
