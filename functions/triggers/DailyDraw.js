@@ -97,18 +97,34 @@ async function drawWinnerPicker(draw, date) {
     let l = f + snap.WinnerLimit;
     snap.Winners = dat.slice(f, l);
     f = l;
-  }); await db
+  }); 
+  return await db
     .collection(draw)
     .doc(date)
     .update({ WinnersData: DrawSet });
-    const prom=[];
-    const prom1=[];
-     dat.forEach(usrIds=>{
-       prom.push(dataHandling.Read("Users",usrIds))
-     })
-   const usrDatas=  await Promise.all(prom);
-usrDatas.forEach(docs=>{
-  prom1.push(dataHandling.Create("Winners",{...docs,index:Date.now(),WonIn:draw,UserId:docs.DocId,WinDate:date}))
-})
-return await Promise.all(prom1);
+   
 }
+
+exports.OnWinnerAddOn = functions.firestore
+  .document("{Draw}/{DrawId}")
+  .onUpdate(async (change, context) => {
+    const data=change.after.data();
+    const winners=data().WinnersData
+    if(winners!==undefined){
+      const dat=[];
+      winners.forEach(ele=>{
+        dat.concat(ele.Winners)
+      })
+  const prom=[];
+  const prom1=[];
+   dat.forEach(usrIds=>{
+     prom.push(dataHandling.Read("Users",usrIds))
+   })
+  const usrDatas=  await Promise.all(prom);
+  usrDatas.forEach(docs=>{
+  prom1.push(dataHandling.Create("Winners",{...docs ,index:Date.now(),WonIn:draw,UserId:docs.DocId,WinDate:date}))
+  })
+  return await Promise.all(prom1);
+    }
+    return 0;
+})
