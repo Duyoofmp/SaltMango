@@ -43,11 +43,21 @@ exports.OnUsersUpdate = functions.firestore
         const docid = context.params.docid;
         const data = change.after.data();
         const prevData = change.after.data()
-
+     const Date=moment().tz('Asia/Kolkata').subtract(30, "d").format("YYYY-MM-DD")
         const arr = [];
         common.createKeywords(data.Name, arr)
         const UserData = { Keywords: arr };
-
+        if(!common.arrayEquals(data.FriendsList,prevData.FriendsList)){
+            const response=await db.collection("Winners").where("WinDate",">=",Date).where("UserId","==",docid).get()
+                    let batch = firebase.firestore().batch()
+                    response.docs.forEach((doc) => {
+                        const docRef = firebase.firestore().collection("Winners").doc(doc.id)
+                        batch.update(docRef, {FriendsList:data.FriendsList})
+                    })
+                    batch.commit().then(() => {
+                        console.log(`updated all documents inside ${collectionName}`)
+                    })
+        }
         if (data.ReferralCode === prevData.ReferralCode) {
             return db.collection("Users").doc(docid).update(UserData)
         };
