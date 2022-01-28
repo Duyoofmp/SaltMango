@@ -14,12 +14,20 @@ async function Read(req, res) {
 async function GetPoints(req, res) {
 
     const data = await dataHandling.Read("QuestionsAndAnswers", req.body.DocId || "");
+    const PointObj = {
+        "DiamondsAccumulated": 0,
+        "Result": false,
+        "Answer": data.Answer,
+    }
     if (data === null || data.Answer !== req.body.Answer) {
-        return res.json(false);
+        return res.json(PointObj);
+    }
+    else {
+        PointObj.Result = true;
+        PointObj.DiamondsAccumulated = 1;
     }
     await dataHandling.Update("Users", { "Diamond": admin.firestore.FieldValue.increment(1) }, req.body.UserId);
-    return res.json(true);
-
+    return res.json(PointObj);
 }
 
 async function EnterASlot(req, res) {
