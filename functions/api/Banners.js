@@ -10,7 +10,7 @@ const common = require("../common");
 app.use(common.decodeIDToken)
 
 
-const BannerFunctions = require('../service/Banner')
+const BannerFunctions = require('../service/Banners')
 
 app.post('/CreateBanner', async (req, res) => BannerFunctions.Create(req, res))
 

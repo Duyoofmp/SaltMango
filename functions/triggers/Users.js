@@ -73,7 +73,7 @@ exports.OnUsersUpdate = functions.firestore
                 batch.update(docRef, { FriendsList: data.FriendsList })
             })
             batch.commit().then(() => {
-                console.log(`updated all documents inside ${collectionName}`)
+                console.log(`updated all documents inside winners`)
             })
         }
         if (data.ReferralCode === prevData.ReferralCode) {
