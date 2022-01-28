@@ -1,5 +1,5 @@
 const admin = require('firebase-admin');
-const ServiceAccount = require('./config/serviceAccount.json')
+const ServiceAccount = require('./config/ServiceAccount.json')
 
 admin.initializeApp({
   credential: admin.credential.cert(ServiceAccount)
@@ -36,6 +36,10 @@ const Home = require('./api/UserApis/Home')
 exports.Home = Home.Home
 
 
+const Offer = require('./api/UserApis/Offer')
+exports.Offer = Offer.Offer
+
+
 
 // // // //=========================Triggers==============================
 
@@ -59,8 +63,24 @@ exports.OnCountryUpdate = CountryTriggers.OnCountryUpdate
 const CouponTriggers = require('./triggers/Coupon')
 exports.OnCouponCreate = CouponTriggers.OnCouponCreate
 exports.OnCouponUpdate = CouponTriggers.OnCouponUpdate
+exports.OnCouponDelete = CouponTriggers.OnCouponDelete
+
+const OfferTriggers = require('./triggers/Offers')
+exports.OnOfferCreate = OfferTriggers.OnOfferCreate
+exports.OnOfferUpdate = OfferTriggers.OnOfferUpdate
+
+
+
+const DailyDrawTriggers = require('./triggers/DailyDraw')
+exports.OnDrawCreate = DailyDrawTriggers.OnDrawCreate
+exports.OnEntryCreate = DailyDrawTriggers.OnEntryCreate
+exports.scheduledFunctionForDraws = DailyDrawTriggers.scheduledFunctionForDraws
+exports.OnWinnerAddOn = DailyDrawTriggers.OnWinnerAddOn
+
+
 
 
 //https://console.firebase.google.com/v1/r/project/salt-mango/firestore/indexes?create_composite=Cktwcm9qZWN0cy9zYWx0LW1hbmdvL2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9DYXRlZ29yeS9pbmRleGVzL18QARoMCghLZXl3b3JkcxgBGgoKBkFjdGl2ZRABGg0KCUF2YWlsYWJsZRABGgkKBWluZGV4EAIaDAoIX19uYW1lX18QAg
 //https://console.firebase.google.com/v1/r/project/salt-mango/firestore/indexes?create_composite=Cktwcm9qZWN0cy9zYWx0LW1hbmdvL2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9DYXRlZ29yeS9pbmRleGVzL18QARoKCgZBY3RpdmUQARoNCglBdmFpbGFibGUQARoJCgVpbmRleBACGgwKCF9fbmFtZV9fEAI
 //https://console.firebase.google.com/v1/r/project/salt-mango/firestore/indexes?create_composite=ClZwcm9qZWN0cy9zYWx0LW1hbmdvL2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9RdWVzdGlvbnNBbmRBbnN3ZXJzL2luZGV4ZXMvXxABGg4KCkNhdGVnb3J5SWQQARoSCg5RdWVzdGlvbk51bWJlchABGgkKBWluZGV4EAIaDAoIX19uYW1lX18QAg
+//https://console.firebase.google.com/v1/r/project/salt-mango/firestore/indexes?create_composite=ClNwcm9qZWN0cy9zYWx0LW1hbmdvL2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9FbnRyeS9pbmRleGVzL0NJQ0FnTmpwZ1lJSxABGgYKAkFkEAEaCgoGVXNlcklkEAEaCQoFaW5kZXgQAhoMCghfX25hbWVfXxAC

@@ -2,6 +2,8 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const db = admin.firestore();
 
+const dataHandling = require("./functions");
+
 async function decodeIDToken(req, res, next) {
   functions.logger.log(req.body)
 
@@ -175,8 +177,23 @@ function Keygenerator(num) {
   return (array)
 }
 
+function arrayEquals(a, b) {
+  return Array.isArray(a) &&
+      Array.isArray(b) &&
+      a.length === b.length &&
+      a.every((val, index) => val === b[index]);
+}
+
+
+
+
+
+
+
+
 module.exports = {
   decodeIDToken,
+  arrayEquals,
   makeid,
   arrayRemove,
   login,

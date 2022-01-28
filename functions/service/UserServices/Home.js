@@ -50,7 +50,7 @@ async function GetSlotData(UserId, SlotType, DateData, Ad = false) {
     if (FreeSlotData.length < 5 && !Ad) {
         checkSlot = false;
     }
-    if (Ad && AdSlotData < 5) {
+    if (Ad && AdSlotData.length < 5) {
         checkSlot = false;
     }
     return {
@@ -93,42 +93,45 @@ async function GetSlotCost(SlotType) {
     return SlotCost;
 }
 
-async function ViewSpinData() {
+async function ViewSpinData(Type = false) {
+    const SpinData = [
+        {
+            "Number": 50, "Type": "Diamond", "Probability": 5,
+        },
+        {
+            "Number": 40, "Type": "Diamond", "Probability": 10,
+        },
+        {
+            "Number": 30, "Type": "Diamond", "Probability": 15,
+        },
+        {
+            "Number": 20, "Type": "Diamond", "Probability": 30,
+        },
+        {
+            "Number": 10, "Type": "Diamond", "Probability": 30,
+        },
+    ];
     const SaltSpinData = [
         {
-            "Number": 5, "Probability": 1
+            "Number": 5, "Type": "SaltCoin", "Probability": 1,
         },
         {
-            "Number": 4, "Probability": 1
+            "Number": 4, "Type": "SaltCoin", "Probability": 1,
         },
         {
-            "Number": 3, "Probability": 2
+            "Number": 3, "Type": "SaltCoin", "Probability": 2,
         },
         {
-            "Number": 2, "Probability": 3
+            "Number": 2, "Type": "SaltCoin", "Probability": 3,
         },
         {
-            "Number": 1, "Probability": 3
+            "Number": 1, "Type": "SaltCoin", "Probability": 3,
         },
-    ];
-    const DiamondSpinData = [
-        {
-            "Number": 50, "Probability": 5
-        },
-        {
-            "Number": 40, "Probability": 10
-        },
-        {
-            "Number": 30, "Probability": 15
-        },
-        {
-            "Number": 20, "Probability": 30
-        },
-        {
-            "Number": 10, "Probability": 30
-        },
-    ];
-    return { SaltSpinData, DiamondSpinData };
+    ]
+    if (Type) {
+        SpinData.push(...SaltSpinData);
+    }
+    return SpinData;
 }
 
 
@@ -136,22 +139,56 @@ async function EnterASpin(req, res) {
     const SlotType = "Spin";
     const UserId = req.body.UserId;
     const DateData = GetSlotDate(SlotType);
-    const SlotData = await ViewSpinData();
-    if (SlotData.checkSlot) {
-        return res.json("Cannont Access this api");
-    }
+    let SlotData = [];// await ViewSpinData();
     //Check
-    const Check =await dataHandling.Read(`${SlotType}/${DateData}/Entry`,"","","",100,["UserId","==",UserId,"AwardType","==","Salt"]);
 
-    const EntryData = {
-        "UserId": UserId,
-        "Ad": req.body.Ad,
-        "index": Date.now()
+    const promise = [];
+    promise.push(dataHandling.Read(`User/${UserId}/${SlotType}`, `${DateData}`));
+    promise.push(dataHandling.Read(`${SlotType}`, `${DateData}`));
+    promise.push(dataHandling.Read(`Admin`, `Settings`));
+
+    promise.push(dataHandling.Update("Users", { "Diamond": admin.firestore.FieldValue.increment(-1 * 30) }, req.body.UserId));
+
+    const promiseResult = await Promise.all(promise);
+    const CheckUserLimit = promiseResult[0];
+    const CheckAdminLimit = promiseResult[1];
+    const SpinLimit = promiseResult[2];
+
+    if (CheckUserLimit.RewardSalt >= SpinLimit.UserLimit && CheckAdminLimit.RewardSalt >= SpinLimit.AdminLimit) {
+        SlotData = await ViewSpinData(false);
     }
-    await dataHandling.Create(`${SlotType}/${DateData}/Entry`, EntryData);
-    await dataHandling.Update("Users", { "Diamond": admin.firestore.FieldValue.increment(-1 * SlotData.SlotCost) }, req.body.UserId);
-    return res.json(true);
+    else {
+        SlotData = await ViewSpinData(true);
+    }
+
+
+    const distribution = createDistribution(SlotData, SlotData.map(id => id.Probability));
+    const RandomIndex = randomIndex(distribution);
+    const RandomSpinData = SlotData[RandomIndex];
+    RandomSpinData.index = Date.now();
+
+    await dataHandling.Update("Users", { [RandomSpinData.Type]: admin.firestore.FieldValue.increment(RandomSpinData.Number) }, UserId);
+    await dataHandling.Create(`User/${UserId}/${SlotType}/${DateData}/Entry`, RandomSpinData);
+    return res.json(RandomSpinData);
 }
+
+
+const createDistribution = (array, weights, size = 1000) => {
+    const distribution = [];
+    const sum = weights.reduce((a, b) => a + b);
+    for (let i = 0; i < array.length; ++i) {
+        const count = (weights[i] / sum) * size;
+        for (let j = 0; j < count; ++j) {
+            distribution.push(i);
+        }
+    }
+    return distribution;
+};
+
+const randomIndex = distribution => {
+    const index = Math.floor(distribution.length * Math.random());  // random index
+    return distribution[index];
+};
 
 module.exports = {
     Read,

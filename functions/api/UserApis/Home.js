@@ -1,5 +1,6 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const db = admin.firestore()
 
 const express = require('express');
 const cors = require('cors');
@@ -30,16 +31,44 @@ app.post('/GetSlotData', async (req, res) => {
 app.post('/EnterASlot', async (req, res) => HomeFunctions.EnterASlot(req, res));
 
 app.post('/SpinDialData', async (req, res) => {
-    const { SaltSpinData, DiamondSpinData } = await HomeFunctions.ViewSpinData();
-    const SaltDialData = SaltSpinData.map(id => id.Number);
-    const DiamondDialData = DiamondSpinData.map(id => id.Number);
-    const ResponseObj = { SaltDialData, DiamondDialData };
-    return res.json(ResponseObj);
+    return res.json(await HomeFunctions.ViewSpinData());
 });
 
 app.post('/EnterASpin', async (req, res) => HomeFunctions.EnterASpin(req, res));
 
-
+// app.post('/random', async (req, res) =>{ 
+//     const arr=[];
+// query= db.collection("QuestionsAndAnswers");
+// let loop=4;
+// for (let index = 0; index < loop; index++) {
+//     key = query.doc().id;
+//    const snapshot=await  query.where(admin.firestore.FieldPath.documentId(), '>=', key).limit(1).get();
+//        if(snapshot.size > 0) {
+//            snapshot.forEach(doc => {
+//                if(!arr.includes(doc.id)){
+//                    arr.push(doc.id)
+//                }else{
+//                    loop=loop+1
+//                }
+               
+//                console.log(doc.id);
+//            });
+//        }
+//        else {
+//           const snapshots=await query.where(admin.firestore.FieldPath.documentId(), '<', key).limit(1).get()
+           
+//                snapshots.forEach(doc => {
+//                 if(!arr.includes(doc.id)){
+//                     arr.push(doc.id)
+//                 }else{
+//                     loop=loop+1
+//                 }
+//                    console.log(doc.id);
+//                });
+//        }
+//   }
+//  return res.json(arr)
+// })
 
 
 
