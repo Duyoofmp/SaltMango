@@ -11,10 +11,28 @@ exports.OnUsersCreate = functions.firestore
         const data = change.data()
         const arr = [];
         common.createKeywords(data.Name, arr)
-        let code = common.Keygenerator(4)
-        let ref = docid.substring(0, 3);
-        let refcode = code + ref;
-        return db.collection("Users").doc(docid).update({ DocId: docid, Keywords: arr, MyCode: refcode, SaltCoin: 0, Diamond: 0 })
+        Keygenerator()
+        async function Keygenerator() {
+            let generator = '';
+            let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyskiouhjnmbhj'
+
+            for (let i = 0; i < 4; i++) {
+                generator += characters.charAt(Math.floor(Math.random() * characters.length))
+            }
+            let array = generator;
+            const code = await admin.firestore().collection("Users").where("MyCode", "==", array).limit(1).get();
+            if (code.size === 0) {
+                let ref = docid.substring(0, 3);
+                let refcode = array + ref;
+                await admin.firestore().collection("Users").doc(docid).update({
+                    MyCode: refcode
+                })
+            }
+            else {
+                Keygenerator()
+            }
+        }
+        return db.collection("Users").doc(docid).update({ DocId: docid, Keywords: arr, SaltCoin: 0, Diamond: 0 })
     })
 
 
