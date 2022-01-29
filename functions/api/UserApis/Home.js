@@ -22,6 +22,11 @@ app.post('/ReadQuestions', async (req, res) => ReadRandomQuestions(req, res));
 
 app.post('/CheckAnswer', async (req, res) => HomeFunctions.GetPoints(req, res));
 
+app.post('/Slots', async (req, res) => {
+    const data = await HomeFunctions.GetSlots();
+    return res.json(data);
+});
+
 app.post('/GetSlotData', async (req, res) => {
     const DateData = HomeFunctions.GetSlotDate(req.body.SlotType);
     const SlotData = await HomeFunctions.GetSlotData(req.body.UserId, req.body.SlotType, DateData);
@@ -50,13 +55,13 @@ app.post('/EnterASpin', async (req, res) => HomeFunctions.EnterASpin(req, res));
 //                }else{
 //                    loop=loop+1
 //                }
-               
+
 //                console.log(doc.id);
 //            });
 //        }
 //        else {
 //           const snapshots=await query.where(admin.firestore.FieldPath.documentId(), '<', key).limit(1).get()
-           
+
 //                snapshots.forEach(doc => {
 //                 if(!arr.includes(doc.id)){
 //                     arr.push(doc.id)
