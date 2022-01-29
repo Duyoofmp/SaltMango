@@ -1,7 +1,4 @@
-const functions = require('firebase-functions');
 const dataHandling = require("../functions");
-
-
 
 async function UpdateSettings(req, res) {
     await dataHandling.Update("Admin", req.body, "Settings");

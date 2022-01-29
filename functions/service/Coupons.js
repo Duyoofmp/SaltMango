@@ -1,7 +1,4 @@
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
 const dataHandling = require("../functions");
-const db = admin.firestore()
 
 async function Create(req, res) {
     const indexDate = Date.now();
@@ -16,13 +13,9 @@ async function Create(req, res) {
 }
 
 async function Update(req, res) {
-    try {
         req.body.index = Date.now()
         await dataHandling.Update(`Offers/${req.body.OfferId}/Coupons`, req.body, req.body.DocId)
-        return res.json(true)
-    } catch (error) {
-        console.log(error)
-    }
+
 }
 
 async function Delete(req, res) {
