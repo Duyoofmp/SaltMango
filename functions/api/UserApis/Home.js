@@ -41,42 +41,6 @@ app.post('/SpinDialData', async (req, res) => {
 
 app.post('/EnterASpin', async (req, res) => HomeFunctions.EnterASpin(req, res));
 
-// app.post('/random', async (req, res) =>{ 
-//     const arr=[];
-// query= db.collection("QuestionsAndAnswers");
-// let loop=4;
-// for (let index = 0; index < loop; index++) {
-//     key = query.doc().id;
-//    const snapshot=await  query.where(admin.firestore.FieldPath.documentId(), '>=', key).limit(1).get();
-//        if(snapshot.size > 0) {
-//            snapshot.forEach(doc => {
-//                if(!arr.includes(doc.id)){
-//                    arr.push(doc.id)
-//                }else{
-//                    loop=loop+1
-//                }
-
-//                console.log(doc.id);
-//            });
-//        }
-//        else {
-//           const snapshots=await query.where(admin.firestore.FieldPath.documentId(), '<', key).limit(1).get()
-
-//                snapshots.forEach(doc => {
-//                 if(!arr.includes(doc.id)){
-//                     arr.push(doc.id)
-//                 }else{
-//                     loop=loop+1
-//                 }
-//                    console.log(doc.id);
-//                });
-//        }
-//   }
-//  return res.json(arr)
-// })
-
-
-
 exports.Home = functions.region("asia-south1").https.onRequest(app);
 
 // token in every api 
