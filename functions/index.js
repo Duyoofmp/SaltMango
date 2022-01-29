@@ -4,40 +4,41 @@ const ServiceAccount = require('./config/ServiceAccount.json');
 admin.initializeApp({
   credential: admin.credential.cert(ServiceAccount)
 });
+const functions = require('firebase-functions');
 
 //=========================Apis==============================
 
 const Category = require('./api/Category');
-exports.Category = Category.Category;
+exports.Category = functions.region("asia-south1").https.onRequest(Category.Category);
 
 const Admin = require('./api/Admin');
-exports.Admin = Admin.Admin;
-exports.LoginForAdmin = Admin.LoginForAdmin;
+exports.Admin = functions.region("asia-south1").https.onRequest(Admin.Admin);
+exports.LoginForAdmin = functions.region("asia-south1").https.onRequest(Admin.LoginForAdmin);
 
 const Questions = require('./api/Questions');
-exports.Questions = Questions.Questions;
+exports.Questions = functions.region("asia-south1").https.onRequest(Questions.Questions);
 
 const Users = require('./api/Users');
-exports.Users = Users.Users;
+exports.Users = functions.region("asia-south1").https.onRequest(Users.Users);
 
 const Offers = require('./api/Offers');
-exports.Offers = Offers.Offers;
+exports.Offers = functions.region("asia-south1").https.onRequest(Offers.Offers);
 
 const Coupons = require('./api/Coupons');
-exports.Coupons = Coupons.Coupons;
+exports.Coupons = functions.region("asia-south1").https.onRequest(Coupons.Coupons);
 
 const Country = require('./api/Country');
-exports.Countries = Country.Countries;
+exports.Countries = functions.region("asia-south1").https.onRequest(Country.Countries);
 
 const Profile = require('./api/UserApis/Profile');
-exports.Profile = Profile.Profile;
+exports.Profile = functions.region("asia-south1").https.onRequest(Profile.Profile);
 
 const Home = require('./api/UserApis/Home');
-exports.Home = Home.Home;
+exports.Home = functions.region("asia-south1").https.onRequest(Home.Home);
 
 
 const Offer = require('./api/UserApis/Offer');
-exports.Offer = Offer.Offer;
+exports.Offer = functions.region("asia-south1").https.onRequest(Offer.Offer);
 
 
 

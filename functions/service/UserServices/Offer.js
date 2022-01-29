@@ -1,20 +1,17 @@
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
-const db = admin.firestore()
-const moment = require("moment-timezone")
+
 const dataHandling = require("../../functions");
 
 
 
 async function ReadCountry(req, res) {
-  const data = await dataHandling.Read("Countries", req.body.DocId, req.body.index, req.body.Keyword, 1000, undefined, ['desc']);
+  const data = await dataHandling.Read("Countries", req.body.DocId, req.body.index, req.body.Keyword, 1000, undefined);
   return res.json(data)
 }
 
 async function ReadOffers(req, res) {
   let claim;
   const arr = [];
-  const data = await dataHandling.Read("Offers", req.body.DocId, req.body.index, req.body.Keyword, req.body.limit, ["CountryId", "==", req.body.CountryId, "Active", "==", true, "CouponsCount", ">", 0], ['desc']);
+  const data = await dataHandling.Read("Offers", req.body.DocId, req.body.index, req.body.Keyword, req.body.limit, ["CountryId", "==", req.body.CountryId, "Active", "==", true, "CouponsCount", ">", 0]);
   const Userdata = await dataHandling.Read("Users", req.body.UserId);
 
   data.forEach((Offer) => {
@@ -30,6 +27,9 @@ async function ReadOffers(req, res) {
 
 
 async function BuyOffer(req, res) {
+  const functions = require('firebase-functions');
+  const admin = require('firebase-admin');
+  const db = admin.firestore();
 
   try {
     await db.runTransaction(async (t) => {
@@ -41,6 +41,7 @@ async function BuyOffer(req, res) {
     });
     return res.json(true);
   } catch (e) {
+    functions.logger.error(e);
     return res.json(false);
   }
 

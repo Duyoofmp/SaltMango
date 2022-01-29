@@ -35,21 +35,41 @@ exports.OnUsersCreate = functions.firestore
 
         const UserData = { DocId: docid, Keywords: arr, SaltCoin: 0, Diamonds: 0 };
         if (data.ReferralCode === "" || data.ReferralCode === null || data.ReferralCode === undefined) {
-            return db.collection("Users").doc(docid).update(UserData)
+            return db.collection("Users").doc(docid).update(UserData);
         }
         else {//Referral
 
             // ReferralCode
             const CheckReferralUser = await db.collection("Users").where("ReferralCode", "==", data.ReferralCode).limit(1).get()
-            if (CheckReferralUser.size === 0) return 0;
+            if (CheckReferralUser.size === 0) {
+                return db.collection("Users").doc(docid).update(UserData);
+            }
             const ReferralUser = CheckReferralUser.docs[0];
             // ReferralReward
             const ReferralReward = (await db.doc("Admin/Settings").get()).data().ReferralReward;
 
-            await db.doc("Users/" + ReferralUser.id + "/Referral/" + docid).set({ "index": Date.now(), "UserId": docid, "Referral": ReferralUser.id, "Reward": ReferralReward })
-
-            await db.collection("Users").doc(ReferralUser.id).update({ "SaltCoin": admin.firestore.FieldValue.increment(ReferralReward), "FriendsList": admin.firestore.FieldValue.arrayUnion(docid) })
-            return db.collection("Users").doc(docid).update({ ...UserData, "FriendsList": admin.firestore.FieldValue.arrayUnion(ReferralUser.id) })
+            const DirectReferralId = ReferralUser.id;
+            const CheckIndirectReferralUser = (await db.collection("Users").doc(ReferralUser.id).get()).data() || {};
+            const IndirectReferralId = CheckIndirectReferralUser.DirectReferralId || "";
+            
+            await db.doc("Users/" + ReferralUser.id + "/Referral/" + docid).set({
+                "index": Date.now(),
+                "UserId": docid,
+                "Referral": ReferralUser.id,
+                "Reward": ReferralReward,
+            });
+            
+            await db.collection("Users").doc(ReferralUser.id).update({
+                "SaltCoin": admin.firestore.FieldValue.increment(ReferralReward),
+                "FriendsList": admin.firestore.FieldValue.arrayUnion(docid),
+            });
+            
+            return db.collection("Users").doc(docid).update({
+                ...UserData,
+                "FriendsList": admin.firestore.FieldValue.arrayUnion(ReferralUser.id),
+                DirectReferralId,
+                IndirectReferralId,
+            });
 
         }
 
@@ -79,21 +99,43 @@ exports.OnUsersUpdate = functions.firestore
             await batch.commit();
         }
         if (data.ReferralCode === prevData.ReferralCode) {
-            return db.collection("Users").doc(docid).update(UserData)
+            return db.collection("Users").doc(docid).update(UserData);
         }
-        else {
+        else {//Referral
+            
             // ReferralCode
             const CheckReferralUser = await db.collection("Users").where("ReferralCode", "==", data.ReferralCode).limit(1).get()
-            if (CheckReferralUser.size === 0) return 0;
+            if (CheckReferralUser.size === 0) {
+                return db.collection("Users").doc(docid).update(UserData);
+            }
             const ReferralUser = CheckReferralUser.docs[0];
 
             // ReferralReward
             const ReferralReward = (await db.doc("Admin/Settings").get()).data().ReferralReward;
 
-            await db.doc("Users/" + ReferralUser.id + "/Referral/" + docid).set({ "index": Date.now(), "UserId": docid, "Referral": ReferralUser.id, "Reward": ReferralReward });
+            const DirectReferralId = ReferralUser.id;
+            const CheckIndirectReferralUser = (await db.collection("Users").doc(ReferralUser.id).get()).data() || {};
+            const IndirectReferralId = CheckIndirectReferralUser.DirectReferralId || "";
+           
+            await db.doc("Users/" + ReferralUser.id + "/Referral/" + docid).set({
+                "index": Date.now(),
+                "UserId": docid,
+                "Referral": ReferralUser.id,
+                "Reward": ReferralReward,
+            });
+            
+            await db.collection("Users").doc(ReferralUser.id).update({
+                "SaltCoin": admin.firestore.FieldValue.increment(ReferralReward),
+                "FriendsList": admin.firestore.FieldValue.arrayUnion(docid),
+            });
+            
+            return db.collection("Users").doc(docid).update({
+                ...UserData,
+                "FriendsList": admin.firestore.FieldValue.arrayUnion(ReferralUser.id),
+                DirectReferralId,
+                IndirectReferralId,
+            });
 
-            await db.collection("Users").doc(ReferralUser.id).update({ "SaltCoin": admin.firestore.FieldValue.increment(ReferralReward), "FriendsList": admin.firestore.FieldValue.arrayUnion(docid) });
-            return db.collection("Users").doc(docid).update({ ...UserData, "FriendsList": admin.firestore.FieldValue.arrayUnion(ReferralUser.id) });
         }
 
     })

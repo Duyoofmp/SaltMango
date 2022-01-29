@@ -7,7 +7,7 @@ const app = express();
 app.use(cors({ origin: true }));
 
 const common = require("../common");
- app.use(common.decodeIDToken)
+app.use(common.decodeIDToken)
 
 
 const CountryFunctions = require('../service/Country')
@@ -23,4 +23,4 @@ app.post('/DeleteCountry', async (req, res) => CountryFunctions.Delete(req, res)
 
 
 
-exports.Countries = functions.region("asia-south1").https.onRequest(app);
+exports.Countries = app;

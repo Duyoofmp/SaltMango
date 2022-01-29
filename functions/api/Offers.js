@@ -23,4 +23,4 @@ app.post('/DeleteOffers', async (req, res) => OffersFunctions.Delete(req, res))
 
 
 
-exports.Offers = functions.region("asia-south1").https.onRequest(app);
+exports.Offers = app;

@@ -22,6 +22,11 @@ app.post('/ReadQuestions', async (req, res) => ReadRandomQuestions(req, res));
 
 app.post('/CheckAnswer', async (req, res) => HomeFunctions.GetPoints(req, res));
 
+app.post('/Slots', async (req, res) => {
+    const data = await HomeFunctions.GetSlots();
+    return res.json(data);
+});
+
 app.post('/GetSlotData', async (req, res) => {
     const DateData = HomeFunctions.GetSlotDate(req.body.SlotType);
     const SlotData = await HomeFunctions.GetSlotData(req.body.UserId, req.body.SlotType, DateData);
@@ -36,43 +41,7 @@ app.post('/SpinDialData', async (req, res) => {
 
 app.post('/EnterASpin', async (req, res) => HomeFunctions.EnterASpin(req, res));
 
-// app.post('/random', async (req, res) =>{ 
-//     const arr=[];
-// query= db.collection("QuestionsAndAnswers");
-// let loop=4;
-// for (let index = 0; index < loop; index++) {
-//     key = query.doc().id;
-//    const snapshot=await  query.where(admin.firestore.FieldPath.documentId(), '>=', key).limit(1).get();
-//        if(snapshot.size > 0) {
-//            snapshot.forEach(doc => {
-//                if(!arr.includes(doc.id)){
-//                    arr.push(doc.id)
-//                }else{
-//                    loop=loop+1
-//                }
-               
-//                console.log(doc.id);
-//            });
-//        }
-//        else {
-//           const snapshots=await query.where(admin.firestore.FieldPath.documentId(), '<', key).limit(1).get()
-           
-//                snapshots.forEach(doc => {
-//                 if(!arr.includes(doc.id)){
-//                     arr.push(doc.id)
-//                 }else{
-//                     loop=loop+1
-//                 }
-//                    console.log(doc.id);
-//                });
-//        }
-//   }
-//  return res.json(arr)
-// })
-
-
-
-exports.Home = functions.region("asia-south1").https.onRequest(app);
+exports.Home = app;
 
 // token in every api 
 
@@ -137,6 +106,9 @@ exports.Home = functions.region("asia-south1").https.onRequest(app);
 // }
 
 // Home/EnterASlot
+// Resquest
+//      Ad : true/false
+//      SlotType
 // Response true/false
 
 

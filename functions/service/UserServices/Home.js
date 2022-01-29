@@ -35,7 +35,7 @@ async function EnterASlot(req, res) {
     const UserId = req.body.UserId;
     const DateData = GetSlotDate(SlotType);
     const SlotData = await GetSlotData(UserId, SlotType, DateData, req.body.Ad);
-    if (SlotData.checkSlot) {
+    if (SlotData.status(403).checkSlot) {
         return res.json("Cannont Access this api");
     }
     const EntryData = {
@@ -68,6 +68,7 @@ async function GetSlotData(UserId, SlotType, DateData, Ad = false) {
         "AdSlotLength": AdSlotData.length,
         checkSlot,
         "SlotCost": await GetSlotCost(SlotType),
+        "Date": DateData,
     }
 
 }
@@ -99,6 +100,21 @@ async function GetSlotCost(SlotType) {
     let SlotCost = 15;
     SlotCost = SettingsData[`${SlotType}SlotCost`];
     return SlotCost;
+}
+
+async function GetSlots() {
+    const SettingsData = await dataHandling.Read(`Admin`, "Settings");
+    const SlotTypes = ["Daily", "Weekly", "Monthly"];
+    const data = [];
+    for (let index = 0; index < SlotTypes.length; index++) {
+        const SlotType = SlotTypes[index];
+        data.push({
+            SlotType,
+            SlotCost: SettingsData[`${SlotType}SlotCost`] || 15,
+            "Name": SlotType + " Draw",
+        })
+    }
+    return data;
 }
 
 async function ViewSpinData(Type = false) {
@@ -206,6 +222,7 @@ module.exports = {
     GetSlotDate,
     ViewSpinData,
     EnterASpin,
+    GetSlots,
 }
 
 
