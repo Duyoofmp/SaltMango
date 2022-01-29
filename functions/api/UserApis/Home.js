@@ -106,6 +106,9 @@ exports.Home = functions.region("asia-south1").https.onRequest(app);
 // }
 
 // Home/EnterASlot
+// Resquest
+//      Ad : true/false
+//      SlotType
 // Response true/false
 
 
