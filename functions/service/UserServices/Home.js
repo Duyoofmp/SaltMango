@@ -68,6 +68,7 @@ async function GetSlotData(UserId, SlotType, DateData, Ad = false) {
         "AdSlotLength": AdSlotData.length,
         checkSlot,
         "SlotCost": await GetSlotCost(SlotType),
+        "Date": DateData,
     }
 
 }
