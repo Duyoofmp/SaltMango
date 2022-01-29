@@ -1,18 +1,11 @@
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
 const dataHandling = require("../functions");
-// const { Category } = require('..');
-const db = admin.firestore();
-//const { database } = require('firebase-functions/v1/firestore');
 
 
 async function Create(req, res) {
-  try {
-
     const temp = []
-    const query = await db.collection("Category").doc(req.body.CategoryId).get();
-    let no = query.data().NoOfQuestions;
-    const id = query.data().DocId;
+    const query = await dataHandling.Read("Category",req.body.CategoryId,)//db.collection("Category").doc(req.body.CategoryId).get();
+    let no = query.NoOfQuestions;
+    const id = query.DocId;
     req.body.Questions.forEach(element => {
       no = no + 1
       element.index = Date.now();
@@ -24,11 +17,6 @@ async function Create(req, res) {
     temp.push(dataHandling.Update("Category", { NoOfQuestions: no }, id))
     await Promise.all(temp)
     return res.json(true)
-  } catch (error) {
-    console.log(error)
-  }
-
-
 }
 async function Update(req, res) {
   req.body.index = Date.now()

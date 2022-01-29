@@ -1,7 +1,4 @@
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
 const dataHandling = require("../functions");
-const db = admin.firestore()
 
 async function Create(req, res) {
   const temp = [];

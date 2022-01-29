@@ -1,7 +1,4 @@
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
 const dataHandling = require("../functions");
-const db = admin.firestore()
 
 async function Create(req, res) {
   req.body.index = Date.now()
@@ -9,14 +6,9 @@ async function Create(req, res) {
   return res.json(true)
 }
 async function Update(req, res) {
-  try {
     req.body.index = Date.now()
     await dataHandling.Update("Offers", req.body, req.body.DocId)
     return res.json(true)
-  }
-  catch (error) {
-    console.log(error);
-  }
 }
 async function Delete(req, res) {
   await dataHandling.Delete("Offers", req.body.DocId)
@@ -40,13 +32,9 @@ async function CreateCoupon(req, res) {
 }
 
 async function UpdateCoupon(req, res) {
-  try {
     req.body.index = Date.now()
     await dataHandling.Update(`Offers/${req.body.OfferId}/Coupons`, req.body, req.body.DocId)
     return res.json(true)
-  } catch (error) {
-    console.log(error)
-  }
 }
 
 async function DeleteCoupon(req, res) {

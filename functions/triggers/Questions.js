@@ -12,7 +12,7 @@ exports.OnQuestionsCreate = functions.firestore
         const data = change.data();
         const arr = [];
         common.createKeywords(data.Question, arr);
-        return await db.collection("QuestionsAndAnswers").doc(docid).update({ DocId: docid, Keywords: arr })
+        return db.collection("QuestionsAndAnswers").doc(docid).update({ DocId: docid, Keywords: arr })
     })
 
 
