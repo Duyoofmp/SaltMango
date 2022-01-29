@@ -7,7 +7,7 @@ const app = express();
 app.use(cors({ origin: true }));
 
 const common = require("../common");
-app.use(common.decodeIDToken)
+// app.use(common.decodeIDToken)
 
 
 const CategoryFunctions = require('../service/Category')
@@ -25,4 +25,4 @@ app.post('/DeleteCategory', async (req, res) => CategoryFunctions.Delete(req, re
 //     minInstances: 1,
 //     memory: "128MB"
 //   }.runWith(runtimeOpts)
-exports.Category = functions.region("asia-south1").https.onRequest(app);
+exports.Category = app//app;

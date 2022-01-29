@@ -41,7 +41,7 @@ app.post('/SpinDialData', async (req, res) => {
 
 app.post('/EnterASpin', async (req, res) => HomeFunctions.EnterASpin(req, res));
 
-exports.Home = functions.region("asia-south1").https.onRequest(app);
+exports.Home = app;
 
 // token in every api 
 

@@ -23,4 +23,4 @@ app.post('/DeleteCoupon', async (req, res) => CouponsFunctions.Delete(req, res))
 
 
 
-exports.Coupons = functions.region("asia-south1").https.onRequest(app);
+exports.Coupons = app;

@@ -7,10 +7,10 @@ const app = express();
 app.use(cors({ origin: true }));
 
 const common = require("../common");
- app.use(common.decodeIDToken)
+app.use(common.decodeIDToken)
 
 
-const UsersFunctions=require('../service/Users')
+const UsersFunctions = require('../service/Users')
 
 app.post('/CreateUsers', async (req, res) => UsersFunctions.Create(req, res))
 
@@ -21,7 +21,7 @@ app.post('/UpdateUsers', async (req, res) => UsersFunctions.Update(req, res))
 app.post('/DeleteUsers', async (req, res) => UsersFunctions.Delete(req, res))
 
 
-exports.Users = functions.region("asia-south1").https.onRequest(app);
+exports.Users = app;
 
 
 

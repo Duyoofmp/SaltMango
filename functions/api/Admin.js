@@ -17,12 +17,12 @@ app.post('/UpdateSettings', async (req, res) => AdminFunctions.UpdateSettings(re
 app.post('/ReadSettings', async (req, res) => AdminFunctions.ReadSettings(req, res))
 
 
-exports.Admin = functions.region("asia-south1").https.onRequest(app);
+exports.Admin = app;
 
 
 
 const app3 = express();
 app3.use(cors({ origin: true }));
-app.use(common.decodeIDTokenForLogin)
+app3.use(common.decodeIDTokenForLogin)
 app3.post('/login', async (req, res) => res.json(await common.loginForAdmins(req, res)))
-exports.LoginForAdmin = functions.region("asia-south1").https.onRequest(app3);
+exports.LoginForAdmin = app3;

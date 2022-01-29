@@ -23,4 +23,4 @@ app.post('/DeleteBanner', async (req, res) => BannerFunctions.Delete(req, res))
 
 
 
-exports.Countries = functions.region("asia-south1").https.onRequest(app);
+exports.Countries = app;

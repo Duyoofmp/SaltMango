@@ -18,4 +18,4 @@ app.post('/ReadOffers', async (req, res) => Offer.ReadOffers(req, res))
 app.post('/BuyOffer', async (req, res) => Offer.BuyOffer(req, res))
 
 
-exports.Offer = functions.region("asia-south1").https.onRequest(app);
+exports.Offer = app;

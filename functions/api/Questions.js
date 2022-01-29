@@ -1,5 +1,3 @@
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
 
 const express = require('express');
 const cors = require('cors');
@@ -27,4 +25,4 @@ app.post('/DeleteQuestions', async (req, res) => QuestionsFunctions.Delete(req, 
 //     minInstances: 1,
 //     memory: "128MB"
 //   }
-exports.Questions = functions.region("asia-south1").https.onRequest(app);
+exports.Questions = app;
