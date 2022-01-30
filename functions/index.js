@@ -51,6 +51,8 @@ exports.OnCategoryUpdate = CategoryTriggers.OnCategoryUpdate;
 const QuestionsTriggers = require('./triggers/Questions');
 exports.OnQuestionsCreate = QuestionsTriggers.OnQuestionsCreate;
 exports.OnQuestionsUpdate = QuestionsTriggers.OnQuestionsUpdate;
+exports.OnQuestionsDelete = QuestionsTriggers.OnQuestionsDelete;
+
 
 
 const UsersTriggers = require('./triggers/Users');

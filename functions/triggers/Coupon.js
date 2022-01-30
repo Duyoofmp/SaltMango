@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const db = admin.firestore();
+const Counter = require("../distributed_counter");
 const common = require('../common')
 
 
@@ -14,9 +15,9 @@ exports.OnCouponCreate = functions.firestore
         const data = change.data()
         const arr = [];
         common.createKeywords(data.Coupon, arr)
-        const offers = (await db.collection("Offers").doc(OfferId).get()).data();
-        await db.collection("Offers").doc(OfferId).update({ CouponsCount: offers.CouponsCount + 1 })
-        return db.doc(`Offers/${OfferId}/Coupons/${docid}`).update({ DocId: docid, Keywords: arr });
+        const counterOperation = new Counter(db.collection("Offers").doc(OfferId), "CouponsCount")
+      await counterOperation.incrementBy(1);
+        return await  db.doc(`Offers/${OfferId}/Coupons/${docid}`).update({ DocId: docid, Keywords: arr });
 
     })
 
@@ -30,7 +31,7 @@ exports.OnCouponUpdate = functions.firestore
         const data = change.after.data()
         const arr = [];
         common.createKeywords(data.Coupon, arr)
-        return db.doc(`Offers/${OfferId}/Coupons/${docid}`).update({ DocId: docid, Keywords: arr });
+        return await db.doc(`Offers/${OfferId}/Coupons/${docid}`).update({ DocId: docid, Keywords: arr });
 
     })
 
@@ -39,8 +40,9 @@ exports.OnCouponDelete = functions.firestore
     .onDelete(async (change, context) => {
         const docid = context.params.docid;
         const OfferId = context.params.OfferId;
-        const offers = (await db.collection("Offers").doc(OfferId).get()).data();
-        return await db.collection("Offers").doc(OfferId).update({ CouponsCount: offers.CouponsCount - 1 })
+        const counterOperation = new Counter(db.collection("Offers").doc(OfferId), "CouponsCount")
+     return   await counterOperation.incrementBy(-1);
+     
 
     })
 
