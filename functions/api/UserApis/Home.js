@@ -10,9 +10,8 @@ app.use(cors({ origin: true }));
 
 const HomeFunctions = require('../../service/UserServices/Home')
 const common = require("../../common");
-//app.use(common.decodeIDTokenHeader)
+app.use(common.decodeIDTokenHeader)
 
-// app.post('/ReadDetails', async (req, res) => HomeFunctions.Read(req, res));
 
 const CategoryFunctionsRead = require('../../service/Category').Read;
 const ReadRandomQuestions = require('../../service/Questions').ReadRandomQuestions;
@@ -33,6 +32,8 @@ app.post('/GetSlotData', async (req, res) => {
     const SlotData = await HomeFunctions.GetSlotData(req.body.UserId, req.body.SlotType, DateData);
     return res.json(SlotData);
 });
+
+
 
 app.post('/EnterASlot', async (req, res) => HomeFunctions.EnterASlot(req, res));
 
@@ -69,7 +70,7 @@ app.post('/DatesInWinners', async (req, res) =>{
 return res.json({Dates:Date})
 })
 
-
+app.post('/ViewNotifications', async (req, res) => HomeFunctions.EnterASpin(req, res));
 
 exports.Home = app;
 
@@ -148,3 +149,8 @@ exports.Home = app;
 //          SaltDialData: number[];
 //          DiamondDialData: number[];
 //      }
+
+
+// Offer/ReadCountry
+// Offer/ReadOffers
+// Offer/BuyOffer
