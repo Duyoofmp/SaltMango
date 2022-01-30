@@ -43,32 +43,12 @@ app.post('/SpinDialData', async (req, res) => {
 
 app.post('/EnterASpin', async (req, res) => HomeFunctions.EnterASpin(req, res));
 
-app.post('/DirectFriends', async (req, res) => HomeFunctions.DirectAndIndirects(req,res,"DirectReferralId"))
-app.post('/InDirectFriends', async (req, res) => HomeFunctions.DirectAndIndirects(req,res,"IndirectReferralId"))
+app.post('/DirectFriends', async (req, res) => HomeFunctions.DirectAndIndirects(req, res, "DirectReferralId"))
+app.post('/InDirectFriends', async (req, res) => HomeFunctions.DirectAndIndirects(req, res, "IndirectReferralId"))
 
-app.post('/WinnersList', async (req, res) =>{ 
-    const slot=req.body.Slot;
-    let Date;
-if(req.body.Date===""){
-  const a=await db.collection(slot).where("WinnersSelected","==",true).orderBy("index","desc").limit(1).get()
-  a.forEach(one=>{
-      Date=one.id
-  })
-}else{
-    Date=req.body.Date;
-}
-   await HomeFunctions.WinnersList(req,res,Date,slot,7)
-})
+app.post('/WinnersList', async (req, res) => HomeFunctions.WinnersList(req, res))
 
-app.post('/DatesInWinners', async (req, res) =>{ 
-    const slot=req.body.Slot;
-    const Date=[];
-  const a=await db.collection(slot).where("WinnersSelected","==",true).orderBy("index","desc").limit(10).get()
-  a.forEach(one=>{
-    Date.push(one.id)
-})
-return res.json({Dates:Date})
-})
+app.post('/DatesInWinners', async (req, res) => res.json(await DatesInWinners(req.body.SlotType, 7)))
 
 app.post('/ViewNotifications', async (req, res) => HomeFunctions.EnterASpin(req, res));
 
