@@ -2,7 +2,7 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const moment = require("moment-timezone")
 const dataHandling = require("../../functions");
-
+const db = admin.firestore();
 async function Read(req, res) {
     let query
     const data = await admin.firestore().collection("Users").doc(req.body.UserId).get()
@@ -214,6 +214,30 @@ const randomIndex = distribution => {
     return distribution[index];
 };
 
+async function DirectAndIndirects(req,res,ref){
+const direct=await dataHandling.Read("Users",req.body.DocId,req.body.index,req.body.Keyword,req.body.limit,[ref,"==",req.body.UserId],[,true,"index","desc"])
+return res.json(direct)
+}
+
+async function WinnersList(req,res,Date,won,d){
+    const dates=[];
+const draw=await db.collection(won).orderBy("desc").limit(d).get();
+draw.forEach(snap=>{
+    dates.push(snap.id)
+})
+    const others=[];
+    const frnds=[];
+    const winData=await dataHandling.Read("Winners",req.body.DocId,req.body.index,req.body.Keyword,req.body.limit,["WinDate","==",Date,"WonIn","==",won],[true,"index","desc"])
+ winData.forEach(obj=>{
+    if(obj.FriendsList){
+if(obj.FriendsList.includes(req.body.UserId)){frnds.push({...obj})}
+else{ others.push({...obj})}
+    }
+ })
+ return res.json({FriendsList:frnds,All:others,Dates:dates})
+} 
+
+
 module.exports = {
     Read,
     GetPoints,
@@ -223,6 +247,8 @@ module.exports = {
     ViewSpinData,
     EnterASpin,
     GetSlots,
+    DirectAndIndirects,
+    WinnersList
 }
 
 

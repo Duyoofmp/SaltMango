@@ -44,7 +44,8 @@ exports.OnDrawCreate = functions.firestore
   .document("{Draw}/{DrawId}")
   .onCreate(async (change, context) => {
     const DrawId = context.params.DrawId;
-    return db.collection(context.params.Draw).doc(DrawId).update({ DocId: docid });
+
+    return db.collection(context.params.Draw).doc(DrawId).update({ DocId: docid,index:Date.now() });
   });
 
 

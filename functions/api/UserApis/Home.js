@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const db = admin.firestore()
+const moment = require("moment-timezone")
 
 const express = require('express');
 const cors = require('cors');
@@ -9,7 +10,7 @@ app.use(cors({ origin: true }));
 
 const HomeFunctions = require('../../service/UserServices/Home')
 const common = require("../../common");
-app.use(common.decodeIDTokenHeader)
+//app.use(common.decodeIDTokenHeader)
 
 // app.post('/ReadDetails', async (req, res) => HomeFunctions.Read(req, res));
 
@@ -40,6 +41,48 @@ app.post('/SpinDialData', async (req, res) => {
 });
 
 app.post('/EnterASpin', async (req, res) => HomeFunctions.EnterASpin(req, res));
+
+app.post('/DirectFriends', async (req, res) => HomeFunctions.DirectAndIndirects(req,res,"DirectReferralId"))
+app.post('/InDirectFriends', async (req, res) => HomeFunctions.DirectAndIndirects(req,res,"IndirectReferralId"))
+app.post('/DailyWinnersList', async (req, res) =>{ 
+    const DailyDay=moment().tz('Asia/Kolkata')
+    let Date;
+if(req.body.Date===""){
+  Date=DailyDay.subtract(1,"d").format("YYYY-MM-DD")
+}else{
+    Date=req.body.Date;
+}
+   await HomeFunctions.WinnersList(req,res,Date,"Daily",7)
+})
+
+app.post('/MonthlyWinnersList', async (req, res) =>{ 
+    let Date;
+if(req.body.Date===""){
+  const a=await db.collection("Monthly").orderBy("index").limit(1).get()
+  a.forEach(one=>{
+      Date=one.id
+  })
+}else{
+    Date=req.body.Date;
+}
+
+   await HomeFunctions.WinnersList(req,res,Date,"Monthly",7)
+})
+app.post('/WeeklyWinnersList', async (req, res) =>{ 
+    let Date;
+if(req.body.Date===""){
+    const a=await db.collection("Weekly").orderBy("index").limit(1).get()
+    a.forEach(one=>{
+        Date=one.id
+    })
+}else{
+    Date=req.body.Date;
+}
+
+   await HomeFunctions.WinnersList(req,res,Date,"Weekly",7)
+})
+
+
 
 exports.Home = app;
 
