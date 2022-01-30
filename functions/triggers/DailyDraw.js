@@ -108,16 +108,23 @@ exports.OnWinnerAddOn = functions.firestore
     if(winners!==undefined){
       const dat=[];
       winners.forEach(ele=>{
-        dat.concat(ele.Winners)
+        dat.push({Winners:ele.Winners,Amount:ele.Amount})
       })
   const prom=[];
   const prom1=[];
    dat.forEach(usrIds=>{
-     prom.push(dataHandling.Read("Users",usrIds))
+     usrIds.Winners.forEach(snap=>{
+     prom.push(dataHandling.Read("Users",snap))
+     })
    })
   const usrDatas=  await Promise.all(prom);
   usrDatas.forEach(docs=>{
-  prom1.push(dataHandling.Create("Winners",{...docs ,index:Date.now(),WonIn:draw,UserId:docs.DocId,WinDate:date}))
+    dat.forEach(usr=>{
+      if(usr.Winners.includes(docs.DocId)){
+docs.RewardCoins=usr.Amount
+      }
+      prom1.push(dataHandling.Create("Winners",{...docs ,index:Date.now(),WonIn:draw,UserId:docs.DocId,WinDate:date}))
+    })
   })
   return await Promise.all(prom1);
     }
