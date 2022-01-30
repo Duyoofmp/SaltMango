@@ -221,23 +221,30 @@ return res.json(direct)
 
 async function WinnersList(req,res,Date,won,d){
     const dates=[];
-const draw=await db.collection(won).orderBy("index","desc").limit(d).get();
+    let winData;
+const draw=await db.collection(won).where("WinnersSelected","==",true).orderBy("index","desc").limit(d).get();
 draw.forEach(snap=>{
     console.log(snap)
     dates.push(snap.id)
 })
     const others=[];
-    const frnds=[];
-    const winData=await dataHandling.Read("Winners",req.body.DocId,req.body.index,req.body.Keyword,req.body.limit,["WinDate","==",Date,"WonIn","==",won],[true,"index","desc"])
- winData.forEach(obj=>{
-    if(obj.FriendsList){
-if(obj.FriendsList.includes(req.body.UserId)){frnds.push({...obj})}
-else{ others.push({...obj})}
+    if(req.body.FriendsList===true){
+         winData=await dataHandling.Read("Winners",req.body.DocId,req.body.index,req.body.Keyword,req.body.limit,["WinDate","==",Date,"WonIn","==",won,"FriendsList","array-contains",req.body.UserId],[true,"index","desc"])
+         winData.forEach(obj=>{
+     others.push({...obj})
+             })
+ return res.json({FriendsList:others})
+    }else{
+     winData=await dataHandling.Read("Winners",req.body.DocId,req.body.index,req.body.Keyword,req.body.limit,["WinDate","==",Date,"WonIn","==",won],[true,"index","desc"])
+     winData.forEach(obj=>{
+        if(!obj.FriendsList.includes(req.body.UserId)){others.push({...obj})}
+ return res.json({OthersList:others})
+         })
     }
- })
- return res.json({FriendsList:frnds,All:others,Dates:dates})
-} 
+ 
+}
 
+//index,limit,FriendList true or false
 
 module.exports = {
     Read,

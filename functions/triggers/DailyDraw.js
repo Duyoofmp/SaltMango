@@ -44,8 +44,7 @@ exports.OnDrawCreate = functions.firestore
   .document("{Draw}/{DrawId}")
   .onCreate(async (change, context) => {
     const DrawId = context.params.DrawId;
-
-    return db.collection(context.params.Draw).doc(DrawId).update({ DocId: docid,index:Date.now() });
+    return db.collection(context.params.Draw).doc(DrawId).update({ DocId: docid,index:Date.now(),WinnersSelected:false});
   });
 
 
@@ -102,7 +101,7 @@ async function drawWinnerPicker(draw, date) {
   return await db
     .collection(draw)
     .doc(date)
-    .update({ WinnersData: DrawSet });
+    .update({ WinnersData: DrawSet,WinnersSelected:true });
    
 }
 
