@@ -79,7 +79,6 @@ exports.OnOfferUpdate = OfferTriggers.OnOfferUpdate;
 
 
 const DailyDrawTriggers = require('./triggers/DailyDraw');
-exports.OnDrawCreate = DailyDrawTriggers.OnDrawCreate;
 exports.OnEntryCreate = DailyDrawTriggers.OnEntryCreate;
 exports.scheduledFunctionForDraws = DailyDrawTriggers.scheduledFunctionForDraws;
 exports.OnWinnerAddOn = DailyDrawTriggers.OnWinnerAddOn;
