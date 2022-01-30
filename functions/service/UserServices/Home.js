@@ -3,6 +3,7 @@ const admin = require('firebase-admin');
 const moment = require("moment-timezone")
 const dataHandling = require("../../functions");
 const db = admin.firestore();
+
 async function Read(req, res) {
     let query
     const data = await admin.firestore().collection("Users").doc(req.body.UserId).get()
@@ -13,13 +14,13 @@ async function Read(req, res) {
 
 async function GetPoints(req, res) {
 
-    const data = await dataHandling.Read("QuestionsAndAnswers", req.body.DocId || "");
+    const data = await dataHandling.Read("QuestionsAndAnswers", req.body.DocId || "", "", "", 1);
     const PointObj = {
         "DiamondsAccumulated": 0,
         "Result": false,
         "Answer": data.Answer,
     }
-    if (data === null || data.Answer !== req.body.Answer) {
+    if (data === null || data.Answer !== req.body.Answer || Array.isArray(data)) {
         return res.json(PointObj);
     }
     else {
