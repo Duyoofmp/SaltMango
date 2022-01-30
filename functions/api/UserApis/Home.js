@@ -54,7 +54,6 @@ if(req.body.Date===""){
 }
    await HomeFunctions.WinnersList(req,res,Date,"Daily",7)
 })
-
 app.post('/MonthlyWinnersList', async (req, res) =>{ 
     let Date;
 if(req.body.Date===""){
