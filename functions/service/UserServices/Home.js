@@ -238,7 +238,6 @@ async function WinnersList(req, res) {
 //index,limit,FriendList true or false
 
 async function DatesInWinners(SlotType, Limit) {
-    const SlotType = req.body.SlotType;
     const Date = await dataHandling.Read(SlotType, "", "", "", Limit, ["WinnersSelected", "==", true])
     return Date.map(id => id.DocId);
 }
