@@ -35,8 +35,8 @@ async function EnterASlot(req, res) {
     const UserId = req.body.UserId;
     const DateData = GetSlotDate(SlotType);
     const SlotData = await GetSlotData(UserId, SlotType, DateData, req.body.Ad);
-    if (SlotData.status(403).checkSlot) {
-        return res.json("Cannont Access this api");
+    if (SlotData.checkSlot) {
+        return res.status(403).json("Cannont Access this api");
     }
     const EntryData = {
         "UserId": UserId,

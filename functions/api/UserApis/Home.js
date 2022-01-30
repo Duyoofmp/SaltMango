@@ -84,7 +84,7 @@ app.post('/WeeklyWinnersList', async (req, res) => {
     await HomeFunctions.WinnersList(req, res, Date, "Weekly", 7)
 })
 
-
+app.post('/ViewNotifications', async (req, res) => HomeFunctions.EnterASpin(req, res));
 
 exports.Home = app;
 
