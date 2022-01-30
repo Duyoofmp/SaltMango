@@ -12,16 +12,16 @@ async function ReadOffers(req, res) {
   let claim;
   const arr = [];
   if (req.body.CountryId === "") {
-    const IndiaData = await dataHandling.Read("Countries", "", "", "", 1, ["CountryName", "==", "India"],[false]);
+    const IndiaData = await dataHandling.Read("Countries", "", "", "", 1, ["CountryName", "==", "India"], [false]);
     req.body.CountryId = IndiaData[0].DocId;
   }
 
-  const data = await dataHandling.Read("Offers", req.body.DocId, req.body.index, req.body.Keyword, req.body.limit, ["CountryId", "==", req.body.CountryId, "Active", "==", true, "CouponsCount", ">", 0]);
-  const Userdata = await dataHandling.Read("Users", req.body.UserId);
+  const data = await dataHandling.Read("Offers", req.body.DocId, req.body.Index, req.body.Keyword, 10, ["CountryId", "==", req.body.CountryId, "Active", "==", true, "CouponsCount", ">", 0], [false]);
+  const Userdata = (await dataHandling.Read("Users", req.body.UserId)) || { SaltCoin: 0 };
 
   data.forEach((Offer) => {
-    claim = false;
-    if (Offer.SaltCoins <= Userdata.SaltCoins) {
+    const claim = false;
+    if (Offer.SaltCoins <= Userdata.SaltCoin) {
       claim = true;
     }
     arr.push({ ...Offer, ClaimStatus: claim })

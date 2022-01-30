@@ -9,7 +9,7 @@ app.use(cors({ origin: true }));
 
 const Offer = require('../../service/UserServices/Offer')
 const common = require("../../common");
-app.use(common.decodeIDTokenHeader)
+// app.use(common.decodeIDTokenHeader)
 
 
 

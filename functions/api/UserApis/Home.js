@@ -10,7 +10,7 @@ app.use(cors({ origin: true }));
 
 const HomeFunctions = require('../../service/UserServices/Home')
 const common = require("../../common");
-//app.use(common.decodeIDTokenHeader)
+app.use(common.decodeIDTokenHeader)
 
 
 const CategoryFunctionsRead = require('../../service/Category').Read;
@@ -48,7 +48,7 @@ app.post('/InDirectFriends', async (req, res) => HomeFunctions.DirectAndIndirect
 
 app.post('/WinnersList', async (req, res) => HomeFunctions.WinnersList(req, res))
 
-app.post('/DatesInWinners', async (req, res) => res.json(await DatesInWinners(req.body.SlotType, 7)))
+app.post('/DatesInWinners', async (req, res) => res.json(await HomeFunctions.DatesInWinners(req.body.SlotType, 7)))
 
 app.post('/ViewNotifications', async (req, res) => HomeFunctions.EnterASpin(req, res));
 
