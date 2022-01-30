@@ -221,8 +221,9 @@ return res.json(direct)
 
 async function WinnersList(req,res,Date,won,d){
     const dates=[];
-const draw=await db.collection(won).orderBy("desc").limit(d).get();
+const draw=await db.collection(won).orderBy("index","desc").limit(d).get();
 draw.forEach(snap=>{
+    console.log(snap)
     dates.push(snap.id)
 })
     const others=[];
