@@ -58,7 +58,7 @@ if(req.body.Date===""){
 app.post('/MonthlyWinnersList', async (req, res) =>{ 
     let Date;
 if(req.body.Date===""){
-  const a=await db.collection("Monthly").orderBy("index").limit(1).get()
+  const a=await db.collection("Monthly").orderBy("index","desc").limit(1).get()
   a.forEach(one=>{
       Date=one.id
   })
@@ -71,7 +71,7 @@ if(req.body.Date===""){
 app.post('/WeeklyWinnersList', async (req, res) =>{ 
     let Date;
 if(req.body.Date===""){
-    const a=await db.collection("Weekly").orderBy("index").limit(1).get()
+    const a=await db.collection("Weekly").orderBy("index","desc").limit(1).get()
     a.forEach(one=>{
         Date=one.id
     })
