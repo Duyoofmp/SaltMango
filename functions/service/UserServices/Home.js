@@ -220,32 +220,28 @@ async function DirectAndIndirects(req, res, ref) {
     return res.json(direct)
 }
 
-async function WinnersList(req,res,Date,won,d){
-    const dates=[];
-    let winData;
-const draw=await db.collection(won).where("WinnersSelected","==",true).orderBy("index","desc").limit(d).get();
-draw.forEach(snap=>{
-    console.log(snap)
-    dates.push(snap.id)
-})
-    const others=[];
-    if(req.body.FriendsList===true){
-         winData=await dataHandling.Read("Winners",req.body.DocId,req.body.index,req.body.Keyword,req.body.limit,["WinDate","==",Date,"WonIn","==",won,"FriendsList","array-contains",req.body.UserId],[true,"index","desc"])
-         winData.forEach(obj=>{
-     others.push({...obj})
-             })
- return res.json({FriendsList:others})
-    }else{
-     winData=await dataHandling.Read("Winners",req.body.DocId,req.body.index,req.body.Keyword,req.body.limit,["WinDate","==",Date,"WonIn","==",won],[true,"index","desc"])
-     winData.forEach(obj=>{
-        if(!obj.FriendsList.includes(req.body.UserId)){others.push({...obj})}
- return res.json({OthersList:others})
-         })
+async function WinnersList(req, res) {
+    let Date = req.body.Date;
+    let SlotType = req.body.SlotType;
+    if (req.body.Date === "") {
+        Date = (await DatesInWinners(SlotType, 1))[0];
     }
- 
+    let winData;
+    if (req.body.FriendsList === true) {
+        winData = await dataHandling.Read("Winners", "", req.body.Index, "", 10, ["WinDate", "==", Date, "WonIn", "==", SlotType, "FriendsList", "array-contains", req.body.UserId]);
+    } else {
+        winData = await dataHandling.Read("Winners", "", req.body.Index, "", 10, ["WinDate", "==", Date, "WonIn", "==", SlotType]);
+    }
+    return res.json(winData);
 }
 
 //index,limit,FriendList true or false
+
+async function DatesInWinners(SlotType, Limit) {
+    const SlotType = req.body.SlotType;
+    const Date = await dataHandling.Read(SlotType, "", "", "", Limit, ["WinnersSelected", "==", true])
+    return Date.map(id => id.DocId);
+}
 
 module.exports = {
     Read,
@@ -257,7 +253,8 @@ module.exports = {
     EnterASpin,
     GetSlots,
     DirectAndIndirects,
-    WinnersList
+    WinnersList,
+    DatesInWinners
 }
 
 
