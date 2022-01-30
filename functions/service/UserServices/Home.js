@@ -186,13 +186,13 @@ async function EnterASpin(req, res) {
 
     const promise2 = [];
 
-    await dataHandling.Update("Users", { [RandomSpinData.Type]: admin.firestore.FieldValue.increment(RandomSpinData.Number) }, UserId);
-    await dataHandling.Create(`Users/${UserId}/${SlotType}/${DateData}/Entry`, RandomSpinData);
+    promise2.push(dataHandling.Update("Users", { [RandomSpinData.Type]: admin.firestore.FieldValue.increment(RandomSpinData.Number) }, UserId));
+    promise2.push(dataHandling.Create(`Users/${UserId}/${SlotType}/${DateData}/Entry`, RandomSpinData));
     if (RandomSpinData.Type === "SaltCoin") {
-        await dataHandling.Update(`Users/${UserId}/${SlotType}`, { RewardSalt: admin.firestore.FieldValue.increment(RandomSpinData.Number) }, DateData);
-        await dataHandling.Update(`${SlotType}`, { RewardSalt: admin.firestore.FieldValue.increment(RandomSpinData.Number) }, DateData);
+        promise2.push(dataHandling.Update(`Users/${UserId}/${SlotType}`, { RewardSalt: admin.firestore.FieldValue.increment(RandomSpinData.Number) }, DateData));
+        promise2.push(dataHandling.Update(`${SlotType}`, { RewardSalt: admin.firestore.FieldValue.increment(RandomSpinData.Number) }, DateData));
     }
-
+    await Promise.all(promise2);
     return res.json(RandomSpinData);
 }
 

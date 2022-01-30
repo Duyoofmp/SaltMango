@@ -163,3 +163,8 @@ exports.Home = app;
 //          SaltDialData: number[];
 //          DiamondDialData: number[];
 //      }
+
+
+// Offer/ReadCountry
+// Offer/ReadOffers
+// Offer/BuyOffer
