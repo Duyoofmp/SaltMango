@@ -86,7 +86,7 @@ function GetSlotDate(SlotType) {
         case "Monthly":
             DateData = moment().tz('Asia/Kolkata').endOf("month").format("YYYY-MM-DD");
             break;
-        case "Daily":
+        case "Spin":
             DateData = moment().tz('Asia/Kolkata').endOf("day").format("YYYY-MM-DD");
             break;
         default:
@@ -117,6 +117,7 @@ async function GetSlots() {
     return data;
 }
 
+
 async function ViewSpinData(Type = false) {
     const SpinData = [
         {
@@ -134,26 +135,18 @@ async function ViewSpinData(Type = false) {
         {
             "Number": 10, "Type": "Diamond", "Probability": 30,
         },
+        {
+            "Number": 5, "Type": "SaltCoin", "Probability": 3,
+        },
+        {
+            "Number": 4, "Type": "SaltCoin", "Probability": 3,
+        },
+        {
+            "Number": 3, "Type": "SaltCoin", "Probability": 4,
+        },
     ];
-    const SaltSpinData = [
-        {
-            "Number": 5, "Type": "SaltCoin", "Probability": 1,
-        },
-        {
-            "Number": 4, "Type": "SaltCoin", "Probability": 1,
-        },
-        {
-            "Number": 3, "Type": "SaltCoin", "Probability": 2,
-        },
-        {
-            "Number": 2, "Type": "SaltCoin", "Probability": 3,
-        },
-        {
-            "Number": 1, "Type": "SaltCoin", "Probability": 3,
-        },
-    ]
     if (Type) {
-        SpinData.push(...SaltSpinData);
+        return SpinData.filter(id => id.Type !== "SaltCoin");
     }
     return SpinData;
 }
@@ -167,22 +160,22 @@ async function EnterASpin(req, res) {
     //Check
 
     const promise = [];
-    promise.push(dataHandling.Read(`User/${UserId}/${SlotType}`, `${DateData}`));
+    promise.push(dataHandling.Read(`Users/${UserId}/${SlotType}`, `${DateData}`));
     promise.push(dataHandling.Read(`${SlotType}`, `${DateData}`));
     promise.push(dataHandling.Read(`Admin`, `Settings`));
 
     promise.push(dataHandling.Update("Users", { "Diamond": admin.firestore.FieldValue.increment(-1 * 30) }, req.body.UserId));
 
     const promiseResult = await Promise.all(promise);
-    const CheckUserLimit = promiseResult[0];
-    const CheckAdminLimit = promiseResult[1];
+    const CheckUserLimit = promiseResult[0] || { RewardSalt: 0 };
+    const CheckAdminLimit = promiseResult[1] || { RewardSalt: 0 };
     const SpinLimit = promiseResult[2];
 
-    if (CheckUserLimit.RewardSalt >= SpinLimit.UserLimit && CheckAdminLimit.RewardSalt >= SpinLimit.AdminLimit) {
-        SlotData = await ViewSpinData(false);
+    if (CheckUserLimit.RewardSalt >= SpinLimit.UserLimit || CheckAdminLimit.RewardSalt >= SpinLimit.AdminLimit) {
+        SlotData = await ViewSpinData(true);
     }
     else {
-        SlotData = await ViewSpinData(true);
+        SlotData = await ViewSpinData(false);
     }
 
 
@@ -191,8 +184,15 @@ async function EnterASpin(req, res) {
     const RandomSpinData = SlotData[RandomIndex];
     RandomSpinData.index = Date.now();
 
+    const promise2 = [];
+
     await dataHandling.Update("Users", { [RandomSpinData.Type]: admin.firestore.FieldValue.increment(RandomSpinData.Number) }, UserId);
-    await dataHandling.Create(`User/${UserId}/${SlotType}/${DateData}/Entry`, RandomSpinData);
+    await dataHandling.Create(`Users/${UserId}/${SlotType}/${DateData}/Entry`, RandomSpinData);
+    if (RandomSpinData.Type === "SaltCoin") {
+        await dataHandling.Update(`Users/${UserId}/${SlotType}`, { RewardSalt: admin.firestore.FieldValue.increment(RandomSpinData.Number) }, DateData);
+        await dataHandling.Update(`${SlotType}`, { RewardSalt: admin.firestore.FieldValue.increment(RandomSpinData.Number) }, DateData);
+    }
+
     return res.json(RandomSpinData);
 }
 
@@ -214,29 +214,29 @@ const randomIndex = distribution => {
     return distribution[index];
 };
 
-async function DirectAndIndirects(req,res,ref){
-const direct=await dataHandling.Read("Users",req.body.DocId,req.body.index,req.body.Keyword,req.body.limit,[ref,"==",req.body.UserId],[,true,"index","desc"])
-return res.json(direct)
+async function DirectAndIndirects(req, res, ref) {
+    const direct = await dataHandling.Read("Users", req.body.DocId, req.body.index, req.body.Keyword, req.body.limit, [ref, "==", req.body.UserId], [, true, "index", "desc"])
+    return res.json(direct)
 }
 
-async function WinnersList(req,res,Date,won,d){
-    const dates=[];
-const draw=await db.collection(won).orderBy("index","desc").limit(d).get();
-draw.forEach(snap=>{
-    console.log(snap)
-    dates.push(snap.id)
-})
-    const others=[];
-    const frnds=[];
-    const winData=await dataHandling.Read("Winners",req.body.DocId,req.body.index,req.body.Keyword,req.body.limit,["WinDate","==",Date,"WonIn","==",won],[true,"index","desc"])
- winData.forEach(obj=>{
-    if(obj.FriendsList){
-if(obj.FriendsList.includes(req.body.UserId)){frnds.push({...obj})}
-else{ others.push({...obj})}
-    }
- })
- return res.json({FriendsList:frnds,All:others,Dates:dates})
-} 
+async function WinnersList(req, res, Date, won, d) {
+    const dates = [];
+    const draw = await db.collection(won).orderBy("index", "desc").limit(d).get();
+    draw.forEach(snap => {
+        console.log(snap)
+        dates.push(snap.id)
+    })
+    const others = [];
+    const frnds = [];
+    const winData = await dataHandling.Read("Winners", req.body.DocId, req.body.index, req.body.Keyword, req.body.limit, ["WinDate", "==", Date, "WonIn", "==", won], [true, "index", "desc"])
+    winData.forEach(obj => {
+        if (obj.FriendsList) {
+            if (obj.FriendsList.includes(req.body.UserId)) { frnds.push({ ...obj }) }
+            else { others.push({ ...obj }) }
+        }
+    })
+    return res.json({ FriendsList: frnds, All: others, Dates: dates })
+}
 
 
 module.exports = {

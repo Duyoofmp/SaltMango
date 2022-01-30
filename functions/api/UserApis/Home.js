@@ -10,9 +10,8 @@ app.use(cors({ origin: true }));
 
 const HomeFunctions = require('../../service/UserServices/Home')
 const common = require("../../common");
-//app.use(common.decodeIDTokenHeader)
+app.use(common.decodeIDTokenHeader)
 
-// app.post('/ReadDetails', async (req, res) => HomeFunctions.Read(req, res));
 
 const CategoryFunctionsRead = require('../../service/Category').Read;
 const ReadRandomQuestions = require('../../service/Questions').ReadRandomQuestions;
@@ -34,6 +33,8 @@ app.post('/GetSlotData', async (req, res) => {
     return res.json(SlotData);
 });
 
+
+
 app.post('/EnterASlot', async (req, res) => HomeFunctions.EnterASlot(req, res));
 
 app.post('/SpinDialData', async (req, res) => {
@@ -42,44 +43,45 @@ app.post('/SpinDialData', async (req, res) => {
 
 app.post('/EnterASpin', async (req, res) => HomeFunctions.EnterASpin(req, res));
 
-app.post('/DirectFriends', async (req, res) => HomeFunctions.DirectAndIndirects(req,res,"DirectReferralId"))
-app.post('/InDirectFriends', async (req, res) => HomeFunctions.DirectAndIndirects(req,res,"IndirectReferralId"))
-app.post('/DailyWinnersList', async (req, res) =>{ 
-    const DailyDay=moment().tz('Asia/Kolkata')
+
+app.post('/DirectFriends', async (req, res) => HomeFunctions.DirectAndIndirects(req, res, "DirectReferralId"))
+app.post('/InDirectFriends', async (req, res) => HomeFunctions.DirectAndIndirects(req, res, "IndirectReferralId"))
+app.post('/DailyWinnersList', async (req, res) => {
+    const DailyDay = moment().tz('Asia/Kolkata')
     let Date;
-if(req.body.Date===""){
-  Date=DailyDay.subtract(1,"d").format("YYYY-MM-DD")
-}else{
-    Date=req.body.Date;
-}
-   await HomeFunctions.WinnersList(req,res,Date,"Daily",7)
+    if (req.body.Date === "") {
+        Date = DailyDay.subtract(1, "d").format("YYYY-MM-DD")
+    } else {
+        Date = req.body.Date;
+    }
+    await HomeFunctions.WinnersList(req, res, Date, "Daily", 7)
 })
 
-app.post('/MonthlyWinnersList', async (req, res) =>{ 
+app.post('/MonthlyWinnersList', async (req, res) => {
     let Date;
-if(req.body.Date===""){
-  const a=await db.collection("Monthly").orderBy("index","desc").limit(1).get()
-  a.forEach(one=>{
-      Date=one.id
-  })
-}else{
-    Date=req.body.Date;
-}
+    if (req.body.Date === "") {
+        const a = await db.collection("Monthly").orderBy("index", "desc").limit(1).get()
+        a.forEach(one => {
+            Date = one.id
+        })
+    } else {
+        Date = req.body.Date;
+    }
 
-   await HomeFunctions.WinnersList(req,res,Date,"Monthly",7)
+    await HomeFunctions.WinnersList(req, res, Date, "Monthly", 7)
 })
-app.post('/WeeklyWinnersList', async (req, res) =>{ 
+app.post('/WeeklyWinnersList', async (req, res) => {
     let Date;
-if(req.body.Date===""){
-    const a=await db.collection("Weekly").orderBy("index","desc").limit(1).get()
-    a.forEach(one=>{
-        Date=one.id
-    })
-}else{
-    Date=req.body.Date;
-}
+    if (req.body.Date === "") {
+        const a = await db.collection("Weekly").orderBy("index", "desc").limit(1).get()
+        a.forEach(one => {
+            Date = one.id
+        })
+    } else {
+        Date = req.body.Date;
+    }
 
-   await HomeFunctions.WinnersList(req,res,Date,"Weekly",7)
+    await HomeFunctions.WinnersList(req, res, Date, "Weekly", 7)
 })
 
 
