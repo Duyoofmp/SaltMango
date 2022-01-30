@@ -17,7 +17,7 @@ exports.OnCouponCreate = functions.firestore
         common.createKeywords(data.Coupon, arr)
         const counterOperation = new Counter(db.collection("Offers").doc(OfferId), "CouponsCount")
       await counterOperation.incrementBy(1);
-        return db.doc(`Offers/${OfferId}/Coupons/${docid}`).update({ DocId: docid, Keywords: arr });
+        return await  db.doc(`Offers/${OfferId}/Coupons/${docid}`).update({ DocId: docid, Keywords: arr });
 
     })
 
@@ -31,7 +31,7 @@ exports.OnCouponUpdate = functions.firestore
         const data = change.after.data()
         const arr = [];
         common.createKeywords(data.Coupon, arr)
-        return db.doc(`Offers/${OfferId}/Coupons/${docid}`).update({ DocId: docid, Keywords: arr });
+        return await db.doc(`Offers/${OfferId}/Coupons/${docid}`).update({ DocId: docid, Keywords: arr });
 
     })
 
