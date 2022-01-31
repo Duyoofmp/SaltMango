@@ -16,7 +16,10 @@ app.use(common.decodeIDTokenHeader)
 const CategoryFunctionsRead = require('../../service/Category').Read;
 const ReadRandomQuestions = require('../../service/Questions').ReadRandomQuestions;
 
-app.post('/ReadCategories', async (req, res) => CategoryFunctionsRead(req, res));
+app.post('/ReadCategories', async (req, res) => {
+    req.body.userapi=true
+    CategoryFunctionsRead(req, res)
+});
 
 app.post('/ReadQuestions', async (req, res) => ReadRandomQuestions(req, res));
 
