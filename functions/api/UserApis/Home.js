@@ -17,7 +17,7 @@ const CategoryFunctionsRead = require('../../service/Category').Read;
 const ReadRandomQuestions = require('../../service/Questions').ReadRandomQuestions;
 
 app.post('/ReadCategories', async (req, res) => {
-    req.body.userapi=true
+    req.body.userapi = true
     CategoryFunctionsRead(req, res)
 });
 
@@ -41,11 +41,11 @@ app.post('/GetSlotData', async (req, res) => {
 app.post('/EnterASlot', async (req, res) => HomeFunctions.EnterASlot(req, res));
 
 app.post('/SpinDialData', async (req, res) => {
-    // const SpinData={
-    //     "DialData":await HomeFunctions.ViewSpinData(),
-    //     "SlotCost":await HomeFunctions.GetSlotCost("Spin")
-    // }
-    return res.json(await HomeFunctions.ViewSpinData());
+    const SpinData = {
+        "DialData": await HomeFunctions.ViewSpinData(),
+        "SlotCost": await HomeFunctions.GetSlotCost("Spin")
+    }
+    return res.json(SpinData);
 });
 
 app.post('/EnterASpin', async (req, res) => HomeFunctions.EnterASpin(req, res));
