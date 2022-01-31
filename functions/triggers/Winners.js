@@ -1,9 +1,4 @@
-const functions = require("firebase-functions");
-const admin = require("firebase-admin");
-const db = admin.firestore();
-const common = require("../common");
-const moment = require("moment-timezone")
-const dataHandling = require("../functions");
+const functions = require("firebase-functions");    
 const NotificationCreate = require('../service/Notification').Create;
 
 
@@ -20,3 +15,4 @@ exports.OnWinnersCreate = functions.firestore
   });
 
 
+  
