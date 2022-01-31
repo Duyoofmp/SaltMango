@@ -211,6 +211,7 @@ async function EnterASpin(req, res) {
         promise2.push(dataHandling.Update(`${SlotType}`, { RewardSalt: admin.firestore.FieldValue.increment(RandomSpinData.Number) }, DateData));
     }
     await Promise.all(promise2);
+    functions.logger.log(RandomSpinData);
     return res.json(RandomSpinData);
 }
 

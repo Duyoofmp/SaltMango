@@ -20,8 +20,8 @@ async function Read(req, res) {
   if (data.SaltCoin === undefined) {
     data.SaltCoin = 0;
   }
-  if (data.Diamonds === undefined) {
-    data.Diamonds = 0;
+  if (data.Diamond === undefined) {
+    data.Diamond = 0;
   }
 
   return res.json(data)
