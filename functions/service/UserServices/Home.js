@@ -31,6 +31,16 @@ async function GetPoints(req, res) {
     return res.json(PointObj);
 }
 
+async function CheckIfUserCanEnter(SlotCost, UserId, Type = "Diamond") {
+    const UserData = await dataHandling.Read("Users", UserId)
+    if (UserData[Type] >= SlotCost) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 async function EnterASlot(req, res) {
     const SlotType = req.body.SlotType;
     const UserId = req.body.UserId;
@@ -54,7 +64,7 @@ async function GetSlotData(UserId, SlotType, DateData, Ad = false) {
     const FreeSlotData = [...(await dataHandling.Read(`${SlotType}/${DateData}/Entry`, undefined, undefined, undefined, 10, ["UserId", "==", UserId, "Ad", "==", false]))]
     const AdSlotData = [...(await dataHandling.Read(`${SlotType}/${DateData}/Entry`, undefined, undefined, undefined, 10, ["UserId", "==", UserId, "Ad", "==", true]))]
     let checkSlot = true;
-
+    const SlotCost = await GetSlotCost(SlotType);
 
     if (FreeSlotData.length < 5 && !Ad) {
         checkSlot = false;
@@ -62,13 +72,17 @@ async function GetSlotData(UserId, SlotType, DateData, Ad = false) {
     if (Ad && AdSlotData.length < 5) {
         checkSlot = false;
     }
+    if ((await CheckIfUserCanEnter(SlotCost, UserId))) {
+        checkSlot = false;
+    }
+
     return {
         FreeSlotData,
         "FreeSlotLength": FreeSlotData.length,
         AdSlotData,
         "AdSlotLength": AdSlotData.length,
         checkSlot,
-        "SlotCost": await GetSlotCost(SlotType),
+        "SlotCost": SlotCost,
         "Date": DateData,
     }
 
@@ -157,20 +171,23 @@ async function EnterASpin(req, res) {
     const SlotType = "Spin";
     const UserId = req.body.UserId;
     const DateData = GetSlotDate(SlotType);
-    let SlotData = [];// await ViewSpinData();
+    let SlotData = [];
+
     //Check
+    const SpinLimit = await dataHandling.Read(`Admin`, `Settings`);
+    if ((await CheckIfUserCanEnter(SpinLimit.SpinSlotCost, UserId))) {
+        return res.status(403).json("Cannont Access this api");
+    }
 
     const promise = [];
     promise.push(dataHandling.Read(`Users/${UserId}/${SlotType}`, `${DateData}`));
     promise.push(dataHandling.Read(`${SlotType}`, `${DateData}`));
-    promise.push(dataHandling.Read(`Admin`, `Settings`));
+    promise.push(dataHandling.Update("Users", { "Diamond": admin.firestore.FieldValue.increment(-1 * SpinLimit.SpinSlotCost) }, req.body.UserId));
 
-    promise.push(dataHandling.Update("Users", { "Diamond": admin.firestore.FieldValue.increment(-1 * 30) }, req.body.UserId));
 
     const promiseResult = await Promise.all(promise);
     const CheckUserLimit = promiseResult[0] || { RewardSalt: 0 };
     const CheckAdminLimit = promiseResult[1] || { RewardSalt: 0 };
-    const SpinLimit = promiseResult[2];
 
     if (CheckUserLimit.RewardSalt >= SpinLimit.UserLimit || CheckAdminLimit.RewardSalt >= SpinLimit.AdminLimit) {
         SlotData = await ViewSpinData(true);
@@ -246,6 +263,7 @@ module.exports = {
     Read,
     GetPoints,
     EnterASlot,
+    GetSlotCost,
     GetSlotData,
     GetSlotDate,
     ViewSpinData,
@@ -253,7 +271,8 @@ module.exports = {
     GetSlots,
     DirectAndIndirects,
     WinnersList,
-    DatesInWinners
+    DatesInWinners,
+
 }
 
 
