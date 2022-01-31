@@ -38,6 +38,10 @@ app.post('/GetSlotData', async (req, res) => {
 app.post('/EnterASlot', async (req, res) => HomeFunctions.EnterASlot(req, res));
 
 app.post('/SpinDialData', async (req, res) => {
+    // const SpinData={
+    //     "DialData":await HomeFunctions.ViewSpinData(),
+    //     "SlotCost":await HomeFunctions.GetSlotCost("Spin")
+    // }
     return res.json(await HomeFunctions.ViewSpinData());
 });
 
