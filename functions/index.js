@@ -77,6 +77,9 @@ exports.OnOfferCreate = OfferTriggers.OnOfferCreate;
 exports.OnOfferUpdate = OfferTriggers.OnOfferUpdate;
 
 
+const WinnersTriggers = require('./triggers/Winners');
+exports.OnWinnersCreate = WinnersTriggers.OnWinnersCreate;
+
 
 const DailyDrawTriggers = require('./triggers/DailyDraw');
 exports.OnEntryCreate = DailyDrawTriggers.OnEntryCreate;
