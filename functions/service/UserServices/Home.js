@@ -260,7 +260,7 @@ async function DatesInWinners(SlotType, Limit) {
 }
 
 async function ViewNotifications(req, res) {
-    const data = await dataHandling.Read(`Users/${req.body.UserId}/Notifications`, "", req.body.Index, "",);
+    const data = await dataHandling.Read(`Users/${req.body.UserId}/Notifications`, "", req.body.Index, "", 10);
     return res.json(data);
 }
 module.exports = {
