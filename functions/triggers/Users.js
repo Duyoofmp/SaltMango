@@ -40,7 +40,7 @@ exports.OnUsersCreate = functions.firestore
         else {//Referral
 
             // ReferralCode
-            const CheckReferralUser = await db.collection("Users").where("ReferralCode", "==", data.ReferralCode).limit(1).get()
+            const CheckReferralUser = await db.collection("Users").where("MyCode", "==", data.ReferralCode).limit(1).get()
             if (CheckReferralUser.size === 0) {
                 return db.collection("Users").doc(docid).update(UserData);
             }
