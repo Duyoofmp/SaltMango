@@ -22,6 +22,9 @@ exports.OnOfferUpdate = functions.firestore
         const docid = context.params.docid;
         const data = change.after.data()
         const arr = [];
+        if(data.CouponsCount===0){
+            await db.collection("Offers").doc(docid).update({Active:false})
+        }
         common.createKeywords(data.OfferName, arr)
         return db.collection("Offers").doc(docid).update({ Keywords: arr })
 

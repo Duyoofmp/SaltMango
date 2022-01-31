@@ -22,6 +22,9 @@ exports.OnCategoryUpdate = functions.firestore
         const docid = context.params.docid;
         const data = change.after.data()
         const arr = [];
+        if(data.NoOfQuestions===0){
+            await db.collection("Category").doc(docid).update({Active:false})
+        }
         common.createKeywords(data.CategoryName, arr)
         return await db.collection("Category").doc(docid).update({ Keywords: arr })
 
