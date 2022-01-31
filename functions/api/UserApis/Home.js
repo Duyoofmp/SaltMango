@@ -1,7 +1,3 @@
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
-const db = admin.firestore()
-const moment = require("moment-timezone")
 
 const express = require('express');
 const cors = require('cors');
