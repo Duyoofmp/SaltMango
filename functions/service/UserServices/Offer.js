@@ -37,10 +37,12 @@ async function BuyOffer(req, res) {
   const db = admin.firestore();
 
   try {
+    const offerDate=await db.collection("Offers").doc(req.body.OfferId).get();
+
     await db.runTransaction(async (t) => {
       const Userdata = await t.get(db.collection("Users").doc(req.body.UserId));
       const Coupon = await t.get(db.collection("Offers").doc(req.body.OfferId).collection("Coupons").limit(1));
-      t.set(db.collection("Users").doc(req.body.UserId).collection("Rewards").doc(Coupon.docs[0].id), { ...Coupon.docs[0].data() })
+      t.set(db.collection("Users").doc(req.body.UserId).collection("Rewards").doc(Coupon.docs[0].id), { ...Coupon.docs[0].data(),...offerDate })
       t.delete(db.collection("Offers").doc(req.body.OfferId).collection("Coupons").doc(Coupon.docs[0].id))
       t.update(db.collection("Users").doc(req.body.UserId), { SaltCoin: (Userdata.SaltCoin - req.body.OfferSaltCoin) });
     });
