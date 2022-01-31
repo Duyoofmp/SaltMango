@@ -9,7 +9,7 @@ const runtimeOpts = {
   timeoutSeconds: 540
 }
 exports.scheduledFunctionForDraws = functions.runWith(runtimeOpts).pubsub
-  .schedule("5 0 * * *")
+  .schedule("5 2 * * *")
   .timeZone("Asia/Kolkata") // Users can choose timezone - default is America/Los_Angeles
   .onRun(async (context) => {
     const promise = [];
@@ -103,7 +103,7 @@ exports.OnWinnerAddOn = functions.firestore
   .onUpdate(async (change, context) => {
     const data=change.after.data();
     const date=moment().tz('Asia/Kolkata').format("YYYY-MM-DD")
-
+const draw=context.params.Draw
     const winners=data.WinnersData
     if(winners!==undefined){
       const dat=[];
@@ -132,3 +132,6 @@ exports.OnWinnerAddOn = functions.firestore
     }
     return 0;
 })
+module.exports={
+  drawWinnerPicker
+}
