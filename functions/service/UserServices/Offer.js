@@ -38,7 +38,6 @@ async function BuyOffer(req, res) {
 
   try {
     const offerDate=await db.collection("Offers").doc(req.body.OfferId).get();
-
     await db.runTransaction(async (t) => {
       const Userdata = await t.get(db.collection("Users").doc(req.body.UserId));
       const Coupon = await t.get(db.collection("Offers").doc(req.body.OfferId).collection("Coupons").limit(1));
@@ -51,11 +50,12 @@ async function BuyOffer(req, res) {
     functions.logger.error(e);
     return res.json(false);
   }
-
-
 }
 
-
+async function ReadReward(req, res) {
+    const RewardDat = await dataHandling.Read(`Users/${req.body.UserId}/Rewards`, req.body.DocId, req.body.index, req.body.Keyword);
+    return res.json(RewardDat)
+  }
 
 
 //   try {
@@ -77,5 +77,6 @@ async function BuyOffer(req, res) {
 module.exports = {
   ReadCountry,
   ReadOffers,
-  BuyOffer
+  BuyOffer,
+  ReadReward
 }

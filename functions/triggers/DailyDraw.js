@@ -33,7 +33,7 @@ exports.OnEntryCreate = functions.firestore
     const docid = context.params.docid;
     const DrawId = context.params.DrawId;
     const Draw = context.params.Draw;
-
+await db.doc(`${Draw}/${DrawId}/Settinds/DrawInfo`).update({UserIds:admin.firestore.FieldValue.arrayUnion(change.data().UserId)})
     return db
       .doc(`${Draw}/${DrawId}/Entry/${docid}`)
       .update({ DocId: docid });

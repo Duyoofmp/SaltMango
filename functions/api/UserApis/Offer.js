@@ -16,6 +16,8 @@ app.use(common.decodeIDTokenHeader)
 app.post('/ReadCountry', async (req, res) => Offer.ReadCountry(req, res))
 app.post('/ReadOffers', async (req, res) => Offer.ReadOffers(req, res))
 app.post('/BuyOffer', async (req, res) => Offer.BuyOffer(req, res))
+app.post('/ReadRewards', async (req, res) => Offer.ReadReward(req, res))
+
 
 
 exports.Offer = app;
