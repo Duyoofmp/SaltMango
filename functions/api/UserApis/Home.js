@@ -57,7 +57,7 @@ app.post('/WinnersList', async (req, res) => HomeFunctions.WinnersList(req, res)
 
 app.post('/DatesInWinners', async (req, res) => res.json(await HomeFunctions.DatesInWinners(req.body.SlotType, 7)))
 
-app.post('/ViewNotifications', async (req, res) => HomeFunctions.EnterASpin(req, res));
+app.post('/ViewNotifications', async (req, res) => HomeFunctions.ViewNotifications(req, res));
 
 exports.Home = app;
 
