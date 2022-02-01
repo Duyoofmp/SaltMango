@@ -12,7 +12,7 @@ exports.OnUsersReferralCreate = functions.firestore
         const UserId = context.params.UserId;
         const data = change.data();
 
-        const RUserData = (await db.doc(`Users/${data.UserId}`).get).data();
+        const RUserData = (await db.doc(`Users/${data.UserId}`).get()).data();
 
         const NotificationObj = {
             "Text": `Your referral code was used by ${RUserData.Name}. You Earned ${data.Reward} salt coins`,
