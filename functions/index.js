@@ -88,6 +88,9 @@ const DailyDrawTriggers = require('./triggers/DailyDraw');
 exports.OnEntryCreate = DailyDrawTriggers.OnEntryCreate;
 exports.scheduledFunctionForDraws = DailyDrawTriggers.scheduledFunctionForDraws;
 exports.OnWinnerAddOn = DailyDrawTriggers.OnWinnerAddOn;
+exports.OnWinnerAddCreate = DailyDrawTriggers.OnWinnerAddCreate;
+
+
 
 
 

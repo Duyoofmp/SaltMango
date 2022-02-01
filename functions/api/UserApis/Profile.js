@@ -30,26 +30,26 @@ app.post('/ReadBanners', async (req, res) => {
     BannerFunctions_Read(req, res)
 })
 
-app.post('/Check', async (req, res) => {
-    const promise = [];
+// app.post('/Check', async (req, res) => {
+//     const promise = [];
 
-   // const yesterday = moment().tz('Asia/Kolkata').subtract(1, "d");
-    const Day = "2022-01-30";
-    // const weekEnd = yesterday.endOf('week').format("YYYY-MM-DD");
-    // const monthEnd = yesterday.endOf('month').format("YYYY-MM-DD");
-    // if (weekEnd === Day) {
-    //   promise.push(drawWinnerPicker("Weekly", Day));
-    // }
-    // if (monthEnd === Day) {
-    //   promise.push(drawWinnerPicker("Monthly", Day));
-    // }
+//    // const yesterday = moment().tz('Asia/Kolkata').subtract(1, "d");
+//     const Day = "2022-02-05";
+//     // const weekEnd = yesterday.endOf('week').format("YYYY-MM-DD");
+//     // const monthEnd = yesterday.endOf('month').format("YYYY-MM-DD");
+//     // if (weekEnd === Day) {
+//     //   promise.push(drawWinnerPicker("Weekly", Day));
+//     // }
+//     // if (monthEnd === Day) {
+//     //   promise.push(drawWinnerPicker("Monthly", Day));
+//     // }
 
-   //promise.push(drawWinnerPicker("Daily", Day));
-   await  Promise.all(promise)
-     return res.json(true)
+//    promise.push(drawWinnerPicker("Weekly", Day));
+//    await  Promise.all(promise)
+//      return res.json(true)
      
      
- })
+//  })
 
 
 exports.Profile = app;

@@ -133,6 +133,41 @@ const draw=context.params.Draw
     return 0;
   })
 
+  exports.OnWinnerAddCreate = functions.firestore
+  .document("{Draw}/{DrawId}")
+  .onCreate(async (change, context) => {
+    const data=change.data();
+     const date=context.params.DrawId
+const draw=context.params.Draw
+    const winners=data.WinnersData
+    if(winners!==undefined){
+      const dat=[];
+      winners.forEach(ele=>{
+        dat.push({Winners:ele.Winners,Amount:ele.Amount})
+      })
+      const prom = [];
+      const prom1 = [];
+      for (let index = 0; index < dat.length; index++) {
+        for (let j = 0; j < dat[index].Winners.length; j++) {
+          prom.push(dataHandling.Read("Users", dat[index].Winners[j]))
+        }
+      }
+      const usrDatas = await Promise.all(prom);
+      for (let i = 0; i < usrDatas.length; i++) {
+        for (let k = 0; k < dat.length; k++) {
+          if (dat[k].Winners.includes(usrDatas[i].DocId)) {
+            usrDatas[i].RewardCoins = dat[k].Amount
+          }
+        }
+        prom1.push(dataHandling.Create("Winners", { ...usrDatas[i], index: Date.now(), WonIn: draw, UserId: usrDatas[i].DocId, WinDate: date }))
+
+
+      }
+      return await Promise.all(prom1);
+    }
+    return 0;
+  })
+
 // module.exports={
 //   drawWinnerPicker
 // }
