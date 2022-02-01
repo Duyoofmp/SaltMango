@@ -186,7 +186,20 @@ function arrayEquals(a, b) {
     a.every((val, index) => val === b[index]);
 }
 
-
+async function pushNotification(title,msg,UserId){
+  const payload = {
+      notification: {
+          title: title,
+          body: msg,
+          sound: "default"
+      }
+  };
+  const options = {
+      priority: "high",
+      timeToLive: 60 * 60 * 24
+  };
+return await admin.messaging().sendToTopic(UserId, payload, options);
+}
 
 
 
@@ -203,6 +216,7 @@ module.exports = {
   createKeywords,
   loginForAdmins,
   decodeIDTokenForLogin,
+  pushNotification,
   Point,
   ReferralPoint,
   ReferredPoint,

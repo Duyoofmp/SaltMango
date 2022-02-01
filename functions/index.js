@@ -84,6 +84,11 @@ const WinnersTriggers = require('./triggers/Winners');
 exports.OnWinnersCreate = WinnersTriggers.OnWinnersCreate;
 
 
+
+const OnUsersNotificationCreate = require('./triggers/Notification');
+exports.OnUsersNotificationCreate = OnUsersNotificationCreate.OnUsersNotificationCreate;
+
+
 const DailyDrawTriggers = require('./triggers/DailyDraw');
 exports.OnEntryCreate = DailyDrawTriggers.OnEntryCreate;
 exports.scheduledFunctionForDraws = DailyDrawTriggers.scheduledFunctionForDraws;
