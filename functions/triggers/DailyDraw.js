@@ -33,7 +33,7 @@ exports.OnEntryCreate = functions.firestore
     const docid = context.params.docid;
     const DrawId = context.params.DrawId;
     const Draw = context.params.Draw;
-await db.doc(`${Draw}/${DrawId}/Settings/DrawInfo`).set({UserIds:admin.firestore.FieldValue.arrayUnion(change.data().UserId)},{merge:true})
+    await db.doc(`${Draw}/${DrawId}/Settings/DrawInfo`).set({ UserIds: admin.firestore.FieldValue.arrayUnion(change.data().UserId) }, { merge: true })
     return db
       .doc(`${Draw}/${DrawId}/Entry/${docid}`)
       .update({ DocId: docid });
@@ -90,48 +90,48 @@ async function drawWinnerPicker(draw, date) {
     let l = f + snap.WinnerLimit;
     snap.Winners = dat.slice(f, l);
     f = l;
-  }); 
+  });
   return await db
     .collection(draw)
     .doc(date)
-    .update({ WinnersData: DrawSet,WinnersSelected:true ,index:Date.now()});
-   
+    .update({ WinnersData: DrawSet, WinnersSelected: true, index: Date.now() });
+
 }
 
 exports.OnWinnerAddOn = functions.firestore
   .document("{Draw}/{DrawId}")
   .onUpdate(async (change, context) => {
-    const data=change.after.data();
-    const date=moment().tz('Asia/Kolkata').format("YYYY-MM-DD")
-const draw=context.params.Draw
-    const winners=data.WinnersData
-    if(winners!==undefined){
-      const dat=[];
-      winners.forEach(ele=>{
-        dat.push({Winners:ele.Winners,Amount:ele.Amount})
+    const data = change.after.data();
+    const date = moment().tz('Asia/Kolkata').format("YYYY-MM-DD")
+    const draw = context.params.Draw
+    const winners = data.WinnersData
+    if (winners !== undefined) {
+      const dat = [];
+      winners.forEach(ele => {
+        dat.push({ Winners: ele.Winners, Amount: ele.Amount })
       })
-  const prom=[];
-  const prom1=[];
-  for (let index = 0; index < dat.length; index++) {
-    for (let j = 0; j < dat[index].Winners.length; j++) {
-      prom.push(dataHandling.Read("Users",dat[index].Winners[j]))
-    }
-  }
-  const usrDatas=  await Promise.all(prom);
-  for (let i = 0; i < usrDatas.length; i++) {
-   for (let k = 0; k < dat.length; k++) {
-    if(dat[k].Winners.includes(usrDatas[i].DocId)){
-      usrDatas[i].RewardCoins=dat[k].Amount
-            }
-   }
-   prom1.push(dataHandling.Create("Winners",{...usrDatas[i] ,index:Date.now(),WonIn:draw,UserId:usrDatas[i].DocId,WinDate:date}))
+      const prom = [];
+      const prom1 = [];
+      for (let index = 0; index < dat.length; index++) {
+        for (let j = 0; j < dat[index].Winners.length; j++) {
+          prom.push(dataHandling.Read("Users", dat[index].Winners[j]))
+        }
+      }
+      const usrDatas = await Promise.all(prom);
+      for (let i = 0; i < usrDatas.length; i++) {
+        for (let k = 0; k < dat.length; k++) {
+          if (dat[k].Winners.includes(usrDatas[i].DocId)) {
+            usrDatas[i].RewardCoins = dat[k].Amount
+          }
+        }
+        prom1.push(dataHandling.Create("Winners", { ...usrDatas[i], index: Date.now(), WonIn: draw, UserId: usrDatas[i].DocId, WinDate: date }))
 
-    
-  }
-  return await Promise.all(prom1);
+
+      }
+      return await Promise.all(prom1);
     }
     return 0;
-})
-module.exports={
-  drawWinnerPicker
-}
+  })
+// module.exports={
+//   drawWinnerPicker
+// }

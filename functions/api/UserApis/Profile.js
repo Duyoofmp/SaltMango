@@ -7,7 +7,7 @@ app.use(cors({ origin: true }));
 const ProfileFunctions = require('../../service/UserServices/Profile');
 const UserFunctions = require('../../service/Users');
 const common = require("../../common");
-const {drawWinnerPicker} =require('../../triggers/DailyDraw')
+// const {drawWinnerPicker} =require('../../triggers/DailyDraw')
 app.use(common.decodeIDTokenHeader)
 
 app.post('/UpdateProfile', async (req, res) => {
@@ -23,9 +23,15 @@ app.post('/ReadProfile', async (req, res) => {
     req.body.DocId = req.body.UserId;
     return UserFunctions.Read(req, res)
 })
- app.post('/Check', async (req, res) => {
+
+app.post('/ReadBanners', async (req, res) => {
+    const BannerFunctions_Read = require('../../service/Banners').Read;
+    BannerFunctions_Read(req, res)
+})
+
+app.post('/Check', async (req, res) => {
     const promise = [];
-   // const yesterday = moment().tz('Asia/Kolkata').subtract(1, "d");
+    // const yesterday = moment().tz('Asia/Kolkata').subtract(1, "d");
     const Day = "2022-01-22";
     // const weekEnd = yesterday.endOf('week').format("YYYY-MM-DD");
     // const monthEnd = yesterday.endOf('month').format("YYYY-MM-DD");
@@ -35,12 +41,12 @@ app.post('/ReadProfile', async (req, res) => {
     // if (monthEnd === Day) {
     //   promise.push(drawWinnerPicker("Monthly", Day));
     // }
-    promise.push(drawWinnerPicker("Daily", Day));
-   await  Promise.all(promise)
-     return res.json(true)
-     
-     
- })
+    // promise.push(drawWinnerPicker("Daily", Day));
+    await Promise.all(promise)
+    return res.json(true)
+
+
+})
 
 
 exports.Profile = app;

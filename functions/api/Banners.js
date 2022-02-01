@@ -23,4 +23,4 @@ app.post('/DeleteBanner', async (req, res) => BannerFunctions.Delete(req, res))
 
 
 
-exports.Countries = app;
+exports.Banners = app;

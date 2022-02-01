@@ -30,6 +30,9 @@ exports.Coupons = functions.region("asia-south1").https.onRequest(Coupons.Coupon
 const Country = require('./api/Country');
 exports.Countries = functions.region("asia-south1").https.onRequest(Country.Countries);
 
+const Banners = require('./api/Banners');
+exports.Banners = functions.region("asia-south1").https.onRequest(Banners.Banners);
+
 const Profile = require('./api/UserApis/Profile');
 exports.Profile = functions.region("asia-south1").https.onRequest(Profile.Profile);
 
