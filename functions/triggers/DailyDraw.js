@@ -102,8 +102,7 @@ exports.OnWinnerAddOn = functions.firestore
   .document("{Draw}/{DrawId}")
   .onUpdate(async (change, context) => {
     const data=change.after.data();
-     const date=moment().tz('Asia/Kolkata').format("YYYY-MM-DD")
-   // const date="2022-01-30"
+     const date=context.params.DrawId
 const draw=context.params.Draw
     const winners=data.WinnersData
     if(winners!==undefined){
