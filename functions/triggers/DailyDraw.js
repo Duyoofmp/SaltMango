@@ -94,21 +94,22 @@ async function drawWinnerPicker(draw, date) {
   return await db
     .collection(draw)
     .doc(date)
-    .update({ WinnersData: DrawSet, WinnersSelected: true, index: Date.now() });
-
+    .set({ WinnersData: DrawSet,WinnersSelected:true ,index:Date.now()},{merge:true});
+   
 }
 
 exports.OnWinnerAddOn = functions.firestore
   .document("{Draw}/{DrawId}")
   .onUpdate(async (change, context) => {
-    const data = change.after.data();
-    const date = moment().tz('Asia/Kolkata').format("YYYY-MM-DD")
-    const draw = context.params.Draw
-    const winners = data.WinnersData
-    if (winners !== undefined) {
-      const dat = [];
-      winners.forEach(ele => {
-        dat.push({ Winners: ele.Winners, Amount: ele.Amount })
+    const data=change.after.data();
+     const date=moment().tz('Asia/Kolkata').format("YYYY-MM-DD")
+   // const date="2022-01-30"
+const draw=context.params.Draw
+    const winners=data.WinnersData
+    if(winners!==undefined){
+      const dat=[];
+      winners.forEach(ele=>{
+        dat.push({Winners:ele.Winners,Amount:ele.Amount})
       })
       const prom = [];
       const prom1 = [];
@@ -132,6 +133,7 @@ exports.OnWinnerAddOn = functions.firestore
     }
     return 0;
   })
+
 // module.exports={
 //   drawWinnerPicker
 // }
