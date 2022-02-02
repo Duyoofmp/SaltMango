@@ -27,6 +27,7 @@ app.post('/ReadProfile', async (req, res) => {
 
 app.post('/ReadBanners', async (req, res) => {
     const BannerFunctions_Read = require('../../service/Banners').Read;
+    req.body.userapi=true
     BannerFunctions_Read(req, res)
 })
 
