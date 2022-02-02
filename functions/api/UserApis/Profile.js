@@ -8,7 +8,7 @@ const ProfileFunctions = require('../../service/UserServices/Profile');
 const UserFunctions = require('../../service/Users');
 const common = require("../../common");
 
-//const {drawWinnerPicker} =require('../../triggers/DailyDraw')
+//const {drawWinnerPicker}=require('../../triggers/DailyDraw')
 app.use(common.decodeIDTokenHeader)
 
 app.post('/UpdateProfile', async (req, res) => {

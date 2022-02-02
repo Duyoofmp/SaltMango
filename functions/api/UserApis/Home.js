@@ -51,7 +51,7 @@ app.post('/InDirectFriends', async (req, res) => HomeFunctions.DirectAndIndirect
 
 app.post('/WinnersList', async (req, res) => HomeFunctions.WinnersList(req, res))
 
-app.post('/DatesInWinners', async (req, res) => res.json(await HomeFunctions.DatesInWinners(req.body.SlotType, 7)))
+app.post('/DatesInWinners', async (req, res) =>res.json(await HomeFunctions.DatesInWinners(req.body.SlotType, 7,true)))
 
 app.post('/ViewNotifications', async (req, res) => HomeFunctions.ViewNotifications(req, res));
 

@@ -265,9 +265,13 @@ async function WinnersList(req, res) {
 
 //index,limit,FriendList true or false
 
-async function DatesInWinners(SlotType, Limit) {
+async function DatesInWinners(SlotType, Limit,userapi) {
     const Date = await dataHandling.Read(SlotType, "", "", "", Limit, ["WinnersSelected", "==", true])
-    return Date.map(id => id.DocId);
+   const a=Date.map(id => id.DocId);
+   if(userapi){
+    return a.reverse()
+   }
+   return a
 }
 
 async function ViewNotifications(req, res) {
