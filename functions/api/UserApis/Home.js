@@ -6,7 +6,7 @@ app.use(cors({ origin: true }));
 
 const HomeFunctions = require('../../service/UserServices/Home')
 const common = require("../../common");
-app.use(common.decodeIDTokenHeader)
+//app.use(common.decodeIDTokenHeader)
 
 
 const CategoryFunctionsRead = require('../../service/Category').Read;
@@ -42,9 +42,11 @@ app.post('/GetSlotData', async (req, res) => {
 app.post('/EnterASlot', async (req, res) => HomeFunctions.EnterASlot(req, res));
 
 app.post('/SpinDialData', async (req, res) => {
+    const date= HomeFunctions.GetSlotDate("Spin")
     const SpinData = {
         "DialData": await HomeFunctions.ViewSpinData(),
-        "SlotCost": await HomeFunctions.GetSlotCost("Spin")
+        "SlotCost": await HomeFunctions.GetSlotCost("Spin"),
+        "Ads":await HomeFunctions.GetNoOfEntriesInSpin(date,req.body.UserId,"Spin")
     }
     return res.json(SpinData);
 });

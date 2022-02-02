@@ -134,7 +134,7 @@ async function GetSlots() {
 
 
 async function ViewSpinData(Type = false) {
-    const SpinData = [
+    const SpinData = [ 
         {
             "Number": 50, "Type": "Diamond", "Probability": 5,
         },
@@ -233,6 +233,16 @@ const randomIndex = distribution => {
     return distribution[index];
 };
 
+async function GetNoOfEntriesInSpin(DateData,UserId,SlotType){
+   const no=await db.collection("Users").doc(UserId).collection(SlotType).doc(DateData).collection("Entry").get();
+
+   if(no.size>=5 ){
+      return true;
+   }
+
+   return false;
+}
+
 async function DirectAndIndirects(req, res, ref) {
     const direct = await dataHandling.Read("Users", req.body.DocId, req.body.index, req.body.Keyword, req.body.limit, [ref, "==", req.body.UserId], [, true, "index", "desc"])
     return res.json(direct)
@@ -278,6 +288,7 @@ module.exports = {
     WinnersList,
     DatesInWinners,
     ViewNotifications,
+    GetNoOfEntriesInSpin
 
 }
 
