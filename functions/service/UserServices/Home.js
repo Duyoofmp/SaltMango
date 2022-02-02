@@ -244,7 +244,7 @@ async function GetNoOfEntriesInSpin(DateData,UserId,SlotType){
 }
 
 async function DirectAndIndirects(req, res, ref) {
-    const direct = await dataHandling.Read("Users", req.body.DocId, req.body.index, req.body.Keyword, req.body.limit, [ref, "==", req.body.UserId], [, true, "index", "desc"])
+    const direct = await dataHandling.Read("Users", req.body.DocId, req.body.index, req.body.Keyword, req.body.limit, [ref, "==", req.body.UserId], [true, "index", "desc"])
     return res.json(direct)
 }
 

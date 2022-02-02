@@ -6,7 +6,7 @@ app.use(cors({ origin: true }));
 
 const HomeFunctions = require('../../service/UserServices/Home')
 const common = require("../../common");
-//app.use(common.decodeIDTokenHeader)
+app.use(common.decodeIDTokenHeader)
 
 
 const CategoryFunctionsRead = require('../../service/Category').Read;

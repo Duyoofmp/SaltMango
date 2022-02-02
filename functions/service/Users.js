@@ -17,6 +17,12 @@ async function Delete(req, res) {
 
 async function Read(req, res) {
   const data = await dataHandling.Read("Users", req.body.DocId, req.body.index, req.body.Keyword);
+  const direct = await dataHandling.Read("Users",undefined, req.body.index, req.body.Keyword, req.body.limit, ["DirectReferralId", "==", req.body.DocId])
+  const indirect = await dataHandling.Read("Users",undefined, req.body.index, req.body.Keyword, req.body.limit, ["IndirectReferralId", "==", req.body.DocId])
+  data.DirectReferralsCount =direct.length
+  data.InDirectReferralsCount  =indirect.length
+
+  
   if (data.SaltCoin === undefined) {
     data.SaltCoin = 0;
   }
