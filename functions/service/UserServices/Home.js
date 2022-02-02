@@ -152,7 +152,7 @@ async function ViewSpinData(Type = false) {
         },
         {
             "Number": 5, "Type": "SaltCoin", "Probability": 3,
-        },
+        }, 
         {
             "Number": 4, "Type": "SaltCoin", "Probability": 3,
         },

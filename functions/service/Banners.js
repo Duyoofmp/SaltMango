@@ -22,9 +22,14 @@ async function Delete(req, res) {
 }
 
 async function Read(req, res) {
+  if(req.body.userapi){
+    const data = await dataHandling.Read("Banners", req.body.DocId, req.body.index, req.body.Keyword, req.body.limit, ["Active","==",true]);
+    return res.json(data);
+  }
   const data = await dataHandling.Read("Banners", req.body.DocId, req.body.index, req.body.Keyword, 1000);
   return res.json(data)
 }
+
 
 
 
