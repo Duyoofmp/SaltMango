@@ -2,6 +2,7 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const db = admin.firestore();
 const common = require('../common')
+const NotificationCreate = require('../service/Notification').Create;
 
 
 
@@ -30,5 +31,15 @@ exports.OnOfferUpdate = functions.firestore
 
     })
 
-
+    exports.OnRewardsCreate = functions.firestore
+    .document("Users/{UserId}/Rewards/{DocId}")
+    .onCreate(async (change, context) => {
+      const userid=context.params.UserId
+      const data=change.data()
+      const NotificationObj = {
+          "Text": `🎊Congratulaions🎊 You achieved new reward of ${data.OfferName}🥳`,
+          "Image": "https://firebasestorage.googleapis.com/v0/b/salt-mango.appspot.com/o/1642614350829.png?alt=media",
+      }
+       return NotificationCreate(userid, NotificationObj);
+    });
 
