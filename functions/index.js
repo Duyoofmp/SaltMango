@@ -78,6 +78,9 @@ exports.OnCouponDelete = CouponTriggers.OnCouponDelete;
 const OfferTriggers = require('./triggers/Offers');
 exports.OnOfferCreate = OfferTriggers.OnOfferCreate;
 exports.OnOfferUpdate = OfferTriggers.OnOfferUpdate;
+exports.OnRewardsCreate = OfferTriggers.OnRewardsCreate;
+
+
 
 
 const WinnersTriggers = require('./triggers/Winners');
