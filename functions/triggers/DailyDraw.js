@@ -53,35 +53,42 @@ async function drawWinnerPicker(draw, date) {
   });
   query = db.collection(draw).doc(date).collection("Entry");
   const dat = [];
-  for (let loop = 0; loop < limit; loop++) {
-    key = query.doc().id;
-    const snapshot = await query
-      .where(admin.firestore.FieldPath.documentId(), ">=", key)
-      .limit(1)
-      .get();
-    if (snapshot.size > 0) {
-      snapshot.forEach((doc) => {
-        if (!arr.includes(doc.data().UserId)) {
-          arr.push(doc.data().UserId);
-          dat.push(doc.data().UserId);
-        } else {
-          limit = limit + 1;
-        }
-      });
-    } else {
-      const snapshots = await query
-        .where(admin.firestore.FieldPath.documentId(), "<", key)
+
+  const GetUsers = (await db.collection(draw).doc(date).collection("Settings").doc("DrawInfo").get()).data() || { "UserIds": [] };
+  if (GetUsers.UserIds.length < limit) {
+    dat.push(...(shuffle([...GetUsers.UserIds])));
+  }
+  else {
+    for (let loop = 0; loop < limit; loop++) {
+      const key = query.doc().id;
+      const snapshot = await query
+        .where(admin.firestore.FieldPath.documentId(), ">=", key)
         .limit(1)
         .get();
+      if (snapshot.size > 0) {
+        snapshot.forEach((doc) => {
+          if (!arr.includes(doc.data().UserId)) {
+            arr.push(doc.data().UserId);
+            dat.push(doc.data().UserId);
+          } else {
+            limit = limit + 1;
+          }
+        });
+      } else {
+        const snapshots = await query
+          .where(admin.firestore.FieldPath.documentId(), "<", key)
+          .limit(1)
+          .get();
 
-      snapshots.forEach((doc) => {
-        if (!arr.includes(doc.data().UserId)) {
-          arr.push(doc.data().UserId);
-          dat.push(doc.data().UserId);
-        } else {
-          limit = limit + 1;
-        }
-      });
+        snapshots.forEach((doc) => {
+          if (!arr.includes(doc.data().UserId)) {
+            arr.push(doc.data().UserId);
+            dat.push(doc.data().UserId);
+          } else {
+            limit = limit + 1;
+          }
+        });
+      }
     }
   }
 
@@ -91,24 +98,42 @@ async function drawWinnerPicker(draw, date) {
     snap.Winners = dat.slice(f, l);
     f = l;
   });
-  return await db
+  return db
     .collection(draw)
     .doc(date)
-    .set({ WinnersData: DrawSet,WinnersSelected:true ,index:Date.now()},{merge:true});
-   
+    .set({ WinnersData: DrawSet, WinnersSelected: true, index: Date.now() }, { merge: true });
+
+}
+
+function shuffle(array) {
+  let currentIndex = array.length, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+
+  return array;
 }
 
 exports.OnWinnerAddOn = functions.firestore
   .document("{Draw}/{DrawId}")
   .onUpdate(async (change, context) => {
-    const data=change.after.data();
-     const date=context.params.DrawId
-const draw=context.params.Draw
-    const winners=data.WinnersData
-    if(winners!==undefined){
-      const dat=[];
-      winners.forEach(ele=>{
-        dat.push({Winners:ele.Winners,Amount:ele.Amount})
+    const data = change.after.data();
+    const date = context.params.DrawId
+    const draw = context.params.Draw
+    const winners = data.WinnersData
+    if (winners !== undefined) {
+      const dat = [];
+      winners.forEach(ele => {
+        dat.push({ Winners: ele.Winners, Amount: ele.Amount })
       })
       const prom = [];
       const prom1 = [];
@@ -133,17 +158,17 @@ const draw=context.params.Draw
     return 0;
   })
 
-  exports.OnWinnerAddCreate = functions.firestore
+exports.OnWinnerAddCreate = functions.firestore
   .document("{Draw}/{DrawId}")
   .onCreate(async (change, context) => {
-    const data=change.data();
-     const date=context.params.DrawId
-const draw=context.params.Draw
-    const winners=data.WinnersData
-    if(winners!==undefined){
-      const dat=[];
-      winners.forEach(ele=>{
-        dat.push({Winners:ele.Winners,Amount:ele.Amount})
+    const data = change.data();
+    const date = context.params.DrawId
+    const draw = context.params.Draw
+    const winners = data.WinnersData
+    if (winners !== undefined) {
+      const dat = [];
+      winners.forEach(ele => {
+        dat.push({ Winners: ele.Winners, Amount: ele.Amount })
       })
       const prom = [];
       const prom1 = [];
