@@ -182,10 +182,7 @@ async function EnterASpin(req, res) {
     const promise = [];
     promise.push(dataHandling.Read(`Users/${UserId}/${SlotType}`, `${DateData}`));
     promise.push(dataHandling.Read(`${SlotType}`, `${DateData}`));
-    const checkspinlimit=await GetNoOfEntriesInSpin(DateData,UserId,SlotType)
-    if(!checkspinlimit){
     promise.push(dataHandling.Update("Users", { "Diamond": admin.firestore.FieldValue.increment(-1 * SpinLimit.SpinSlotCost) }, req.body.UserId));
-    }
 
     const promiseResult = await Promise.all(promise);
     const CheckUserLimit = promiseResult[0] || { RewardSalt: 0 };
