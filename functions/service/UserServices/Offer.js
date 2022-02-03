@@ -9,8 +9,11 @@ async function ReadCountry(req, res) {
 }
 
 async function ReadOffers(req, res) {
-  let claim;
   const arr = [];
+  if (req.body.CountryId === undefined) {
+    const RewardDat = await dataHandling.Read(`Users/${req.body.UserId}/Rewards`, req.body.DocId, req.body.Index, req.body.Keyword);
+    return res.json(RewardDat);
+  }
   if (req.body.CountryId === "") {
     const IndiaData = await dataHandling.Read("Countries", "", "", "", 1, ["CountryName", "==", "India"], [false]);
     req.body.CountryId = IndiaData[0].DocId;
@@ -20,11 +23,7 @@ async function ReadOffers(req, res) {
   const Userdata = (await dataHandling.Read("Users", req.body.UserId)) || { SaltCoin: 0 };
 
   data.forEach((Offer) => {
-    const claim = false;
-    if (Offer.SaltCoin <= Userdata.SaltCoin) {
-      claim = true;
-    }
-    arr.push({ ...Offer, ClaimStatus: claim })
+    arr.push({ ...Offer, ClaimStatus: Offer.SaltCoin >= Userdata.SaltCoin })
   });
 
   return res.json(arr)
@@ -36,14 +35,15 @@ async function BuyOffer(req, res) {
   const admin = require('firebase-admin');
   const db = admin.firestore();
   try {
-    const offerDate=await db.collection("Offers").doc(req.body.OfferId).get();
-    
+    const OfferData = await db.collection("Offers").doc(req.body.CountryId).get();
+
     await db.runTransaction(async (t) => {
       const Userdata = await t.get(db.collection("Users").doc(req.body.UserId));
-      const Coupon = await t.get(db.collection("Offers").doc(req.body.OfferId).collection("Coupons").limit(1));
-      t.set(db.collection("Users").doc(req.body.UserId).collection("Rewards").doc(Coupon.docs[0].id), { ...Coupon.docs[0].data(),...offerDate.data() })
-      t.delete(db.collection("Offers").doc(req.body.OfferId).collection("Coupons").doc(Coupon.docs[0].id))
-      t.update(db.collection("Users").doc(req.body.UserId), { SaltCoin: (Userdata.data().SaltCoin) - (req.body.OfferSaltCoin)});
+      const Coupon = await t.get(db.collection("Offers").doc(req.body.CountryId).collection("Coupons").limit(1));
+
+      t.set(db.collection("Users").doc(req.body.UserId).collection("Rewards").doc(Coupon.docs[0].id), { ...Coupon.docs[0].data(), ...OfferData.data() })
+      t.delete(db.collection("Offers").doc(req.body.CountryId).collection("Coupons").doc(Coupon.docs[0].id))
+      t.update(db.collection("Users").doc(req.body.UserId), { SaltCoin: Number(Userdata.data().SaltCoin) - Number(OfferData.data().SaltCoin) });
     });
     return res.json(true);
   } catch (e) {
@@ -53,9 +53,9 @@ async function BuyOffer(req, res) {
 }
 
 async function ReadReward(req, res) {
-    const RewardDat = await dataHandling.Read(`Users/${req.body.UserId}/Rewards`, req.body.DocId, req.body.index, req.body.Keyword);
-    return res.json(RewardDat)
-  }
+  const RewardDat = await dataHandling.Read(`Users/${req.body.UserId}/Rewards`, req.body.DocId, req.body.index, req.body.Keyword);
+  return res.json(RewardDat)
+}
 
 
 //   try {
