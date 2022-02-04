@@ -16,8 +16,7 @@ exports.OnUsersReferralCreate = functions.firestore
 
         const NotificationObj = {
             "Text": `Your referral code was used by ${RUserData.Name}. You Earned ${data.Reward} salt coins`,
-            "Image": "https://firebasestorage.googleapis.com/v0/b/salt-mango.appspot.com/o/1642614350829.png?alt=media",
-
+            "Heading": "Referal Reward",
         }
 
         return NotificationCreate(UserId, NotificationObj);

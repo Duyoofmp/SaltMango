@@ -14,7 +14,7 @@ exports.OnWinnersCreate = functions.firestore
     await counterOperation.incrementBy(data.RewardCoins);
     const NotificationObj = {
         "Text": `🎊Congratulations🎊  You have won ${data.WonIn} Draw held on ${data.WinDate}. You Earned ${data.RewardCoins} salt coins 🥳`,
-        "Image": "https://firebasestorage.googleapis.com/v0/b/salt-mango.appspot.com/o/1642614350829.png?alt=media",
+        "Heading": `${data.WonIn} Darw Winner`,
     }
      return NotificationCreate(data.UserId, NotificationObj);
   });
