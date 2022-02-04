@@ -149,7 +149,7 @@ exports.OnWinnerAddOn = functions.firestore
             usrDatas[i].RewardCoins = dat[k].Amount
           }
         }
-        prom1.push(dataHandling.Create("Winners", { ...usrDatas[i], index: Date.now(), WonIn: draw, UserId: usrDatas[i].DocId, WinDate: date }))
+        prom1.push(dataHandling.Create("Winners", { ...usrDatas[i], index: Date.now(), WonIn: draw, UserId: usrDatas[i].DocId, WinDate: date,ReferralWin:false }))
 
 
       }
