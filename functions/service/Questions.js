@@ -2,32 +2,29 @@ const dataHandling = require("../functions");
 
 
 async function Create(req, res) {
-    const temp = []
-    const query = await dataHandling.Read("Category",req.body.CategoryId,)//db.collection("Category").doc(req.body.CategoryId).get();
-    let no = query.NoOfQuestions;
-    const id = query.DocId;
-    req.body.Questions.forEach(element => {
-      no = no + 1
-      element.index = Date.now();
-      element.CategoryId = req.body.CategoryId;
-      element.QuestionNumber = no
-      temp.push(dataHandling.Create("QuestionsAndAnswers", element))
-    });
-
-    temp.push(dataHandling.Update("Category", { NoOfQuestions: no }, id))
-    await Promise.all(temp)
-    return res.json(true)
+  const promise = [];
+  const query = await dataHandling.Read("Category", req.body.CategoryId);
+  req.body.Questions.forEach((element, index) => {
+    element.index = Date.now();
+    element.CategoryId = req.body.CategoryId;
+    element.QuestionNumber = query.NoOfQuestions + index;
+    promise.push(dataHandling.Create("QuestionsAndAnswers", element));
+  });
+  const TotalNo = query.NoOfQuestions + req.body.Questions.length;
+  promise.push(dataHandling.Update("Category", { NoOfQuestions: TotalNo }, query.DocId));
+  await Promise.all(promise);
+  return res.json(true);
 }
-async function Update(req, res) {
-  req.body.index = Date.now()
-  await dataHandling.Update("QuestionsAndAnswers", req.body, req.body.DocId)
-  return res.json(true)
 
+async function Update(req, res) {
+  req.body.index = Date.now();
+  await dataHandling.Update("QuestionsAndAnswers", req.body, req.body.DocId);
+  return res.json(true);
 }
 
 async function Delete(req, res) {
-  await dataHandling.Delete("QuestionsAndAnswers", req.body.DocId)
-  return res.json(true)
+  await dataHandling.Delete("QuestionsAndAnswers", req.body.DocId);
+  return res.json(true);
 }
 
 async function Read(req, res) {
