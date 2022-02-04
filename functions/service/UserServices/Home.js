@@ -72,8 +72,8 @@ async function GetSlotData(UserId, SlotType, DateData, Ad = false) {
     if (Ad && AdSlotData.length < 5) {
         checkSlot = false;
     }
-    if ((await CheckIfUserCanEnter(SlotCost, UserId))) {
-        checkSlot = false;
+    if (!(await CheckIfUserCanEnter(SlotCost, UserId))) {
+        checkSlot = true;
     }
 
     return {
@@ -134,7 +134,7 @@ async function GetSlots() {
 
 
 async function ViewSpinData(Type = false) {
-    const SpinData = [ 
+    const SpinData = [
         {
             "Number": 50, "Type": "Diamond", "Probability": 5,
         },
@@ -152,7 +152,7 @@ async function ViewSpinData(Type = false) {
         },
         {
             "Number": 5, "Type": "SaltCoin", "Probability": 3,
-        }, 
+        },
         {
             "Number": 4, "Type": "SaltCoin", "Probability": 3,
         },
@@ -175,7 +175,7 @@ async function EnterASpin(req, res) {
 
     //Check
     const SpinLimit = await dataHandling.Read(`Admin`, `Settings`);
-    if ((await CheckIfUserCanEnter(SpinLimit.SpinSlotCost, UserId))) {
+    if (!(await CheckIfUserCanEnter(SpinLimit.SpinSlotCost, UserId))) {
         return res.status(403).json("Cannont Access this api");
     }
 
@@ -232,14 +232,14 @@ const randomIndex = distribution => {
     return distribution[index];
 };
 
-async function GetNoOfEntriesInSpin(DateData,UserId,SlotType){
-   const no=await db.collection("Users").doc(UserId).collection(SlotType).doc(DateData).collection("Entry").get();
+async function GetNoOfEntriesInSpin(DateData, UserId, SlotType) {
+    const no = await db.collection("Users").doc(UserId).collection(SlotType).doc(DateData).collection("Entry").get();
 
-   if(no.size>=5 ){
-      return true;
-   }
+    if (no.size >= 5) {
+        return true;
+    }
 
-   return false;
+    return false;
 }
 
 async function DirectAndIndirects(req, res, ref) {
@@ -264,13 +264,13 @@ async function WinnersList(req, res) {
 
 //index,limit,FriendList true or false
 
-async function DatesInWinners(SlotType, Limit,userapi) {
+async function DatesInWinners(SlotType, Limit, userapi) {
     const Date = await dataHandling.Read(SlotType, "", "", "", Limit, ["WinnersSelected", "==", true])
-   const a=Date.map(id => id.DocId);
-   if(userapi){
-    return a.reverse()
-   }
-   return a
+    const a = Date.map(id => id.DocId);
+    if (userapi) {
+        return a.reverse()
+    }
+    return a
 }
 
 async function ViewNotifications(req, res) {
