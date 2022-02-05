@@ -10,7 +10,7 @@ async function Create(req, res) {
     element.QuestionNumber = query.NoOfQuestions + index;
     promise.push(dataHandling.Create("QuestionsAndAnswers", element));
   });
-  const TotalNo = query.NoOfQuestions + req.body.Questions.length;
+  const TotalNo = Number(query.NoOfQuestions || 0) + req.body.Questions.length;
   promise.push(dataHandling.Update("Category", { NoOfQuestions: TotalNo }, query.DocId));
   await Promise.all(promise);
   return res.json(true);
@@ -23,7 +23,12 @@ async function Update(req, res) {
 }
 
 async function Delete(req, res) {
-  await dataHandling.Delete("QuestionsAndAnswers", req.body.DocId);
+  const promise = [];
+  req.body.DocId.forEach((element, index) => {
+    promise.push(dataHandling.Delete("QuestionsAndAnswers", element));
+  });
+  await Promise.all(promise);
+
   return res.json(true);
 }
 
