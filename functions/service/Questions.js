@@ -47,11 +47,6 @@ async function Check(req, res) {
   return res.json(msg)
 }
 
-function getRndInteger(max, arr, limit = 10, min = 1) {
-  for (let index = 0; index < limit; index++) {
-    arr.push(Math.floor(Math.random() * (max - min)) + min);
-  }
-}
 
 function shuffle(array) {
   let currentIndex = array.length, randomIndex;
@@ -73,24 +68,23 @@ function shuffle(array) {
 
 async function ReadRandomQuestions(req, res) {
   console.log(req.headers.referer)
-  const CategoryData = await dataHandling.Read("Category", req.body.DocId);
-  const RandomNumbers = [];
-  getRndInteger(CategoryData.NoOfQuestions, RandomNumbers);
   const promise = [];
-  for (let index = 0; index < RandomNumbers.length; index++) {
-    const element = RandomNumbers[index];
-    promise.push(dataHandling.Read("QuestionsAndAnswers", undefined, undefined, undefined, 1, ["CategoryId", "==", req.body.DocId, "QuestionNumber", "==", element]));
+  for (let index = 0; index < 10; index++) {
+    promise.push(dataHandling.getRandQuestion(req.body.DocId));
   }
-  const tempdata = (await Promise.all(promise));//.flat();
+  const tempdata = await Promise.all(promise);
   const data = [];
+
   for (let index = 0; index < tempdata.length; index++) {
-    const element = tempdata[index][0];
+    const element = tempdata[index];
     delete element.Answer;
+    delete element.Keywords;
     shuffle(element.Options);
     data.push(element);
   }
   return res.json(data);
 }
+
 
 module.exports = {
   Create,

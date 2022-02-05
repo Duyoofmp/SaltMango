@@ -162,6 +162,16 @@ async function WhereGet(collectionName, Field, data, DocId) {
     });
 }
 
+async function getRandQuestion(CategoryId) {
+    const query = db.collection("QuestionsAndAnswers");
+    const key = query.doc().id;
+    let snapshot = await query.where("CategoryId", "==", CategoryId).where(admin.firestore.FieldPath.documentId(), ">=", key).limit(1).get();
+    if (snapshot.size !== 1) {
+        snapshot = await query.where("CategoryId", "==", CategoryId).where(admin.firestore.FieldPath.documentId(), "<", key).limit(1).get();
+    }
+    const data = { ...snapshot.docs[0].data(), "DocId": snapshot.docs[0].id };
+    return data;
+}
 
 module.exports = {
     Create,
@@ -169,5 +179,6 @@ module.exports = {
     Delete,
     Read,
     Check,
-    WhereGet
+    WhereGet,
+    getRandQuestion
 };
