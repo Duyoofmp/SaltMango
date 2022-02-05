@@ -21,11 +21,11 @@ async function Read(req, res) {
     const data = await dataHandling.Read("Category", req.body.DocId, req.body.index, req.body.Keyword, req.body.limit);
     return res.json(data);
   } else {
-    if(req.body.userapi){
-      const data = await dataHandling.Read("Category", undefined, req.body.DocId, req.body.Keyword, req.body.limit, ["Available", "in", [req.body.Available, "Both"],"Active","==",true]);
-    return res.json(data);
+    if (req.body.userapi) {
+      const data = await dataHandling.Read("Category", undefined, req.body.DocId, req.body.Keyword, 1000, ["Available", "in", [req.body.Available, "Both"], "Active", "==", true]);
+      return res.json(data);
 
-    }else{
+    } else {
       const data = await dataHandling.Read("Category", undefined, req.body.DocId, req.body.Keyword, req.body.limit, ["Available", "in", [req.body.Available, "Both"]]);
       return res.json(data);
 

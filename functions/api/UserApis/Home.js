@@ -9,13 +9,15 @@ const common = require("../../common");
 app.use(common.decodeIDTokenHeader)
 
 
-const CategoryFunctionsRead = require('../../service/Category').Read;
-const ReadRandomQuestions = require('../../service/Questions').ReadRandomQuestions;
 app.post('/ReadCategories', async (req, res) => {
+    const CategoryFunctionsRead = require('../../service/Category').Read;
     req.body.userapi = true
-    CategoryFunctionsRead(req, res)
+    return CategoryFunctionsRead(req, res)
 });
-app.post('/ReadQuestions', async (req, res) => ReadRandomQuestions(req, res));
+app.post('/ReadQuestions', async (req, res) => {
+    const ReadRandomQuestions = require('../../service/Questions').ReadRandomQuestions;
+    return ReadRandomQuestions(req, res)
+});
 
 app.post('/CheckAnswer', async (req, res) => HomeFunctions.GetPoints(req, res));
 
@@ -35,11 +37,11 @@ app.post('/GetSlotData', async (req, res) => {
 app.post('/EnterASlot', async (req, res) => HomeFunctions.EnterASlot(req, res));
 
 app.post('/SpinDialData', async (req, res) => {
-    const date= HomeFunctions.GetSlotDate("Spin")
+    const date = HomeFunctions.GetSlotDate("Spin")
     const SpinData = {
         "DialData": await HomeFunctions.ViewSpinData(),
         "SlotCost": await HomeFunctions.GetSlotCost("Spin"),
-        "Ads":await HomeFunctions.GetNoOfEntriesInSpin(date,req.body.UserId,"Spin")
+        "Ads": await HomeFunctions.GetNoOfEntriesInSpin(date, req.body.UserId, "Spin")
     }
     return res.json(SpinData);
 });
@@ -51,7 +53,7 @@ app.post('/InDirectFriends', async (req, res) => HomeFunctions.DirectAndIndirect
 
 app.post('/WinnersList', async (req, res) => HomeFunctions.WinnersList(req, res))
 
-app.post('/DatesInWinners', async (req, res) =>res.json(await HomeFunctions.DatesInWinners(req.body.SlotType, 7,true)))
+app.post('/DatesInWinners', async (req, res) => res.json(await HomeFunctions.DatesInWinners(req.body.SlotType, 7, true)))
 
 app.post('/ViewNotifications', async (req, res) => HomeFunctions.ViewNotifications(req, res));
 
