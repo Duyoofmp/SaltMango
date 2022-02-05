@@ -11,7 +11,6 @@ async function Create(req, res) {
 }
 
 async function Update(req, res) {
-  req.body.index = Date.now()
   await dataHandling.Update("Banners", req.body, req.body.DocId)
   return res.json(true)
 }
@@ -22,8 +21,8 @@ async function Delete(req, res) {
 }
 
 async function Read(req, res) {
-  if(req.body.userapi){
-    const data = await dataHandling.Read("Banners", req.body.DocId, req.body.index, req.body.Keyword, req.body.limit, ["Active","==",true]);
+  if (req.body.userapi) {
+    const data = await dataHandling.Read("Banners", req.body.DocId, req.body.index, req.body.Keyword, req.body.limit, ["Active", "==", true]);
     return res.json(data);
   }
   const data = await dataHandling.Read("Banners", req.body.DocId, req.body.index, req.body.Keyword, 1000);

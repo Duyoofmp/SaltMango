@@ -13,13 +13,16 @@ async function Create(req, res) {
 }
 
 async function Update(req, res) {
-        req.body.index = Date.now()
-        await dataHandling.Update(`Offers/${req.body.OfferId}/Coupons`, req.body, req.body.DocId)
+    req.body.index = Date.now()
+    await dataHandling.Update(`Offers/${req.body.OfferId}/Coupons`, req.body, req.body.DocId)
+    return res.json(true)
 
 }
 
 async function Delete(req, res) {
-    await dataHandling.Delete(`Offers/${req.body.OfferId}/Coupons`, req.body.DocId)
+    await dataHandling.Delete(`Offers/${req.body.OfferId}/Coupons`, req.body.DocId);
+    return res.json(true)
+
 }
 
 async function Read(req, res) {

@@ -36,9 +36,12 @@ async function BuyOffer(req, res) {
   const db = admin.firestore();
   try {
     const OfferData = await db.collection("Offers").doc(req.body.CountryId).get();
+    const Userdata = await db.collection("Users").doc(req.body.UserId).get();
+    if (Userdata.data().SaltCoin < OfferData.data().SaltCoin) {
+      return res.status(403).json("Cannont Access this api");
+    }
 
     await db.runTransaction(async (t) => {
-      const Userdata = await t.get(db.collection("Users").doc(req.body.UserId));
       const Coupon = await t.get(db.collection("Offers").doc(req.body.CountryId).collection("Coupons").limit(1));
 
       t.set(db.collection("Users").doc(req.body.UserId).collection("Rewards").doc(Coupon.docs[0].id), { ...Coupon.docs[0].data(), ...OfferData.data() })
