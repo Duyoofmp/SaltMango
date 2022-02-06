@@ -186,9 +186,10 @@ function arrayEquals(a, b) {
     a.every((val, index) => val === b[index]);
 }
 
-async function pushNotification(title,msg,UserId){
+async function pushNotification(title,msg,UserId,img){
   const payload = {
       notification: {
+          pic:img,
           title: title,
           body: msg,
           sound: "default"
@@ -202,7 +203,7 @@ return await admin.messaging().sendToTopic(UserId, payload, options);
 }
 
 
-
+const NotifyImg="https://firebasestorage.googleapis.com/v0/b/salt-mango.appspot.com/o/Assets%2Fnotification.png?alt=media"
 
 
 
@@ -217,6 +218,7 @@ module.exports = {
   loginForAdmins,
   decodeIDTokenForLogin,
   pushNotification,
+  NotifyImg,
   Point,
   ReferralPoint,
   ReferredPoint,

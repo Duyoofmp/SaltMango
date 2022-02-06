@@ -39,6 +39,7 @@ exports.OnOfferUpdate = functions.firestore
       const NotificationObj = {
           "Text": `🎊Congratulaions🎊 You achieved new reward of ${data.OfferName}🥳`,
           "Heading": "Reward Achieved",
+          "Image":"https://firebasestorage.googleapis.com/v0/b/salt-mango.appspot.com/o/Assets%2Foffer.png?alt=media"
       }
        return NotificationCreate(userid, NotificationObj);
     });
