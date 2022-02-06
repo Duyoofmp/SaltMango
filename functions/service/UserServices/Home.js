@@ -13,14 +13,13 @@ async function Read(req, res) {
 
 
 async function GetPoints(req, res) {
-
     const data = await dataHandling.Read("QuestionsAndAnswers", req.body.DocId || "", "", "", 1);
     const PointObj = {
         "DiamondsAccumulated": 0,
         "Result": false,
-        "Answer": data.Answer,
+        "Answer": String(data.Answer),
     }
-    if (data === null || data.Answer !== req.body.Answer || Array.isArray(data)) {
+    if (data === null || String(data.Answer) !== String(req.body.Answer) || Array.isArray(data)) {
         return res.json(PointObj);
     }
     else {
@@ -274,7 +273,7 @@ async function DatesInWinners(SlotType, Limit, userapi) {
 }
 
 async function ViewNotifications(req, res) {
-    const data = await dataHandling.Read(`Users/${req.body.UserId}/Notifications`, "", req.body.Index, "", 10);
+    const data = await dataHandling.Read(`Users/${req.body.UserId}/Notifications`, "", "", "", 100000,undefined,[true,"Index","desc"]);
     return res.json(data);
 }
 module.exports = {
