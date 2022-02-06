@@ -46,7 +46,7 @@ async function EnterASlot(req, res) {
     const DateData = GetSlotDate(SlotType);
     const SlotData = await GetSlotData(UserId, SlotType, DateData, req.body.Ad);
     if (SlotData.checkSlot) {
-        return res.status(403).json("Cannont Access this api");
+        return res.status(410).json("Cannont Access this api");
     }
     const EntryData = {
         "UserId": UserId,
@@ -175,7 +175,7 @@ async function EnterASpin(req, res) {
     //Check
     const SpinLimit = await dataHandling.Read(`Admin`, `Settings`);
     if (!(await CheckIfUserCanEnter(SpinLimit.SpinSlotCost, UserId))) {
-        return res.status(403).json("Cannont Access this api");
+        return res.status(410).json("Cannont Access this api");
     }
 
     const promise = [];
