@@ -37,7 +37,7 @@ exports.OnOfferUpdate = functions.firestore
       const userid=context.params.UserId
       const data=change.data()
       const NotificationObj = {
-          "Text": `🎊Congratulaions🎊 You achieved new reward of ${data.OfferName}🥳`,
+          "Text": `🎊Congratulaions🎊You have achieved a new reward from Behance.🥳`,
           "Heading": "Reward Achieved",
           "Image":"https://firebasestorage.googleapis.com/v0/b/salt-mango.appspot.com/o/Assets%2Foffer.png?alt=media"
       }
