@@ -23,7 +23,7 @@ exports.OnWinnersCreate = functions.firestore
       const checkentry=await db.collection(data.WonIn).doc(data.WinDate).collection("Entry").where("UserId","==",data.DirectReferralId).get()
       if(checkentry.size===0){
         NotificationCreate(data.DirectReferralId, {
-          "Text": `Your Friend ${data.Username} won ${data.WonIn} Draw..but you missed 50% from the reward...bcz you not entered in slot on ${data.WinDate} `,
+          "Text": `Your direct referral, ${data.Username} won the Daily Draw held on ${data.WinDate}. Since you did not enter the draw, you missed the reward ☹️`,
           "Heading": `:( You Missed Direct Referral Reward Of ${data.WonIn}Draw`,
           "Image":"https://firebasestorage.googleapis.com/v0/b/salt-mango.appspot.com/o/Assets%2Fref.png?alt=media"
       })
