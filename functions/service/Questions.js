@@ -83,6 +83,7 @@ async function ReadRandomQuestions(req, res) {
       delete QData.Keywords;
       shuffle(QData.Options);
       data.push(QData);
+      DocIds.push(QData.DocId)
     }
   }
 

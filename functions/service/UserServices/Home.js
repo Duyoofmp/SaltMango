@@ -146,16 +146,15 @@ async function ViewSpinData(Type = false) {
         {
             "Number": 2, "Type": "SaltCoin", "Probability": 3,
         },
-        
+
         {
             "Number": 10, "Type": "Diamond", "Probability": 30,
         },
         {
-            "Number": 5, "Type": "SaltCoin", "Probability": 1,
+            "Number": 3, "Type": "SaltCoin", "Probability": 2,
         },
         {
             "Number": 30, "Type": "Diamond", "Probability": 15,
-            
         },
         {
             "Number": 4, "Type": "SaltCoin", "Probability": 1,
@@ -164,11 +163,8 @@ async function ViewSpinData(Type = false) {
             "Number": 20, "Type": "Diamond", "Probability": 30,
         },
         {
-            "Number": 3, "Type": "SaltCoin", "Probability": 2,
+            "Number": 5, "Type": "SaltCoin", "Probability": 1,
         },
-      
-       
-       
     ];
     if (Type) {
         return SpinData.filter(id => id.Type !== "SaltCoin");
