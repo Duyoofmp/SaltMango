@@ -188,6 +188,9 @@ async function EnterASpin(req, res) {
     if (!(await CheckIfUserCanEnter(SpinLimit.SpinSlotCost, UserId))) {
         return res.status(410).json("Cannont Access this api");
     }
+    if ((await HomeFunctions.GetNoOfEntriesInSpin(DateData, UserId, "Spin")).PendingSpins <= 0) {
+        return res.status(410).json("Cannont Access this api");
+    }
 
     const promise = [];
     promise.push(dataHandling.Read(`Users/${UserId}/${SlotType}`, `${DateData}`));
@@ -244,12 +247,25 @@ const randomIndex = distribution => {
 
 async function GetNoOfEntriesInSpin(DateData, UserId, SlotType) {
     const no = await db.collection("Users").doc(UserId).collection(SlotType).doc(DateData).collection("Entry").get();
-
+    const PendingSpins = 10 - no.size;
+    let CanSpin, Ads;
     if (no.size >= 5) {
-        return true;
+        CanSpin = true;
+    }
+    else {
+        CanSpin = false;
+    }
+    if (no.size >= 5) {
+        Ads = true;
+    }
+    else {
+        Ads = false;
+    }
+    return {
+        Ads, CanSpin, PendingSpins
     }
 
-    return false;
+
 }
 
 async function DirectAndIndirects(req, res, ref) {
@@ -284,7 +300,7 @@ async function DatesInWinners(SlotType, Limit, userapi) {
 }
 
 async function ViewNotifications(req, res) {
-    const data = await dataHandling.Read(`Users/${req.body.UserId}/Notifications`, "", "", "", 100000,undefined,[true,"Index","desc"]);
+    const data = await dataHandling.Read(`Users/${req.body.UserId}/Notifications`, "", "", "", 100000, undefined, [true, "Index", "desc"]);
     return res.json(data);
 }
 module.exports = {

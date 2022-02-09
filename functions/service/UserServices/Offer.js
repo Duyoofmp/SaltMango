@@ -38,7 +38,7 @@ async function BuyOffer(req, res) {
     const OfferData = await db.collection("Offers").doc(req.body.CountryId).get();
     const Userdata = await db.collection("Users").doc(req.body.UserId).get();
     if (Userdata.data().SaltCoin < OfferData.data().SaltCoin) {
-      return res.status(403).json("Cannont Access this api");
+      return res.status(410).json("Cannont Access this api");
     }
 
     await db.runTransaction(async (t) => {

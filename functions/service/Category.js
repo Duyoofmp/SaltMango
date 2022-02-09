@@ -22,7 +22,7 @@ async function Read(req, res) {
     return res.json(data);
   } else {
     if (req.body.userapi) {
-      const data = await dataHandling.Read("Category", undefined, req.body.DocId, req.body.Keyword, 1000, ["Available", "in", [req.body.Available, "Both"], "Active", "==", true]);
+      const data = await dataHandling.Read("Category", undefined, req.body.DocId, req.body.Keyword, 1000, ["Available", "in", [req.body.Available, "Both"], "Active", "==", true, "NoOfQuestions", ">", 10], [false]);
       return res.json(data);
 
     } else {

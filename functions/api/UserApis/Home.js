@@ -37,11 +37,14 @@ app.post('/GetSlotData', async (req, res) => {
 app.post('/EnterASlot', async (req, res) => HomeFunctions.EnterASlot(req, res));
 
 app.post('/SpinDialData', async (req, res) => {
-    const date = HomeFunctions.GetSlotDate("Spin")
+    const date = HomeFunctions.GetSlotDate("Spin");
+    const SpinNumber = await HomeFunctions.GetNoOfEntriesInSpin(date, req.body.UserId, "Spin");
     const SpinData = {
         "DialData": await HomeFunctions.ViewSpinData(),
         "SlotCost": await HomeFunctions.GetSlotCost("Spin"),
-        "Ads": await HomeFunctions.GetNoOfEntriesInSpin(date, req.body.UserId, "Spin")
+        "Ads": SpinNumber.Ads,
+        "CanSpin": SpinNumber.CanSpin,
+        "PendingSpins": SpinNumber.PendingSpins,
     }
     return res.json(SpinData);
 });

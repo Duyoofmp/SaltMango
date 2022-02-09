@@ -69,19 +69,23 @@ function shuffle(array) {
 async function ReadRandomQuestions(req, res) {
   console.log(req.headers.referer)
   const promise = [];
-  for (let index = 0; index < 10; index++) {
-    promise.push(dataHandling.getRandQuestion(req.body.DocId));
-  }
-  const tempdata = await Promise.all(promise);
   const data = [];
+  data.push(await dataHandling.getRandQuestion(req.body.DocId));
+  const DocIds = data.map(id => id.DocId);
 
-  for (let index = 0; index < tempdata.length; index++) {
-    const element = tempdata[index];
-    delete element.Answer;
-    delete element.Keywords;
-    shuffle(element.Options);
-    data.push(element);
+  for (let index = 0; index < 9; index++) {
+    const QData = await dataHandling.getRandQuestion(req.body.DocId);
+    if (DocIds.includes(QData.DocId)) {
+      index--;
+    }
+    else {
+      delete QData.Answer;
+      delete QData.Keywords;
+      shuffle(QData.Options);
+      data.push(QData);
+    }
   }
+
   return res.json(data);
 }
 
