@@ -184,7 +184,7 @@ async function EnterASpin(req, res) {
     if (!(await CheckIfUserCanEnter(SpinLimit.SpinSlotCost, UserId))) {
         return res.status(410).json("Cannont Access this api");
     }
-    if ((await HomeFunctions.GetNoOfEntriesInSpin(DateData, UserId, "Spin")).PendingSpins <= 0) {
+    if ((await GetNoOfEntriesInSpin(DateData, UserId, "Spin")).PendingSpins <= 0) {
         return res.status(410).json("Cannont Access this api");
     }
 
@@ -245,11 +245,11 @@ async function GetNoOfEntriesInSpin(DateData, UserId, SlotType) {
     const no = await db.collection("Users").doc(UserId).collection(SlotType).doc(DateData).collection("Entry").get();
     const PendingSpins = 10 - no.size;
     let CanSpin, Ads;
-    if (no.size >= 5) {
-        CanSpin = true;
+    if (no.size >= 10) {
+        CanSpin = false;
     }
     else {
-        CanSpin = false;
+        CanSpin = true;
     }
     if (no.size >= 5) {
         Ads = true;
