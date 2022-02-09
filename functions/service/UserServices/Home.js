@@ -184,7 +184,7 @@ async function EnterASpin(req, res) {
     if (!(await CheckIfUserCanEnter(SpinLimit.SpinSlotCost, UserId))) {
         return res.status(410).json("Cannont Access this api");
     }
-    if ((await HomeFunctions.GetNoOfEntriesInSpin(DateData, UserId, "Spin")).PendingSpins <= 0) {
+    if ((await GetNoOfEntriesInSpin(DateData, UserId, "Spin")).PendingSpins <= 0) {
         return res.status(410).json("Cannont Access this api");
     }
 
