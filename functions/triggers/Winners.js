@@ -23,18 +23,18 @@ exports.OnWinnersCreate = functions.firestore
       const checkentry=await db.collection(data.WonIn).doc(data.WinDate).collection("Entry").where("UserId","==",data.DirectReferralId).get()
       if(checkentry.size===0){
         NotificationCreate(data.DirectReferralId, {
-          "Text": `Your direct referral, ${data.Username} won the Daily Draw held on ${data.WinDate}. Since you did not enter the draw, you missed the reward ☹️`,
-          "Heading": `:( You Missed Direct Referral Reward Of ${data.WonIn}Draw`,
+          "Text": `Your direct referral, ${data.Name} won the Daily Draw held on ${data.WinDate}. Since you did not enter the draw, you missed the reward ☹️`,
+          "Heading": `☹️ You Missed Direct Referral Reward Of ${data.WonIn}Draw`,
           "Image":"https://firebasestorage.googleapis.com/v0/b/salt-mango.appspot.com/o/Assets%2Fref.png?alt=media"
       })
       }else{
         const refData=await dataHandling.Read("Users",data.DirectReferralId)
-        await dataHandling.Create("Winners",{ ...refData,index: Date.now(), WonIn: data.WonIn, UserId: data.DirectReferralId, WinDate: data.WinDate,ReferralWin:data.Username ,RewardCoins:data.RewardCoins*0.5})
+        await dataHandling.Create("Winners",{ ...refData,index: Date.now(), WonIn: data.WonIn, UserId: data.DirectReferralId, WinDate: data.WinDate,ReferralWin:data.Name ,RewardCoins:data.RewardCoins*0.5})
       }
     }
   }else{
     NotificationObj = {
-      "Text": ` 🎊 Congratulations 🎊! Your direct referral, ${data.Username} has won the Daily Draw held on ${data.WinDate}. You have received ${data.RewardCoins} salt coins.🥳`,
+      "Text": ` 🎊 Congratulations 🎊! Your direct referral, ${data.Name} has won the Daily Draw held on ${data.WinDate}. You have received ${data.RewardCoins} salt coins.🥳`,
       "Heading": `Reward For Direct Referral`,
       "Image":"https://firebasestorage.googleapis.com/v0/b/salt-mango.appspot.com/o/Assets%2Fsalt.png?alt=media"
   }
