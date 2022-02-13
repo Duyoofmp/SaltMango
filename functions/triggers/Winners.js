@@ -34,7 +34,7 @@ exports.OnWinnersCreate = functions.firestore
     }
   }else{
     NotificationObj = {
-      "Text": ` 🎊 Congratulations 🎊! Your direct referral, ${data.ReferralWin} has won the Daily Draw held on ${data.WinDate}. You have received ${data.RewardCoins*0.5} salt coins.🥳`,
+      "Text": ` 🎊 Congratulations 🎊! Your direct referral, ${data.ReferralWin} has won the Daily Draw held on ${data.WinDate}. You have received ${data.RewardCoins} salt coins.🥳`,
       "Heading": `Reward For Direct Referral`,
       "Image":"https://firebasestorage.googleapis.com/v0/b/salt-mango.appspot.com/o/Assets%2Fsalt.png?alt=media"
   }
