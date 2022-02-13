@@ -11,6 +11,12 @@ const common = require("../../common");
 //const {drawWinnerPicker}=require('../../triggers/DailyDraw')
 app.use(common.decodeIDTokenHeader)
 
+app.post('/CreateProfile', async (req, res) => {
+    req.body.DocId = req.body.UserId;
+    req.body.MyCode = await UserFunctions.Keygenerator();
+    return UserFunctions.Update(req, res)
+})
+
 app.post('/UpdateProfile', async (req, res) => {
     req.body.DocId = req.body.UserId;
     return UserFunctions.Update(req, res)
@@ -27,7 +33,7 @@ app.post('/ReadProfile', async (req, res) => {
 
 app.post('/ReadBanners', async (req, res) => {
     const BannerFunctions_Read = require('../../service/Banners').Read;
-    req.body.userapi=true
+    req.body.userapi = true
     BannerFunctions_Read(req, res)
 })
 
@@ -48,8 +54,8 @@ app.post('/ReadBanners', async (req, res) => {
 //    promise.push(drawWinnerPicker("Weekly", Day));
 //    await  Promise.all(promise)
 //      return res.json(true)
-     
-     
+
+
 //  })
 
 
