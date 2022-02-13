@@ -60,7 +60,7 @@ exports.OnUsersCreate = functions.firestore
             });
 
             await db.collection("Users").doc(ReferralUser.id).update({
-                "SaltCoin": admin.firestore.FieldValue.increment(ReferralReward),
+                "Diamond": admin.firestore.FieldValue.increment(ReferralReward),
                 "FriendsList": admin.firestore.FieldValue.arrayUnion(docid),
             });
 
@@ -125,7 +125,7 @@ exports.OnUsersUpdate = functions.firestore
             });
 
             await db.collection("Users").doc(ReferralUser.id).update({
-                "SaltCoin": admin.firestore.FieldValue.increment(ReferralReward),
+                "Diamond": admin.firestore.FieldValue.increment(ReferralReward),
                 "FriendsList": admin.firestore.FieldValue.arrayUnion(docid),
             });
 
