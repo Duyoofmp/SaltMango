@@ -9,7 +9,7 @@ const UserFunctions = require('../../service/Users');
 const common = require("../../common");
 
 //const {drawWinnerPicker}=require('../../triggers/DailyDraw')
-// app.use(common.decodeIDTokenHeader)
+app.use(common.decodeIDTokenHeader)
 
 app.post('/CreateProfile', async (req, res) => {
     req.body.DocId = req.body.UserId;
