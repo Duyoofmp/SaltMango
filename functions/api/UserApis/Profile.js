@@ -13,7 +13,7 @@ app.use(common.decodeIDTokenHeader)
 
 app.post('/CreateProfile', async (req, res) => {
     req.body.DocId = req.body.UserId;
-    req.body.MyCode = await UserFunctions.Keygenerator();
+    req.body.MyCode = await UserFunctions.Keygenerator(req.body.UserId);
     return UserFunctions.Update(req, res)
 })
 
