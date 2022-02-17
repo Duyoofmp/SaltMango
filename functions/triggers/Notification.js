@@ -1,5 +1,5 @@
 const functions = require('firebase-functions');
-const {pushNotification}=require('../common')
+const { pushNotification } = require('../common')
 
 
 
@@ -9,7 +9,7 @@ exports.OnUsersNotificationCreate = functions.firestore
         const DocId = context.params.DocId;
         const UserId = context.params.UserId;
         const data = change.data();
-return  pushNotification(data.Heading,data.Text,UserId)
+        return pushNotification(data.Heading, data.Text, UserId)
     })
 
 

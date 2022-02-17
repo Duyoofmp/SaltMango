@@ -186,24 +186,24 @@ function arrayEquals(a, b) {
     a.every((val, index) => val === b[index]);
 }
 
-async function pushNotification(title,msg,UserId,img){
+async function pushNotification(title, msg, UserId, img) {
   const payload = {
-      notification: {
-          pic:img,
-          title: title,
-          body: msg,
-          sound: "default"
-      }
+    notification: {
+      // pic:img,
+      title: title,
+      body: msg,
+      sound: "default"
+    }
   };
   const options = {
-      priority: "high",
-      timeToLive: 60 * 60 * 24
+    priority: "high",
+    timeToLive: 60 * 60 * 24
   };
-return await admin.messaging().sendToTopic(UserId, payload, options);
+  return await admin.messaging().sendToTopic(UserId, payload, options);
 }
 
 
-const NotifyImg="https://firebasestorage.googleapis.com/v0/b/salt-mango.appspot.com/o/Assets%2Fnotification.png?alt=media"
+const NotifyImg = "https://firebasestorage.googleapis.com/v0/b/salt-mango.appspot.com/o/Assets%2Fnotification.png?alt=media"
 
 
 

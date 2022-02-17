@@ -11,28 +11,6 @@ exports.OnUsersCreate = functions.firestore
         const data = change.data()
         const arr = [];
         common.createKeywords(data.Name, arr)
-        Keygenerator()
-        async function Keygenerator() {
-            let generator = '';
-            let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyskiouhjnmbhj'
-
-            for (let i = 0; i < 4; i++) {
-                generator += characters.charAt(Math.floor(Math.random() * characters.length))
-            }
-            let array = generator;
-            const code = await admin.firestore().collection("Users").where("MyCode", "==", array).limit(1).get();
-            if (code.size === 0) {
-                let ref = docid.substring(0, 3);
-                let refcode = array + ref;
-                await admin.firestore().collection("Users").doc(docid).update({
-                    MyCode: refcode
-                })
-            }
-            else {
-                Keygenerator()
-            }
-        }
-
         const UserData = { DocId: docid, Keywords: arr, SaltCoin: 0, Diamond: 0 };
         if (data.ReferralCode === "" || data.ReferralCode === null || data.ReferralCode === undefined) {
             return db.collection("Users").doc(docid).update(UserData);
@@ -60,7 +38,7 @@ exports.OnUsersCreate = functions.firestore
             });
 
             await db.collection("Users").doc(ReferralUser.id).update({
-                "SaltCoin": admin.firestore.FieldValue.increment(ReferralReward),
+                "Diamond": admin.firestore.FieldValue.increment(ReferralReward),
                 "FriendsList": admin.firestore.FieldValue.arrayUnion(docid),
             });
 
@@ -72,10 +50,6 @@ exports.OnUsersCreate = functions.firestore
             });
 
         }
-
-
-
-
     })
 
 
@@ -125,7 +99,7 @@ exports.OnUsersUpdate = functions.firestore
             });
 
             await db.collection("Users").doc(ReferralUser.id).update({
-                "SaltCoin": admin.firestore.FieldValue.increment(ReferralReward),
+                "Diamond": admin.firestore.FieldValue.increment(ReferralReward),
                 "FriendsList": admin.firestore.FieldValue.arrayUnion(docid),
             });
 
