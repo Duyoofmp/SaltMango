@@ -41,7 +41,7 @@ async function Keygenerator() {
     generator += characters.charAt(Math.floor(Math.random() * characters.length))
   }
   let array = generator;
-  const code = await admin.firestore().collection("Users").where("MyCode", "==", array).limit(1).get();
+  const code = dataHandling.Read("Users", undefined, undefined, undefined, 1, ["MyCode", "==", array], [false])//await admin.firestore().collection("Users").where().limit(1).get();
   if (code.size === 0) {
     let ref = docid.substring(0, 3);
     let refcode = array + ref;
