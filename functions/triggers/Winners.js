@@ -14,8 +14,9 @@ exports.OnWinnersCreate = functions.firestore
     const counterOperation = new Counter(db.collection("Users").doc(data.UserId), "SaltCoin")
     await counterOperation.incrementBy(data.RewardCoins);
     if(data.ReferralWin===""){
+      const per=data.RewardCoins*0.5
      NotificationObj = {
-        "Text": `🎊Congratulations🎊 You have won the ${data.WonIn}Draw and earned ${data.RewardCoins} salt coins!🥳`,
+        "Text": `🎊Congratulations🎊 You have won the ${data.WonIn}Draw and earned ${data.RewardCoins} salt coins!Your referrer has also received ${per} salt coins as part of your achievement!🥳`,
         "Heading": `${data.WonIn} Darw Winner`,
         "Image":"https://firebasestorage.googleapis.com/v0/b/salt-mango.appspot.com/o/Assets%2Fsalt.png?alt=media"
     }
