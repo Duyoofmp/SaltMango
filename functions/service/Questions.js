@@ -35,9 +35,9 @@ async function Delete(req, res) {
 async function Read(req, res) {
   let data;
   if (req.body.CategoryId === undefined) {
-    data = await dataHandling.Read("QuestionsAndAnswers", req.body.DocId, req.body.index, req.body.Keyword);
+    data = await dataHandling.Read("QuestionsAndAnswers", req.body.DocId, req.body.index, req.body.Keyword, req.body.Limit);
   } else {
-    data = await dataHandling.Read("QuestionsAndAnswers", req.body.DocId, req.body.index, req.body.Keyword, 10, ["CategoryId", "==", req.body.CategoryId]);      // (data.Options).push(data.Answer);
+    data = await dataHandling.Read("QuestionsAndAnswers", req.body.DocId, req.body.index, req.body.Keyword, req.body.Limit, ["CategoryId", "==", req.body.CategoryId]);      // (data.Options).push(data.Answer);
   }
   return res.json(data);
 }
