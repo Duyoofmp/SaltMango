@@ -33,7 +33,7 @@ async function Read(req, res) {
   return res.json(data)
 }
 
-async function Keygenerator() {
+async function Keygenerator(docid) {
   let generator = '';
   let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyskiouhjnmbhj'
 
@@ -41,8 +41,8 @@ async function Keygenerator() {
     generator += characters.charAt(Math.floor(Math.random() * characters.length))
   }
   let array = generator;
-  const code = dataHandling.Read("Users", undefined, undefined, undefined, 1, ["MyCode", "==", array], [false])//await admin.firestore().collection("Users").where().limit(1).get();
-  if (code.size === 0) {
+  const code = await dataHandling.Read("Users", undefined, undefined, undefined, 1, ["MyCode", "==", array], [false])//await admin.firestore().collection("Users").where().limit(1).get();
+  if (code.length === 0) {
     let ref = docid.substring(0, 3);
     let refcode = array + ref;
     return refcode;
