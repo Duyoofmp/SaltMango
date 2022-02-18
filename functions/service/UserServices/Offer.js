@@ -23,7 +23,7 @@ async function ReadOffers(req, res) {
   const Userdata = (await dataHandling.Read("Users", req.body.UserId)) || { SaltCoin: 0 };
 
   data.forEach((Offer) => {
-    arr.push({ ...Offer, ClaimStatus: Offer.SaltCoin >= Userdata.SaltCoin })
+    arr.push({ ...Offer, ClaimStatus: Offer.SaltCoin > Userdata.SaltCoin })
   });
 
   return res.json(arr)
