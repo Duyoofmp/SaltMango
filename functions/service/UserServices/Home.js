@@ -273,7 +273,7 @@ async function WinnersList(req, res) {
     let Date = req.body.Date;
     let SlotType = req.body.SlotType;
     if (req.body.Date === "") {
-        Date = (await DatesInWinners(SlotType, 1))[0];
+        Date = (await DatesInWinners(SlotType, 1))[0] || "";
     }
     let winData;
     if (req.body.FriendsList === true) {
