@@ -13,7 +13,8 @@ const { FirebaseDynamicLinks } = require('firebase-dynamic-links');
 app.use(common.decodeIDTokenHeader)
 
 app.post('/CreateProfile', async (req, res) => {
-    const firebaseDynamicLinks = new FirebaseDynamicLinks("AIzaSyBxqDBRaEVxpXuSvG4oLSC_7riZhyMeYtU");
+    const WebApiKey = require("../../config/WebApi.json").WebApiKey
+    const firebaseDynamicLinks = new FirebaseDynamicLinks(WebApiKey);
     req.body.DocId = req.body.UserId;
     req.body.MyCode = await UserFunctions.Keygenerator(req.body.UserId);//x9ElBZl
     try {
