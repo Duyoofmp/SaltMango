@@ -98,7 +98,8 @@ exports.scheduledFunctionForDraws = DailyDrawTriggers.scheduledFunctionForDraws;
 exports.OnWinnerAddOn = DailyDrawTriggers.OnWinnerAddOn;
 exports.OnWinnerAddCreate = DailyDrawTriggers.OnWinnerAddCreate;
 
-
+const coldstart = require("./coldstart");
+exports.ColdStart = coldstart.ColdStart;
 
 
 
